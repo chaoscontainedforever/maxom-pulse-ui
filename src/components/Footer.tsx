@@ -34,18 +34,18 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><Link to="/about" className="text-gray-600 hover:text-maxom-orange transition-colors">About Us</Link></li>
               <li><Link to="/about" className="text-gray-600 hover:text-maxom-orange transition-colors">Our Story</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-maxom-orange transition-colors">Blog</Link></li>
+              <li><Link to="/blog" className="text-gray-600 hover:text-maxom-orange transition-colors">Blog</Link></li>
+              <li><Link to="/careers" className="text-gray-600 hover:text-maxom-orange transition-colors">Careers</Link></li>
               <li><Link to="/contact" className="text-gray-600 hover:text-maxom-orange transition-colors">Contact</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-maxom-orange transition-colors">Careers</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-3">
-              <li><Link to="/" className="text-gray-600 hover:text-maxom-orange transition-colors">Terms of Service</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-maxom-orange transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-maxom-orange transition-colors">Cookie Policy</Link></li>
+              <li><Link to="/terms" className="text-gray-600 hover:text-maxom-orange transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="text-gray-600 hover:text-maxom-orange transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/cookies" className="text-gray-600 hover:text-maxom-orange transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
         </div>
