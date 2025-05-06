@@ -13,7 +13,12 @@ const AdminHeader = ({ openSidebar }: AdminHeaderProps) => {
     <header className="bg-background border-b border-border sticky top-0 z-10">
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={openSidebar}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden hover:bg-gradient-to-r hover:from-maxom-violet hover:to-maxom-orange hover:text-white" 
+            onClick={openSidebar}
+          >
             <Menu className="h-5 w-5" />
           </Button>
           <div className="relative max-w-md hidden md:block">

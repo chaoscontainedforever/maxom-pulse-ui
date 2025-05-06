@@ -54,8 +54,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
 
         <nav className="flex-1 p-4 space-y-1">
           <Button 
-            variant={isActive("/admin") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin">
@@ -65,8 +65,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/call-analytics") ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/call-analytics") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/call-analytics">
@@ -76,8 +76,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/reports") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/reports") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/reports">
@@ -87,8 +87,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/businesses") ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/businesses") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/businesses">
@@ -98,8 +98,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/restaurant-orders") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/restaurant-orders") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/restaurant-orders">
@@ -109,8 +109,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/reservations") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/reservations") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/reservations">
@@ -120,8 +120,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/settings") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/settings") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/settings">
@@ -131,8 +131,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
 
           <Button 
-            variant={isActive("/admin/help") ? "secondary" : "ghost"} 
-            className="w-full justify-start"
+            variant="ghost" 
+            className={`w-full justify-start ${isActive("/admin/help") ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white hover:opacity-90" : ""}`}
             asChild
           >
             <Link to="/admin/help">
