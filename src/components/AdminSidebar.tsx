@@ -39,13 +39,13 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
 
       {/* Sidebar */}
       <aside 
-        className={`fixed md:sticky top-0 left-0 h-screen bg-white border-r border-gray-200 z-30 transition-transform duration-300 transform ${
+        className={`fixed md:sticky top-0 left-0 h-screen bg-background border-r border-border z-30 transition-transform duration-300 transform ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         } w-64 md:w-64 flex flex-col`}
       >
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <Link to="/" className="text-lg font-bold">
-            Maxom<span className="text-maxom-orange">.ai</span> <span className="text-sm font-normal text-gray-500">Admin</span>
+            Maxom<span className="text-maxom-orange">.ai</span> <span className="text-sm font-normal text-muted-foreground">Admin</span>
           </Link>
           <Button variant="ghost" size="icon" onClick={closeSidebar} className="md:hidden">
             <X size={20} />
@@ -142,7 +142,7 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           </Button>
         </nav>
         
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-border">
           <Button variant="ghost" className="w-full justify-start text-red-500" asChild>
             <Link to="/login">
               <LogOut className="mr-2 h-4 w-4" />

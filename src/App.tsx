@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import Index from "./pages/Index";
@@ -48,41 +49,43 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/solutions" element={<Solutions />} />
-              <Route path="/product" element={<Product />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/cookies" element={<Cookies />} />
-              
-              {/* Admin Routes */}
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/call-analytics" element={<CallAnalytics />} />
-              <Route path="/admin/reports" element={<Reports />} />
-              <Route path="/admin/settings" element={<Settings />} />
-              <Route path="/admin/restaurant-orders" element={<RestaurantOrders />} />
-              <Route path="/admin/reservations" element={<Reservations />} />
-              <Route path="/admin/help" element={<Help />} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="light">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/solutions" element={<Solutions />} />
+                <Route path="/product" element={<Product />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/cookies" element={<Cookies />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/call-analytics" element={<CallAnalytics />} />
+                <Route path="/admin/reports" element={<Reports />} />
+                <Route path="/admin/settings" element={<Settings />} />
+                <Route path="/admin/restaurant-orders" element={<RestaurantOrders />} />
+                <Route path="/admin/reservations" element={<Reservations />} />
+                <Route path="/admin/help" element={<Help />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
