@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 const HeroSection = () => {
   return (
     <section className="pt-32 pb-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-main opacity-10 z-0"></div>
       <div className="maxom-container relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -20,7 +19,7 @@ const HeroSection = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             The Voice AI That <span className="gradient-text">Talks Like Your Team</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
             Automate calls, bookings, and customer support with voice AI that sounds natural and handles real conversations like a human.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
@@ -36,7 +35,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="relative rounded-2xl shadow-xl mx-auto bg-white p-2 max-w-5xl"
+            className="relative rounded-2xl shadow-xl mx-auto bg-white dark:bg-card p-2 max-w-5xl"
           >
             <div className="bg-gradient-main rounded-xl p-1 mb-2">
               <div className="bg-black rounded-lg h-14 flex items-center px-4">
@@ -47,7 +46,7 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-            <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+            <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
               <div className="text-center p-4">
                 <div className="mx-auto w-16 h-16 rounded-full bg-gradient-main flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -57,8 +56,8 @@ const HeroSection = () => {
                     <line x1="8" y1="23" x2="16" y2="23"></line>
                   </svg>
                 </div>
-                <p className="text-lg font-medium text-gray-600">Voice assistant conversation preview</p>
-                <p className="text-sm text-gray-500 mt-2">Click demo to hear sample</p>
+                <p className="text-lg font-medium text-gray-600 dark:text-gray-300">Voice assistant conversation preview</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Click demo to hear sample</p>
               </div>
             </div>
           </motion.div>
