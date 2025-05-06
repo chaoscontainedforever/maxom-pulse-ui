@@ -25,7 +25,7 @@ const NavBar = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <div className="font-bold text-2xl">
-              <span className="gradient-text">maxom.ai</span>
+              <span className="gradient-text">Maxom.ai</span>
             </div>
           </Link>
           
