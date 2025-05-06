@@ -1,8 +1,18 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Home, Phone, Users, Settings, BarChart2, HelpCircle, X, LogOut } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { 
+  Home, 
+  Phone, 
+  Users, 
+  Settings, 
+  BarChart2, 
+  HelpCircle, 
+  X, 
+  LogOut,
+  Calendar
+} from "lucide-react";
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -10,7 +20,12 @@ type AdminSidebarProps = {
 };
 
 const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const location = useLocation();
+  const pathName = location.pathname;
+
+  const isActive = (path: string) => {
+    return pathName === path;
+  };
 
   return (
     <>
@@ -39,64 +54,100 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
 
         <nav className="flex-1 p-4 space-y-1">
           <Button 
-            variant={activeItem === "dashboard" ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
-            onClick={() => setActiveItem("dashboard")}
+            variant={isActive("/admin") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
           >
-            <Home className="mr-2 h-4 w-4" />
-            Dashboard
+            <Link to="/admin">
+              <Home className="mr-2 h-4 w-4" />
+              Dashboard
+            </Link>
           </Button>
 
           <Button 
-            variant={activeItem === "calls" ? "secondary" : "ghost"} 
+            variant={isActive("/admin/call-analytics") ? "secondary" : "ghost"} 
             className="w-full justify-start" 
-            onClick={() => setActiveItem("calls")}
+            asChild
           >
-            <Phone className="mr-2 h-4 w-4" />
-            Call Analytics
+            <Link to="/admin/call-analytics">
+              <Phone className="mr-2 h-4 w-4" />
+              Call Analytics
+            </Link>
           </Button>
 
           <Button 
-            variant={activeItem === "businesses" ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
-            onClick={() => setActiveItem("businesses")}
+            variant={isActive("/admin/reports") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
           >
-            <Users className="mr-2 h-4 w-4" />
-            Businesses
+            <Link to="/admin/reports">
+              <BarChart2 className="mr-2 h-4 w-4" />
+              Reports
+            </Link>
           </Button>
 
           <Button 
-            variant={activeItem === "reports" ? "secondary" : "ghost"} 
+            variant={isActive("/admin/businesses") ? "secondary" : "ghost"} 
             className="w-full justify-start" 
-            onClick={() => setActiveItem("reports")}
+            asChild
           >
-            <BarChart2 className="mr-2 h-4 w-4" />
-            Reports
+            <Link to="/admin/businesses">
+              <Users className="mr-2 h-4 w-4" />
+              Businesses
+            </Link>
           </Button>
 
           <Button 
-            variant={activeItem === "settings" ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
-            onClick={() => setActiveItem("settings")}
+            variant={isActive("/admin/restaurant-orders") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
           >
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
+            <Link to="/admin/restaurant-orders">
+              <Users className="mr-2 h-4 w-4" />
+              Orders
+            </Link>
           </Button>
 
           <Button 
-            variant={activeItem === "help" ? "secondary" : "ghost"} 
-            className="w-full justify-start" 
-            onClick={() => setActiveItem("help")}
+            variant={isActive("/admin/reservations") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
           >
-            <HelpCircle className="mr-2 h-4 w-4" />
-            Help & Support
+            <Link to="/admin/reservations">
+              <Calendar className="mr-2 h-4 w-4" />
+              Reservations
+            </Link>
+          </Button>
+
+          <Button 
+            variant={isActive("/admin/settings") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
+          >
+            <Link to="/admin/settings">
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </Link>
+          </Button>
+
+          <Button 
+            variant={isActive("/admin/help") ? "secondary" : "ghost"} 
+            className="w-full justify-start"
+            asChild
+          >
+            <Link to="/admin/help">
+              <HelpCircle className="mr-2 h-4 w-4" />
+              Help & Support
+            </Link>
           </Button>
         </nav>
         
         <div className="p-4 border-t">
-          <Button variant="ghost" className="w-full justify-start text-red-500">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
+          <Button variant="ghost" className="w-full justify-start text-red-500" asChild>
+            <Link to="/login">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </Link>
           </Button>
         </div>
       </aside>
