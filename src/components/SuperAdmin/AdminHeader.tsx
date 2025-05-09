@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Bell, LogOut, Menu, Search, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/context/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +28,21 @@ const AdminHeader = ({
   endImpersonation,
   onSignOut
 }: AdminHeaderProps) => {
+  const { signOut: authSignOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      console.log("AdminHeader: Signing out user");
+      if (onSignOut) {
+        onSignOut();
+      } else {
+        await authSignOut();
+      }
+    } catch (error) {
+      console.error("AdminHeader: Error signing out:", error);
+    }
+  };
+
   return (
     <header className="bg-background border-b border-border sticky top-0 z-10">
       <div className="px-4 py-3 flex items-center justify-between">
@@ -76,7 +92,7 @@ const AdminHeader = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onSignOut} className="cursor-pointer text-red-600 flex items-center gap-2">
+              <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 <span>Sign Out</span>
               </DropdownMenuItem>

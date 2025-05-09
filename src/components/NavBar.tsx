@@ -15,8 +15,13 @@ const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut();
-    // Navigation is now handled in the signOut function
+    try {
+      console.log("NavBar: Signing out user");
+      await signOut();
+      // Navigation is now handled in the signOut function
+    } catch (error) {
+      console.error("NavBar: Error signing out:", error);
+    }
   };
 
   // Handle login button click - clear any stored mock admin data first

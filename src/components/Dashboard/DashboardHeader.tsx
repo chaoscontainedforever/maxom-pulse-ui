@@ -39,8 +39,13 @@ const DashboardHeader = ({ openSidebar, user }: DashboardHeaderProps) => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    // Navigation is now handled inside the signOut function
+    try {
+      console.log("DashboardHeader: Signing out user");
+      await signOut();
+      // Navigation is handled inside the signOut function
+    } catch (error) {
+      console.error("DashboardHeader: Error signing out:", error);
+    }
   };
 
   return (

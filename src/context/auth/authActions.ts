@@ -145,6 +145,8 @@ export async function signUp(
  */
 export async function signOut(navigate: NavigateFunction) {
   try {
+    console.log("Auth Actions: Starting sign out process");
+    
     // First clear any mock admin data (if exists)
     localStorage.removeItem('mockSuperAdmin');
     
@@ -158,7 +160,7 @@ export async function signOut(navigate: NavigateFunction) {
         description: error.message,
         variant: "destructive",
       });
-      return;
+      return { error };
     }
     
     toast({
@@ -168,8 +170,11 @@ export async function signOut(navigate: NavigateFunction) {
     
     // Ensure navigation happens after state updates
     setTimeout(() => {
+      console.log("Navigating to /login after sign out");
       navigate("/login");
-    }, 0);
+    }, 100);
+    
+    return { error: null };
   } catch (err) {
     console.error("Exception during sign out:", err);
     const error = err as Error;
@@ -178,6 +183,7 @@ export async function signOut(navigate: NavigateFunction) {
       description: error.message,
       variant: "destructive",
     });
+    return { error };
   }
 }
 
