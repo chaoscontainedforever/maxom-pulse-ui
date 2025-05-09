@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth";
 import BusinessAdminSidebar from "./BusinessAdminSidebar";
 import DashboardHeader from "../Dashboard/DashboardHeader";
 
@@ -10,7 +10,9 @@ interface BusinessAdminLayoutProps {
 
 const BusinessAdminLayout = ({ children }: BusinessAdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
+
+  console.log("BusinessAdminLayout profile:", profile); // Add this to debug
 
   if (loading) {
     return (

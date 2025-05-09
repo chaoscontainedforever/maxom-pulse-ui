@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ import {
   Dumbbell,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth";
 
 type BusinessAdminSidebarProps = {
   isOpen: boolean;
@@ -37,6 +36,8 @@ type NavItem = {
 const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProps) => {
   const location = useLocation();
   const { profile } = useAuth();
+  
+  console.log("Current business profile:", profile); // Add this to debug
   
   // Common navigation items for all business types
   const commonNavItems: NavItem[] = [
