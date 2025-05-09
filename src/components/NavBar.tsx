@@ -1,16 +1,17 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth";
 import { ThemeToggle } from "./ThemeToggle";
-import { useMobileScreen } from "@/hooks/use-mobile-screen";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
 const NavBar = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const isMobile = useMobileScreen();
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {
