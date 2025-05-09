@@ -27,13 +27,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const mockData = JSON.parse(mockSuperAdminStr);
           console.log("Found mock super admin in localStorage:", mockData);
           
-          // Create a mock user
+          // Create a mock user with all required User properties
           const mockUser = {
             id: 'mock-super-admin-id',
             email: mockData.email,
+            app_metadata: {},
             user_metadata: {
               role: 'super_admin'
-            }
+            },
+            aud: 'authenticated',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            factors: null,
+            identities: null,
+            last_sign_in_at: new Date().toISOString(),
+            phone: '',
+            role: '',
+            confirmed_at: new Date().toISOString(),
+            email_confirmed_at: new Date().toISOString(),
+            banned_until: null,
+            reauthentication_token: null,
+            recovery_token: null
           } as User;
           
           setUser(mockUser);
