@@ -18,13 +18,10 @@ export type Toast = ToastProps & {
 const TOAST_LIMIT = 5
 const TOAST_REMOVE_DELAY = 5000
 
-type ToasterToast = ToastProps & {
-  id: string
-  open: boolean
+type ToasterToast = Toast & {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
-  onOpenChange: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -136,11 +133,11 @@ function dispatch(action: Action) {
   })
 }
 
-type ToastProps = Omit<ToasterToast, "id" | "open" | "onOpenChange"> & {
+type ToastOptions = Omit<Toast, "id" | "open" | "onOpenChange"> & {
   id?: string
 }
 
-function toast(props: ToastProps) {
+function toast(props: ToastOptions) {
   const id = props.id || genId()
 
   const update = (props: ToasterToast) =>
