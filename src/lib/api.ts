@@ -1,40 +1,46 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/schema';
+import { mockUserProfiles, mockBusinesses } from './mock-data';
 
 // For now we'll create placeholder functions that work with the users table
 // These can be properly implemented once we set up the necessary Supabase tables
 
 // Users API
 export const fetchUserProfiles = async () => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*');
-  
-  if (error) throw error;
-  return data as unknown as UserProfile[];
+  // In a real app, this would be a Supabase query
+  // Since we're mocking, we'll return our mock data
+  return new Promise<UserProfile[]>((resolve) => {
+    setTimeout(() => {
+      resolve(mockUserProfiles);
+    }, 500);
+  });
 };
 
 export const fetchUserProfileById = async (id: string) => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', id)
-    .single();
+  // In a real app, this would be a Supabase query
+  const mockUser = mockUserProfiles.find(user => user.id === id);
   
-  if (error) throw error;
-  return data as unknown as UserProfile;
+  return new Promise<UserProfile>((resolve, reject) => {
+    setTimeout(() => {
+      if (mockUser) {
+        resolve(mockUser);
+      } else {
+        reject(new Error('User not found'));
+      }
+    }, 300);
+  });
 };
 
 export const updateUserProfile = async (id: string, profile: Partial<UserProfile>) => {
-  const { data, error } = await supabase
-    .from('users')
-    .update(profile)
-    .eq('id', id)
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return data as unknown as UserProfile;
+  // In a real app, this would update the database
+  // For now, we'll simulate success after a delay
+  return new Promise<UserProfile>((resolve) => {
+    setTimeout(() => {
+      const updatedUser = { ...mockUserProfiles.find(user => user.id === id)!, ...profile };
+      resolve(updatedUser as UserProfile);
+    }, 500);
+  });
 };
 
 // Audit logs

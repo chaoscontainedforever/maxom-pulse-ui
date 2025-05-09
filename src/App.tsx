@@ -41,6 +41,11 @@ import RestaurantOrders from "./pages/admin/RestaurantOrders";
 import Reservations from "./pages/admin/Reservations";
 import Help from "./pages/admin/Help";
 
+// Super Admin pages
+import SuperAdmin from "./pages/SuperAdmin";
+import CustomerView from "./pages/SuperAdmin/CustomerView";
+import NewCustomer from "./pages/SuperAdmin/NewCustomer";
+
 const queryClient = new QueryClient();
 
 // Layout component to handle conditional rendering of NavBar and Footer
@@ -48,14 +53,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
+  const isSuperAdminRoute = location.pathname.startsWith('/super-admin');
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isAdminRoute && !isDashboardRoute && <NavBar />}
-      <main className={`flex-grow ${!isAdminRoute && !isDashboardRoute ? "" : "p-0"}`}>
+      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && <NavBar />}
+      <main className={`flex-grow ${!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute ? "" : "p-0"}`}>
         {children}
       </main>
-      {!isAdminRoute && !isDashboardRoute && <Footer />}
+      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && <Footer />}
     </div>
   );
 };
@@ -137,6 +143,23 @@ const App = () => {
                   <Route path="/admin/help" element={
                     <ProtectedRoute>
                       <Help />
+                    </ProtectedRoute>
+                  } />
+                  
+                  {/* Super Admin Routes - protected */}
+                  <Route path="/super-admin" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdmin />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/customer/:customerId" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <CustomerView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/new-customer" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <NewCustomer />
                     </ProtectedRoute>
                   } />
                   

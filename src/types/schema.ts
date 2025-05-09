@@ -28,6 +28,7 @@ export interface UserProfile {
   business_id?: string;
   created_at: string;
   updated_at: string;
+  email?: string; // Added for better access
 }
 
 export interface VoiceSettings {
