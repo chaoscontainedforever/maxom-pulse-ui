@@ -28,6 +28,9 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
     "Campaign": false
   });
 
+  // State to hold the navigation sections
+  const [navSections, setNavSections] = useState<NavSectionType[]>([]);
+
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -43,53 +46,56 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
     return location.pathname.startsWith(href);
   };
   
-  // Define navigation structure with sections
-  const navSections: NavSectionType[] = [...getMainNavSections()];
-  
   // Get business type from profile - ensure lowercase for consistent comparison
   const businessType = profile?.business_type?.toLowerCase() || '';
   console.log(`Current business type: ${businessType}`);
   
   // Effect to add business specific section when profile loads
   useEffect(() => {
-    if (profile && profile.business_type) {
-      console.log("Profile loaded with business_type:", profile.business_type);
-    }
-  }, [profile]);
-  
-  // Add business specific section if user has a business type
-  useEffect(() => {
-    if (businessType) {
-      // Create a new array to avoid mutation issues
-      const updatedSections = [...getMainNavSections()];
+    // Create a new array to avoid mutation issues
+    const updatedSections = [...getMainNavSections()];
+    
+    if (businessType === "restaurant") {
+      console.log("Adding restaurant-specific navigation items");
+      const restaurantSection = {
+        title: "Business Tools",
+        items: [...restaurantNavItems]
+      };
       
-      // Filter items based on business type
-      let businessSpecificItems = [];
-      if (businessType === "restaurant") {
-        console.log("Adding restaurant-specific items");
-        businessSpecificItems = [...restaurantNavItems];
+      // Find if Business Tools section already exists
+      const businessToolsIndex = updatedSections.findIndex(section => section.title === "Business Tools");
+      
+      if (businessToolsIndex !== -1) {
+        // If it exists, add our items to it
+        console.log("Business Tools section found, adding restaurant items");
+        updatedSections[businessToolsIndex].items = [
+          ...updatedSections[businessToolsIndex].items,
+          ...restaurantNavItems
+        ];
       } else {
-        console.log("Adding other business-specific items for", businessType);
-        businessSpecificItems = businessSpecificNavItems.filter(
-          item => item.businessTypes?.includes(businessType)
-        );
+        // Otherwise add new section
+        console.log("Adding new Business Tools section with restaurant items");
+        updatedSections.push(restaurantSection);
       }
+    } else if (businessType) {
+      console.log("Adding other business-specific items for", businessType);
+      const specificItems = businessSpecificNavItems.filter(
+        item => item.businessTypes?.includes(businessType)
+      );
       
-      // Only add the business section if there are items for this business type
-      if (businessSpecificItems.length > 0) {
+      if (specificItems.length > 0) {
+        // Similar logic for other business types
         const businessSection = {
           title: `${businessType.charAt(0).toUpperCase() + businessType.slice(1)} Features`,
-          items: businessSpecificItems
+          items: specificItems
         };
         
-        // Insert after the first section
-        updatedSections.splice(1, 0, businessSection);
-        console.log("Business section added with items:", businessSpecificItems.length);
+        updatedSections.push(businessSection);
       }
-      
-      // Update navSections
-      // Note: This will trigger a re-render if the sections are different
     }
+    
+    setNavSections(updatedSections);
+    console.log("Updated nav sections:", updatedSections);
   }, [businessType]);
 
   return (
@@ -131,7 +137,7 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
           {/* Navigation */}
           <ScrollArea className="flex-1 py-4">
             <nav className="px-3 space-y-6">
-              {/* Standard Navigation Sections */}
+              {/* Render all navigation sections */}
               {navSections.map((section) => (
                 <NavSection 
                   key={section.title} 
@@ -139,37 +145,6 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
                   isActive={isActive} 
                 />
               ))}
-              
-              {/* Business Specific Section */}
-              {businessType === "restaurant" && (
-                <div className="space-y-1">
-                  <h3 className="px-4 text-sm font-medium text-muted-foreground mb-2">Restaurant Features</h3>
-                  <NavSection 
-                    section={{
-                      title: "Restaurant Features",
-                      items: restaurantNavItems
-                    }}
-                    isActive={isActive}
-                  />
-                </div>
-              )}
-              
-              {businessType && businessType !== "restaurant" && (
-                <div className="space-y-1">
-                  <h3 className="px-4 text-sm font-medium text-muted-foreground mb-2">
-                    {businessType.charAt(0).toUpperCase() + businessType.slice(1)} Features
-                  </h3>
-                  <NavSection 
-                    section={{
-                      title: `${businessType.charAt(0).toUpperCase() + businessType.slice(1)} Features`,
-                      items: businessSpecificNavItems.filter(
-                        item => item.businessTypes?.includes(businessType)
-                      )
-                    }}
-                    isActive={isActive}
-                  />
-                </div>
-              )}
             </nav>
           </ScrollArea>
           
