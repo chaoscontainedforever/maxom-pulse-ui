@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -130,8 +131,6 @@ const NavBar = () => {
           </Sheet>
         </div>
       </div>
-      
-      {/* Remove unused mobile menu that was duplicating functionality */}
     </header>
   );
 };
