@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ const SignInForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signIn } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,6 +47,9 @@ const SignInForm = () => {
         form.setError("root", { 
           message: "Invalid email or password" 
         });
+      } else {
+        // Redirect to dashboard on successful login
+        navigate("/admin");
       }
     } finally {
       setIsSubmitting(false);
