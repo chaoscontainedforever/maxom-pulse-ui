@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SuperAdminLayout from "@/components/SuperAdmin/SuperAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CustomersTable from "@/components/SuperAdmin/CustomersTable";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth";
 import { toast } from "@/hooks/use-toast";
 
 const SuperAdmin = () => {
@@ -13,6 +13,16 @@ const SuperAdmin = () => {
 
   useEffect(() => {
     // Check if user has super_admin role
+    if (!user) {
+      toast({
+        title: "Access Denied",
+        description: "You must be logged in to access the Super Admin panel.",
+        variant: "destructive"
+      });
+      navigate("/login");
+      return;
+    }
+    
     if (profile && profile.role !== 'super_admin') {
       toast({
         title: "Access Denied",
@@ -21,7 +31,7 @@ const SuperAdmin = () => {
       });
       navigate("/dashboard");
     }
-  }, [profile, navigate]);
+  }, [profile, navigate, user]);
 
   return (
     <SuperAdminLayout>

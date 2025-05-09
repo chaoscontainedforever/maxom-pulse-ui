@@ -85,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
+        console.error("Sign in error:", error.message);
         toast({
           title: "Sign In Failed",
           description: error.message,
@@ -98,10 +99,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "You have been successfully signed in.",
       });
       
-      navigate("/dashboard");
+      // Navigation will happen after profile is fetched
       return { error: null };
     } catch (err) {
       const error = err as Error;
+      console.error("Sign in exception:", error.message);
       toast({
         title: "Sign In Failed",
         description: error.message,

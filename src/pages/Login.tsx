@@ -32,8 +32,21 @@ const Login = () => {
             description: "Welcome to the Super Admin dashboard."
           });
           navigate('/super-admin');
+        } else {
+          toast({
+            title: "Login Failed",
+            description: "Could not log in as super admin. Please check credentials.",
+            variant: "destructive"
+          });
         }
       }
+    } catch (err) {
+      const error = err as Error;
+      toast({
+        title: "Login Error",
+        description: error.message,
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
