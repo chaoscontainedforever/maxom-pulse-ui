@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/schema';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -64,9 +63,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      // Use a type assertion to work around type limitations
-      const { data, error } = await (supabase
-        .from('user_profiles') as any)
+      // For now, we'll use the users table as user_profiles isn't created yet
+      const { data, error } = await supabase
+        .from('users')
         .select('*')
         .eq('id', userId)
         .single();
@@ -76,7 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
-      setProfile(data as UserProfile);
+      setProfile(data as unknown as UserProfile);
     } catch (error) {
       console.error('Failed to fetch user profile:', error);
     }
@@ -97,7 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       toast({
         title: "Signed in successfully",
-        description: "Welcome back!",
+        description: "Welcome back!"
       });
       
       return { error: null };
@@ -136,7 +135,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       toast({
         title: "Account created successfully",
-        description: "Please check your email to verify your account.",
+        description: "Please check your email to verify your account."
       });
       
       return { error: null };
@@ -163,9 +162,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     
     try {
-      // Use a type assertion to work around type limitations
-      const { error } = await (supabase
-        .from('user_profiles') as any)
+      // For now, we'll use the users table as user_profiles isn't created yet
+      const { error } = await supabase
+        .from('users')
         .update(data)
         .eq('id', user.id);
         
