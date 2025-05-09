@@ -1,15 +1,16 @@
 
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminHeader from "./AdminHeader";
 
 interface SuperAdminLayoutProps {
+  children: React.ReactNode;
   isImpersonating?: boolean;
   impersonatedUser?: string;
 }
 
 const SuperAdminLayout = ({ 
+  children,
   isImpersonating = false,
   impersonatedUser = "" 
 }: SuperAdminLayoutProps) => {
@@ -39,7 +40,7 @@ const SuperAdminLayout = ({
         />
 
         <main className="flex-1 overflow-auto p-4 md:p-6">
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>
