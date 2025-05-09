@@ -9,6 +9,9 @@ type NavSectionProps = {
 
 // Component for rendering a section of navigation items
 export const NavSection = ({ section, isActive }: NavSectionProps) => {
+  // Add debug logging
+  console.log(`Rendering NavSection: ${section.title} with ${section.items.length} items`);
+  
   return (
     <div key={section.title} className="space-y-1">
       <h3 className="px-4 text-sm font-medium text-muted-foreground mb-2">{section.title}</h3>
