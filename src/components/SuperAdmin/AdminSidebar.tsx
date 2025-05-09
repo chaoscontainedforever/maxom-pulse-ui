@@ -39,7 +39,7 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
     },
     {
       title: "Customers",
-      href: "/super-admin",
+      href: "/super-admin/customers",
       icon: Building,
     },
     {
@@ -78,6 +78,14 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
       icon: BarChart3,
     },
   ];
+  
+  // Check if the current path is active or a sub-path is active
+  const isActive = (href: string) => {
+    if (href === "/super-admin") {
+      return location.pathname === href;
+    }
+    return location.pathname.startsWith(href);
+  };
   
   return (
     <>
@@ -124,8 +132,8 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
                   to={item.href}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    location.pathname === item.href
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    isActive(item.href)
+                      ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white"
                       : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
                   )}
                 >
