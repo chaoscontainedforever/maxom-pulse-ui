@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
@@ -25,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -59,7 +59,9 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log("Form submitted with values:", values);
     setIsSubmitting(true);
+    
     try {
       const { error } = await signUp(values.email, values.password, {
         first_name: values.firstName,
@@ -69,14 +71,18 @@ const SignUpForm = () => {
       });
       
       if (error) {
-        // Error handling is done in AuthContext
+        console.error("Sign up error:", error.message);
         form.setError("root", { 
           message: error.message
         });
-      } else {
-        // Redirect to onboarding
-        navigate('/onboarding');
       }
+    } catch (err) {
+      console.error("Exception during sign up:", err);
+      toast({
+        title: "Registration Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }

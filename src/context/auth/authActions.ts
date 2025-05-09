@@ -75,6 +75,8 @@ export async function signUp(
   options: SignUpOptions = {}
 ) {
   try {
+    console.log("Signing up with email:", email, "and options:", options);
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -89,6 +91,7 @@ export async function signUp(
     });
 
     if (error) {
+      console.error("Sign up error:", error.message);
       toast({
         title: "Registration Failed",
         description: error.message,
@@ -99,16 +102,35 @@ export async function signUp(
 
     // If successful sign up
     if (data.user) {
+      console.log("Sign up successful for:", data.user.email);
       toast({
         title: "Registration Successful",
-        description: "Please check your email to confirm your registration.",
+        description: "Your account has been created successfully.",
       });
-      navigate("/onboarding");
+      
+      // For development environments, we may want to automatically sign in
+      // the user since email confirmation might be disabled
+      if (data.session) {
+        console.log("Auto sign-in successful with session");
+        setTimeout(() => {
+          navigate('/onboarding');
+        }, 100);
+      } else {
+        // If no session is returned, the user may need to confirm their email
+        toast({
+          title: "Email Verification",
+          description: "Please check your email to verify your account.",
+        });
+        setTimeout(() => {
+          navigate('/login');
+        }, 100);
+      }
     }
 
     return { error: null };
   } catch (err) {
     const error = err as Error;
+    console.error("Sign up exception:", error.message);
     toast({
       title: "Registration Failed",
       description: error.message,
