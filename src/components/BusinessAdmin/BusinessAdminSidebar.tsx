@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { useAuth } from "@/context/auth";
 import { useState, useEffect } from "react";
 import { NavSection } from "./Sidebar/NavSection";
 import { SupportWidget } from "./Sidebar/SupportWidget";
-import { getMainNavSections, restaurantNavItems, businessSpecificNavItems } from "./Sidebar/navigationData";
+import { getMainNavSections, restaurantNavItems, businessSpecificNavItems } from "./Sidebar/navigation";
 import { NavSection as NavSectionType } from "./Sidebar/types";
 
 type BusinessAdminSidebarProps = {
