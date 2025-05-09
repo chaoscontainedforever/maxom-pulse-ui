@@ -20,8 +20,8 @@ const mockUsers = [
 
 const SuperAdminUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all_roles");
+  const [statusFilter, setStatusFilter] = useState("all_statuses");
 
   // Filter users based on search term and filters
   const filteredUsers = mockUsers.filter(user => {
@@ -30,8 +30,8 @@ const SuperAdminUsers = () => {
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
       
-    const matchesRole = roleFilter === "" || user.role === roleFilter;
-    const matchesStatus = statusFilter === "" || user.status === statusFilter;
+    const matchesRole = roleFilter === "all_roles" || user.role === roleFilter;
+    const matchesStatus = statusFilter === "all_statuses" || user.status === statusFilter;
     
     return matchesSearch && matchesRole && matchesStatus;
   });
@@ -101,7 +101,7 @@ const SuperAdminUsers = () => {
                     <SelectValue placeholder="Filter by role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All roles</SelectItem>
+                    <SelectItem value="all_roles">All roles</SelectItem>
                     <SelectItem value="super_admin">Super Admin</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
                     <SelectItem value="support">Support</SelectItem>
@@ -114,7 +114,7 @@ const SuperAdminUsers = () => {
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All status</SelectItem>
+                    <SelectItem value="all_statuses">All status</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
