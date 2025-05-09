@@ -130,7 +130,7 @@ const HomeServicesDashboard = () => {
                         <User className="h-4 w-4" />
                       </Button>
                       <Button size="sm" variant="ghost">
-                        <Tool className="h-4 w-4" />
+                        <Wrench className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
