@@ -108,12 +108,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   console.error("Error fetching profile:", error);
                 } else if (data) {
                   console.log("Fetched user profile:", data);
-                  setProfile(data);
+                  
+                  // Create a UserProfile object with role from user_metadata
+                  const userRole = newSession.user.user_metadata?.role || 'business_owner';
+                  const userProfile: UserProfile = {
+                    id: data.id,
+                    first_name: data.name?.split(' ')[0] || '',
+                    last_name: data.name?.split(' ').slice(1).join(' ') || '',
+                    email: data.email || '',
+                    role: userRole,
+                    avatar_url: data.avatar_url || ''
+                  };
+                  
+                  setProfile(userProfile);
                   
                   // Redirect based on role
-                  if (data.role === 'business_owner') {
+                  if (userRole === 'business_owner') {
                     navigate('/business-admin');
-                  } else if (data.role === 'super_admin') {
+                  } else if (userRole === 'super_admin') {
                     navigate('/super-admin');
                   } else {
                     navigate('/dashboard');
@@ -182,7 +194,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 console.error("Error fetching profile:", error);
               } else if (data) {
                 console.log("Fetched existing user profile:", data);
-                setProfile(data);
+                
+                // Create a UserProfile object with role from user_metadata
+                const userRole = currentSession.user.user_metadata?.role || 'business_owner';
+                const userProfile: UserProfile = {
+                  id: data.id,
+                  first_name: data.name?.split(' ')[0] || '',
+                  last_name: data.name?.split(' ').slice(1).join(' ') || '',
+                  email: data.email || '',
+                  role: userRole,
+                  avatar_url: data.avatar_url || ''
+                };
+                
+                setProfile(userProfile);
               } else {
                 console.log("No existing profile found, checking user metadata");
                 // If no profile is found in the database, try to use the user metadata
