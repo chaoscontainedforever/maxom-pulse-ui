@@ -1,11 +1,14 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Outlet } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
 
-const DashboardLayout = () => {
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user, loading } = useAuth();
 
@@ -36,7 +39,7 @@ const DashboardLayout = () => {
         />
 
         <main className="flex-1 overflow-auto p-4 md:p-6">
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>
