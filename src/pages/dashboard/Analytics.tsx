@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart3, LineChart, PieChart, ArrowDownload } from "lucide-react";
+import { BarChart3, LineChart, PieChart, Download } from "lucide-react";
 
 const Analytics = () => {
   useEffect(() => {
@@ -86,7 +86,7 @@ const Analytics = () => {
           <CardHeader className="flex items-center justify-between">
             <CardTitle className="text-lg font-medium">Reports</CardTitle>
             <Button variant="outline" size="sm">
-              <ArrowDownload className="mr-2 h-4 w-4" />
+              <Download className="mr-2 h-4 w-4" />
               Export Data
             </Button>
           </CardHeader>
