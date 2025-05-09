@@ -4,8 +4,9 @@ import { Business, UserProfile, VoiceSettings, CallLog, Appointment, RestaurantO
 
 // Businesses API
 export const fetchBusinesses = async () => {
-  const { data, error } = await supabase
-    .from('businesses')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('businesses') as any)
     .select('*');
   
   if (error) throw error;
@@ -13,8 +14,9 @@ export const fetchBusinesses = async () => {
 };
 
 export const fetchBusinessById = async (id: string) => {
-  const { data, error } = await supabase
-    .from('businesses')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('businesses') as any)
     .select('*')
     .eq('id', id)
     .single();
@@ -24,8 +26,9 @@ export const fetchBusinessById = async (id: string) => {
 };
 
 export const createBusiness = async (business: Omit<Business, 'id' | 'created_at' | 'updated_at'>) => {
-  const { data, error } = await supabase
-    .from('businesses')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('businesses') as any)
     .insert(business)
     .select()
     .single();
@@ -35,8 +38,9 @@ export const createBusiness = async (business: Omit<Business, 'id' | 'created_at
 };
 
 export const updateBusiness = async (id: string, business: Partial<Business>) => {
-  const { data, error } = await supabase
-    .from('businesses')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('businesses') as any)
     .update(business)
     .eq('id', id)
     .select()
@@ -47,8 +51,9 @@ export const updateBusiness = async (id: string, business: Partial<Business>) =>
 };
 
 export const deleteBusiness = async (id: string) => {
-  const { error } = await supabase
-    .from('businesses')
+  // Use a type assertion to work around type limitations
+  const { error } = await (supabase
+    .from('businesses') as any)
     .delete()
     .eq('id', id);
   
@@ -58,8 +63,9 @@ export const deleteBusiness = async (id: string) => {
 
 // User Profiles API
 export const fetchUserProfiles = async () => {
-  const { data, error } = await supabase
-    .from('user_profiles')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('user_profiles') as any)
     .select('*');
   
   if (error) throw error;
@@ -67,8 +73,9 @@ export const fetchUserProfiles = async () => {
 };
 
 export const fetchUserProfileById = async (id: string) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('user_profiles') as any)
     .select('*')
     .eq('id', id)
     .single();
@@ -78,8 +85,9 @@ export const fetchUserProfileById = async (id: string) => {
 };
 
 export const updateUserProfile = async (id: string, profile: Partial<UserProfile>) => {
-  const { data, error } = await supabase
-    .from('user_profiles')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('user_profiles') as any)
     .update(profile)
     .eq('id', id)
     .select()
@@ -91,8 +99,9 @@ export const updateUserProfile = async (id: string, profile: Partial<UserProfile
 
 // Voice Settings API
 export const fetchVoiceSettingsByBusinessId = async (businessId: string) => {
-  const { data, error } = await supabase
-    .from('voice_settings')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('voice_settings') as any)
     .select('*')
     .eq('business_id', businessId)
     .single();
@@ -102,8 +111,9 @@ export const fetchVoiceSettingsByBusinessId = async (businessId: string) => {
 };
 
 export const createVoiceSettings = async (settings: Omit<VoiceSettings, 'id' | 'created_at' | 'updated_at'>) => {
-  const { data, error } = await supabase
-    .from('voice_settings')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('voice_settings') as any)
     .insert(settings)
     .select()
     .single();
@@ -113,8 +123,9 @@ export const createVoiceSettings = async (settings: Omit<VoiceSettings, 'id' | '
 };
 
 export const updateVoiceSettings = async (id: string, settings: Partial<VoiceSettings>) => {
-  const { data, error } = await supabase
-    .from('voice_settings')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('voice_settings') as any)
     .update(settings)
     .eq('id', id)
     .select()
@@ -126,8 +137,9 @@ export const updateVoiceSettings = async (id: string, settings: Partial<VoiceSet
 
 // Call Logs API
 export const fetchCallLogsByBusinessId = async (businessId: string) => {
-  const { data, error } = await supabase
-    .from('call_logs')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('call_logs') as any)
     .select('*')
     .eq('business_id', businessId)
     .order('created_at', { ascending: false });
@@ -138,8 +150,9 @@ export const fetchCallLogsByBusinessId = async (businessId: string) => {
 
 // Appointments API
 export const fetchAppointmentsByBusinessId = async (businessId: string) => {
-  const { data, error } = await supabase
-    .from('appointments')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('appointments') as any)
     .select('*')
     .eq('business_id', businessId)
     .order('start_time', { ascending: true });
@@ -149,8 +162,9 @@ export const fetchAppointmentsByBusinessId = async (businessId: string) => {
 };
 
 export const createAppointment = async (appointment: Omit<Appointment, 'id' | 'created_at' | 'updated_at'>) => {
-  const { data, error } = await supabase
-    .from('appointments')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('appointments') as any)
     .insert(appointment)
     .select()
     .single();
@@ -160,8 +174,9 @@ export const createAppointment = async (appointment: Omit<Appointment, 'id' | 'c
 };
 
 export const updateAppointment = async (id: string, appointment: Partial<Appointment>) => {
-  const { data, error } = await supabase
-    .from('appointments')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('appointments') as any)
     .update(appointment)
     .eq('id', id)
     .select()
@@ -173,8 +188,9 @@ export const updateAppointment = async (id: string, appointment: Partial<Appoint
 
 // Restaurant Orders API
 export const fetchRestaurantOrdersByBusinessId = async (businessId: string) => {
-  const { data, error } = await supabase
-    .from('restaurant_orders')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('restaurant_orders') as any)
     .select('*')
     .eq('business_id', businessId)
     .order('created_at', { ascending: false });
@@ -184,8 +200,9 @@ export const fetchRestaurantOrdersByBusinessId = async (businessId: string) => {
 };
 
 export const createRestaurantOrder = async (order: Omit<RestaurantOrder, 'id' | 'created_at' | 'updated_at'>) => {
-  const { data, error } = await supabase
-    .from('restaurant_orders')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('restaurant_orders') as any)
     .insert(order)
     .select()
     .single();
@@ -195,8 +212,9 @@ export const createRestaurantOrder = async (order: Omit<RestaurantOrder, 'id' | 
 };
 
 export const updateRestaurantOrder = async (id: string, order: Partial<RestaurantOrder>) => {
-  const { data, error } = await supabase
-    .from('restaurant_orders')
+  // Use a type assertion to work around type limitations
+  const { data, error } = await (supabase
+    .from('restaurant_orders') as any)
     .update(order)
     .eq('id', id)
     .select()
@@ -211,8 +229,8 @@ export const logAuditEvent = async (action: string, entityType: string, entityId
   // Get the user's IP address (in a real app, you'd use a third-party service for this)
   const ipAddress = "client-ip"; // Placeholder
   
-  const { error } = await supabase
-    .from('audit_logs')
+  const { error } = await (supabase
+    .from('audit_logs') as any)
     .insert({
       action,
       entity_type: entityType,
