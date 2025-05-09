@@ -20,6 +20,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function getSession() {
       setLoading(true);
 
+      // Check for mock super admin in localStorage first
+      const mockSuperAdminStr = localStorage.getItem('mockSuperAdmin');
+      if (mockSuperAdminStr) {
+        try {
+          const mockData = JSON.parse(mockSuperAdminStr);
+          console.log("Found mock super admin in localStorage:", mockData);
+          
+          // Create a mock user
+          const mockUser = {
+            id: 'mock-super-admin-id',
+            email: mockData.email,
+            user_metadata: {
+              role: 'super_admin'
+            }
+          } as User;
+          
+          setUser(mockUser);
+          setProfile(mockData.profile || {
+            id: 'mock-super-admin-id',
+            first_name: 'Super',
+            last_name: 'Admin',
+            email: mockData.email,
+            role: 'super_admin'
+          });
+          
+          setLoading(false);
+          return { unsubscribe: () => {} }; // Mock subscription
+        } catch (err) {
+          console.error("Error parsing mock super admin:", err);
+          localStorage.removeItem('mockSuperAdmin'); // Clear invalid data
+        }
+      }
+
       // Set up auth state listener first
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
@@ -29,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
           if (event === 'SIGNED_OUT') {
             setProfile(null);
+            localStorage.removeItem('mockSuperAdmin'); // Clear any mock admin data on sign out
           } else if (event === 'SIGNED_IN' && newSession?.user) {
             // Check if it's the admin user by email - for demo purposes
             if (newSession.user.email === 'admin@maxom.ai') {

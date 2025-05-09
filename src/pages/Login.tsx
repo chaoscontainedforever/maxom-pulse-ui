@@ -20,7 +20,7 @@ const Login = () => {
 
   // For super admin login form
   const [adminEmail, setAdminEmail] = useState('admin@maxom.ai');
-  const [adminPassword, setAdminPassword] = useState('');
+  const [adminPassword, setAdminPassword] = useState('Admin123!');
   const [adminError, setAdminError] = useState<string | null>(null);
 
   const handleSuperAdminLogin = async (e: React.FormEvent) => {
@@ -31,6 +31,34 @@ const Login = () => {
     try {
       console.log("Attempting super admin login with:", adminEmail);
       
+      // Special case for the demo super admin
+      if (adminEmail === 'admin@maxom.ai' && adminPassword === 'Admin123!') {
+        console.log("Using mock login for super admin");
+        
+        // Find the admin profile from mock data
+        const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+        
+        if (adminProfile) {
+          // Store admin info in localStorage for the auth provider to use
+          localStorage.setItem('mockSuperAdmin', JSON.stringify({
+            email: adminEmail,
+            role: 'super_admin',
+            profile: adminProfile
+          }));
+          
+          toast({
+            title: "Super Admin Login Successful",
+            description: "Welcome to the Super Admin dashboard."
+          });
+          
+          // Refresh the page to trigger the auth provider to pick up the mock admin
+          navigate('/super-admin');
+          window.location.reload();
+          return;
+        }
+      }
+      
+      // Regular Supabase auth for non-mock users
       const { data, error } = await supabase.auth.signInWithPassword({ 
         email: adminEmail,
         password: adminPassword
