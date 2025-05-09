@@ -85,6 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
               if (adminProfile) {
                 setProfile(adminProfile);
+                
+                // Redirect to appropriate page
+                setTimeout(() => {
+                  navigate('/super-admin');
+                }, 0);
+                
                 return;
               }
             }
@@ -103,6 +109,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 } else if (data) {
                   console.log("Fetched user profile:", data);
                   setProfile(data);
+                  
+                  // Redirect based on role
+                  if (data.role === 'business_owner') {
+                    navigate('/business-admin');
+                  } else if (data.role === 'super_admin') {
+                    navigate('/super-admin');
+                  } else {
+                    navigate('/dashboard');
+                  }
                 } else {
                   console.log("No profile found, checking user metadata");
                   // If no profile is found in the database, try to use the user metadata
@@ -118,6 +133,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     };
                     console.log("Created profile from metadata:", metadataProfile);
                     setProfile(metadataProfile);
+                    
+                    // Redirect based on role from metadata
+                    if (metadataProfile.role === 'business_owner') {
+                      navigate('/business-admin');
+                    } else if (metadataProfile.role === 'super_admin') {
+                      navigate('/super-admin');
+                    } else {
+                      navigate('/dashboard');
+                    }
                   }
                 }
               } catch (err) {
@@ -196,13 +220,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clean up the subscription when the component unmounts
       subscription.then(sub => sub.unsubscribe());
     };
-  }, []);
+  }, [navigate]);
 
   // Sign in with email and password
   async function signIn(email: string, password: string) {
     try {
       console.log("Signing in with email:", email);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
         console.error("Sign in error:", error.message);
@@ -219,7 +243,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         description: "You have been successfully signed in.",
       });
       
-      // Navigation will happen after profile is fetched
+      // If this is a business owner, redirect to business admin
+      if (data.user?.user_metadata?.role === 'business_owner') {
+        setTimeout(() => {
+          navigate('/business-admin');
+        }, 100);
+      } else if (data.user?.user_metadata?.role === 'super_admin') {
+        setTimeout(() => {
+          navigate('/super-admin');
+        }, 100);
+      } else {
+        // For regular users
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 100);
+      }
+      
       return { error: null };
     } catch (err) {
       const error = err as Error;

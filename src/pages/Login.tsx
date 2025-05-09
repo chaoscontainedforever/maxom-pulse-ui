@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SignInForm from '@/components/SignInForm';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/auth';
 import { toast } from '@/hooks/use-toast';
@@ -10,7 +9,7 @@ import { mockUserProfiles } from '@/lib/mock-data';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +37,48 @@ const Login = () => {
   const [adminEmail, setAdminEmail] = useState('admin@maxom.ai');
   const [adminPassword, setAdminPassword] = useState('Admin123!');
   const [adminError, setAdminError] = useState<string | null>(null);
+
+  // Standard login form fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [standardError, setStandardError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleStandardLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setStandardError(null);
+    
+    try {
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        setStandardError(error.message);
+        toast({
+          title: "Login Failed",
+          description: error.message || "Invalid email or password",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!"
+        });
+        
+        // Auth context will handle redirection based on user role
+      }
+    } catch (err) {
+      const error = err as Error;
+      setStandardError(error.message);
+      toast({
+        title: "Login Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSuperAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,7 +178,76 @@ const Login = () => {
                 <CardDescription>Enter your credentials to continue</CardDescription>
               </CardHeader>
               <CardContent>
-                <SignInForm />
+                <form onSubmit={handleStandardLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      placeholder="name@example.com"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <div className="relative">
+                      <Input 
+                        id="password" 
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        placeholder="••••••••"
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4 text-gray-500" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-gray-500" />
+                        )}
+                        <span className="sr-only">
+                          {showPassword ? "Hide password" : "Show password"}
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {standardError && (
+                    <p className="text-sm font-medium text-destructive">
+                      {standardError}
+                    </p>
+                  )}
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : (
+                      "Sign in"
+                    )}
+                  </Button>
+                </form>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4 items-start">
                 <div className="text-sm">
