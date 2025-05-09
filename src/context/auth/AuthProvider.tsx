@@ -23,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Set up auth state listener first
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
+          console.log("Auth state changed:", event, newSession?.user?.email);
           setSession(newSession);
           setUser(newSession?.user ?? null);
 
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } else if (event === 'SIGNED_IN' && newSession?.user) {
             // Check if it's the admin user by email - for demo purposes
             if (newSession.user.email === 'admin@maxom.ai') {
+              console.log("Super admin logged in, setting mock profile");
               // Use the mock super admin profile
               const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
               if (adminProfile) {
@@ -41,16 +43,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // For other users, fetch from the database
             setTimeout(async () => {
-              const { data, error } = await supabase
-                .from("users")
-                .select("*")
-                .eq("id", newSession.user.id)
-                .single();
+              try {
+                const { data, error } = await supabase
+                  .from("users")
+                  .select("*")
+                  .eq("id", newSession.user.id)
+                  .single();
 
-              if (error) {
-                console.error("Error fetching profile:", error);
-              } else if (data) {
-                setProfile(data);
+                if (error) {
+                  console.error("Error fetching profile:", error);
+                } else if (data) {
+                  console.log("Fetched user profile:", data);
+                  setProfile(data);
+                } else {
+                  console.log("No profile found, checking user metadata");
+                  // If no profile is found in the database, try to use the user metadata
+                  const userMetadata = newSession.user.user_metadata;
+                  if (userMetadata) {
+                    const metadataProfile: UserProfile = {
+                      id: newSession.user.id,
+                      first_name: userMetadata.first_name || '',
+                      last_name: userMetadata.last_name || '',
+                      email: newSession.user.email || '',
+                      role: userMetadata.role || 'business_owner',
+                      business_type: userMetadata.business_type || '',
+                    };
+                    console.log("Created profile from metadata:", metadataProfile);
+                    setProfile(metadataProfile);
+                  }
+                }
+              } catch (err) {
+                console.error("Exception fetching profile:", err);
               }
             }, 0);
           }
@@ -58,33 +81,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       // Then check for existing session
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        console.log("Current session:", currentSession?.user?.email);
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
 
-      // Fetch user profile if there's an active session
-      if (currentSession?.user) {
-        // Check if it's the admin user by email - for demo purposes
-        if (currentSession.user.email === 'admin@maxom.ai') {
-          // Use the mock super admin profile
-          const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
-          if (adminProfile) {
-            setProfile(adminProfile);
-          }
-        } else {
-          // For other users, fetch from the database
-          const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", currentSession.user.id)
-            .single();
+        // Fetch user profile if there's an active session
+        if (currentSession?.user) {
+          // Check if it's the admin user by email - for demo purposes
+          if (currentSession.user.email === 'admin@maxom.ai') {
+            console.log("Found existing super admin session");
+            // Use the mock super admin profile
+            const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+            if (adminProfile) {
+              setProfile(adminProfile);
+            }
+          } else {
+            // For other users, fetch from the database
+            try {
+              const { data, error } = await supabase
+                .from("users")
+                .select("*")
+                .eq("id", currentSession.user.id)
+                .single();
 
-          if (error) {
-            console.error("Error fetching profile:", error);
-          } else if (data) {
-            setProfile(data);
+              if (error) {
+                console.error("Error fetching profile:", error);
+              } else if (data) {
+                console.log("Fetched existing user profile:", data);
+                setProfile(data);
+              } else {
+                console.log("No existing profile found, checking user metadata");
+                // If no profile is found in the database, try to use the user metadata
+                const userMetadata = currentSession.user.user_metadata;
+                if (userMetadata) {
+                  const metadataProfile: UserProfile = {
+                    id: currentSession.user.id,
+                    first_name: userMetadata.first_name || '',
+                    last_name: userMetadata.last_name || '',
+                    email: currentSession.user.email || '',
+                    role: userMetadata.role || 'business_owner',
+                    business_type: userMetadata.business_type || '',
+                  };
+                  console.log("Created profile from metadata:", metadataProfile);
+                  setProfile(metadataProfile);
+                }
+              }
+            } catch (err) {
+              console.error("Exception fetching existing profile:", err);
+            }
           }
         }
+      } catch (err) {
+        console.error("Error getting session:", err);
       }
 
       setLoading(false);
@@ -103,6 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign in with email and password
   async function signIn(email: string, password: string) {
     try {
+      console.log("Signing in with email:", email);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {

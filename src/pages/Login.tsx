@@ -9,26 +9,35 @@ import { useAuth } from '@/context/auth';
 import { toast } from '@/hooks/use-toast';
 import { mockUserProfiles } from '@/lib/mock-data';
 import { supabase } from '@/integrations/supabase/client';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
-  const handleSuperAdminLogin = async () => {
+  // For super admin login form
+  const [adminEmail, setAdminEmail] = useState('admin@maxom.ai');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminError, setAdminError] = useState<string | null>(null);
+
+  const handleSuperAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
+    setAdminError(null);
+    
     try {
-      // Set the email and password for admin
-      const email = 'admin@maxom.ai';
-      const password = 'Admin123!';
+      console.log("Attempting super admin login with:", adminEmail);
       
-      // For demo purposes, directly sign in with hardcoded admin credentials
       const { data, error } = await supabase.auth.signInWithPassword({ 
-        email,
-        password
+        email: adminEmail,
+        password: adminPassword
       });
       
       if (error) {
+        setAdminError(error.message);
         toast({
           title: "Login Failed",
           description: error.message || "Could not log in as super admin. Please check credentials.",
@@ -39,17 +48,17 @@ const Login = () => {
       }
       
       if (data.user) {
-        // Successfully logged in
+        console.log("Super admin login successful:", data.user);
         toast({
           title: "Super Admin Login Successful",
           description: "Welcome to the Super Admin dashboard."
         });
         
-        // Redirect to super admin page
         navigate('/super-admin');
       }
     } catch (err) {
       const error = err as Error;
+      setAdminError(error.message);
       toast({
         title: "Login Error",
         description: error.message,
@@ -102,22 +111,57 @@ const Login = () => {
                 <CardDescription>Log in as a system administrator</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="text-sm text-muted-foreground">
-                  Use the button below to log in with super admin privileges.
-                </div>
-                <Button 
-                  className="w-full" 
-                  onClick={handleSuperAdminLogin}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Logging in..." : "Login as Super Admin"}
-                </Button>
-                <div className="text-xs text-muted-foreground mt-4">
-                  <p>Default Super Admin credentials:</p>
-                  <p>Email: admin@maxom.ai</p>
-                  <p>Password: Admin123!</p>
-                  <p className="mt-2 text-amber-500">This is for demo purposes only.</p>
-                </div>
+                <form onSubmit={handleSuperAdminLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="admin-email">Email</Label>
+                    <Input 
+                      id="admin-email" 
+                      type="email" 
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                      required
+                      placeholder="admin@maxom.ai"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="admin-password">Password</Label>
+                    <Input 
+                      id="admin-password" 
+                      type="password" 
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      required
+                      placeholder="••••••••"
+                    />
+                  </div>
+                  
+                  {adminError && (
+                    <p className="text-sm text-destructive">{adminError}</p>
+                  )}
+                  
+                  <Button 
+                    type="submit"
+                    className="w-full" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Logging in...
+                      </>
+                    ) : (
+                      "Login as Super Admin"
+                    )}
+                  </Button>
+                  
+                  <div className="text-xs text-muted-foreground mt-4">
+                    <p>Default Super Admin credentials:</p>
+                    <p>Email: admin@maxom.ai</p>
+                    <p>Password: Admin123!</p>
+                    <p className="mt-2 text-amber-500">This is for demo purposes only.</p>
+                  </div>
+                </form>
               </CardContent>
             </Card>
           </TabsContent>
