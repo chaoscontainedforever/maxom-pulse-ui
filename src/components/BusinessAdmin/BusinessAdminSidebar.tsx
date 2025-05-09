@@ -9,7 +9,7 @@ import {
   Headphones,
   CreditCard,
   BarChart,
-  Restaurant,
+  Utensils,
   Users,
   FileText,
   Car,
@@ -85,7 +85,7 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
     {
       title: "Menu Editor",
       href: "/business-admin/menu",
-      icon: Restaurant,
+      icon: Utensils,
       businessTypes: ["restaurant"],
     },
     {
