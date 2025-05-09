@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ const NavBar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/");
+    // Navigation is now handled in the signOut function
   };
 
   // Handle login button click - clear any stored mock admin data first
@@ -129,59 +128,10 @@ const NavBar = () => {
               </div>
             </SheetContent>
           </Sheet>
-          
         </div>
       </div>
-
       
-      {isOpen && (
-        <div className="container pb-4 md:hidden">
-          
-          <nav>
-            <ul className="flex flex-col gap-2">
-              <li>
-                <Link to="/solutions" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
-                  Solutions
-                </Link>
-              </li>
-              <li>
-                <Link to="/product" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
-                  Product
-                </Link>
-              </li>
-              <li>
-                <Link to="/pricing" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          
-          <div className="mt-4 flex flex-col gap-2">
-            {user ? (
-              <>
-                <Button onClick={() => navigate("/dashboard")} className="w-full" variant="ghost">Dashboard</Button>
-                <Button onClick={handleSignOut} className="w-full" variant="outline">Sign Out</Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={handleLoginClick} className="w-full" variant="ghost">Login</Button>
-                <Button onClick={() => navigate("/register")} className="w-full">Sign Up</Button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Remove unused mobile menu that was duplicating functionality */}
     </header>
   );
 };

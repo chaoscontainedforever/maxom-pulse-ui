@@ -11,7 +11,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +36,11 @@ const DashboardHeader = ({ openSidebar, user }: DashboardHeaderProps) => {
       return `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase();
     }
     return user?.email?.[0].toUpperCase() || "U";
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    // Navigation is now handled inside the signOut function
   };
 
   return (
@@ -92,7 +97,7 @@ const DashboardHeader = ({ openSidebar, user }: DashboardHeaderProps) => {
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => signOut()}>
+              <DropdownMenuItem onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>

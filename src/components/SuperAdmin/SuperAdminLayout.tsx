@@ -28,23 +28,8 @@ const SuperAdminLayout = ({
   };
 
   const handleSignOut = async () => {
-    try {
-      // Clear any mock admin data first
-      localStorage.removeItem('mockSuperAdmin');
-      await signOut();
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out."
-      });
-      navigate("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast({
-        title: "Error",
-        description: "There was a problem signing out. Please try again.",
-        variant: "destructive"
-      });
-    }
+    await signOut();
+    // Navigation is now handled inside the signOut function
   };
 
   return (

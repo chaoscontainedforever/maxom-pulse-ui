@@ -77,6 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (event === 'SIGNED_OUT') {
             setProfile(null);
             localStorage.removeItem('mockSuperAdmin'); // Clear any mock admin data on sign out
+            // Ensure navigation to login page after sign out
+            setTimeout(() => {
+              navigate('/login');
+            }, 0);
           } else if (event === 'SIGNED_IN' && newSession?.user) {
             // Check if it's the admin user by email - for demo purposes
             if (newSession.user.email === 'admin@maxom.ai') {
@@ -346,12 +350,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Sign out
+  // Sign out - Fixed to handle all edge cases
   async function signOut() {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
-    navigate("/login");
+    try {
+      // First clear any mock admin data (if exists)
+      localStorage.removeItem('mockSuperAdmin');
+      
+      // Then sign out through Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Error signing out:", error);
+        toast({
+          title: "Sign Out Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Reset local state
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      
+      // Ensure navigation happens after state updates
+      setTimeout(() => {
+        navigate("/login");
+      }, 0);
+    } catch (err) {
+      console.error("Exception during sign out:", err);
+      const error = err as Error;
+      toast({
+        title: "Sign Out Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   }
 
   // Update user profile
