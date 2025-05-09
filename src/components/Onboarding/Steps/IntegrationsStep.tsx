@@ -1,135 +1,111 @@
 
-import { Calendar, CreditCard, MessagesSquare, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Check, Plus } from "lucide-react";
+import { useState } from "react";
+
+interface Integration {
+  id: string;
+  name: string;
+  description: string;
+  logo: string;
+  connected: boolean;
+}
 
 const IntegrationsStep = () => {
+  const [integrations, setIntegrations] = useState<Integration[]>([
+    {
+      id: "pos",
+      name: "Point of Sale (POS)",
+      description: "Connect your POS system to automatically process orders and payments.",
+      logo: "pos.svg",
+      connected: false,
+    },
+    {
+      id: "crm",
+      name: "Customer Relationship Management (CRM)",
+      description: "Sync customer data with your CRM for better customer insights.",
+      logo: "crm.svg",
+      connected: false,
+    },
+    {
+      id: "calendar",
+      name: "Calendar Integration",
+      description: "Connect to your calendar to manage appointments and schedules.",
+      logo: "calendar.svg",
+      connected: false,
+    },
+    {
+      id: "payment",
+      name: "Payment Processor",
+      description: "Process payments securely through your preferred payment provider.",
+      logo: "payment.svg",
+      connected: false,
+    },
+  ]);
+
+  const toggleConnection = (id: string) => {
+    setIntegrations(
+      integrations.map((integration) =>
+        integration.id === id
+          ? { ...integration, connected: !integration.connected }
+          : integration
+      )
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium mb-2">Connect Your Tools</h3>
-        <p className="text-muted-foreground mb-4">
-          Integrate with your existing systems to enhance your Maxom.ai experience.
+        <h3 className="text-lg font-medium mb-2">Connect Your Business Tools</h3>
+        <p className="text-muted-foreground mb-6">
+          Integrate with your existing business tools to maximize efficiency. You can always update these later.
         </p>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="border-2 border-dashed hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Calendar Integration
-              </CardTitle>
-              <CardDescription>
-                Connect your scheduling software to book appointments automatically.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-muted">
-                    Recommended
-                  </Badge>
+          {integrations.map((integration) => (
+            <Card key={integration.id} className="p-4 relative">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 h-12 w-12 bg-muted rounded-md flex items-center justify-center">
+                  <span className="text-2xl">{integration.id.charAt(0).toUpperCase()}</span>
                 </div>
-                <p className="text-sm">
-                  Works with Google Calendar, Calendly, Acuity, and more.
-                </p>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium">{integration.name}</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {integration.description}
+                  </p>
+                </div>
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full">Connect Calendar</Button>
-            </CardFooter>
-          </Card>
-          
-          <Card className="border-2 border-dashed hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-primary" />
-                Payment Processing
-              </CardTitle>
-              <CardDescription>
-                Accept payments and process orders through your calls.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm">
-                  Securely collect payments with Stripe, Square, or PayPal.
-                </p>
+              <div className="mt-4">
+                <Button
+                  onClick={() => toggleConnection(integration.id)}
+                  variant={integration.connected ? "default" : "outline"}
+                  className="w-full"
+                >
+                  {integration.connected ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" /> Connected
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="mr-2 h-4 w-4" /> Connect
+                    </>
+                  )}
+                </Button>
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" variant="outline">Connect Payment</Button>
-            </CardFooter>
-          </Card>
-        </div>
-        
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="border-2 border-dashed hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessagesSquare className="h-5 w-5 text-primary" />
-                CRM System
-              </CardTitle>
-              <CardDescription>
-                Connect your customer relationship management tools.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm">
-                  Works with Salesforce, HubSpot, Zoho CRM, and more.
-                </p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" variant="outline">Connect CRM</Button>
-            </CardFooter>
-          </Card>
-          
-          <Card className="border-2 border-dashed hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-primary" />
-                Point of Sale (POS)
-              </CardTitle>
-              <CardDescription>
-                Integrate with your point of sale system for orders.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm">
-                  Compatible with Square, Toast, Clover, and more.
-                </p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" variant="outline">Connect POS</Button>
-            </CardFooter>
-          </Card>
+            </Card>
+          ))}
         </div>
       </div>
 
-      <div className="bg-muted/30 p-4 rounded-lg">
-        <h3 className="text-lg font-medium mb-2">Don't see your tool?</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          We're constantly adding new integrations. Let us know what you need.
-        </p>
-        <Button variant="outline">Request Integration</Button>
-      </div>
-      
-      <div className="mt-6">
+      <div className="bg-muted/40 rounded-lg p-4 mt-8">
+        <h4 className="font-medium mb-2">Need a custom integration?</h4>
         <p className="text-sm text-muted-foreground">
-          You can always add or manage integrations later from the Settings page.
+          We can help you connect to your specific business tools. Contact our support team for assistance with custom integrations.
         </p>
+        <Button variant="link" className="mt-2 h-auto p-0">
+          Request custom integration
+        </Button>
       </div>
     </div>
   );

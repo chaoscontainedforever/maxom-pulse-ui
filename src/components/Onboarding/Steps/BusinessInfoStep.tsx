@@ -12,12 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/context/AuthContext";
 
 const BusinessInfoStep = () => {
+  const { profile, updateProfile } = useAuth();
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [businessName, setBusinessName] = useState("");
-  const [businessType, setBusinessType] = useState("");
+  const [businessType, setBusinessType] = useState(profile?.business_type || "");
   const [businessAddress, setBusinessAddress] = useState("");
   const [searchOption, setSearchOption] = useState("website");
   const [isSearching, setIsSearching] = useState(false);
@@ -36,6 +38,14 @@ const BusinessInfoStep = () => {
       setBusinessType("restaurant");
       setBusinessAddress("123 Main St, Anytown, CA 12345");
     }, 1500);
+  };
+
+  // Save business type to user profile when changed
+  const handleBusinessTypeChange = (value: string) => {
+    setBusinessType(value);
+    if (updateProfile) {
+      updateProfile({ business_type: value });
+    }
   };
   
   return (
@@ -138,7 +148,7 @@ const BusinessInfoStep = () => {
               <label htmlFor="business-type" className="text-sm font-medium">
                 Business Type
               </label>
-              <Select value={businessType} onValueChange={setBusinessType}>
+              <Select value={businessType} onValueChange={handleBusinessTypeChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select business type" />
                 </SelectTrigger>

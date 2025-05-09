@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,11 +18,19 @@ import {
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
+  businessType: z.string().min(1, { message: "Business type is required" }),
   password: z.string().min(8, { 
     message: "Password must be at least 8 characters" 
   }),
@@ -36,6 +44,7 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signUp } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,6 +52,7 @@ const SignUpForm = () => {
       firstName: "",
       lastName: "",
       email: "",
+      businessType: "",
       password: "",
       confirmPassword: "",
     },
@@ -54,7 +64,8 @@ const SignUpForm = () => {
       const { error } = await signUp(values.email, values.password, {
         first_name: values.firstName,
         last_name: values.lastName,
-        role: "business_owner"
+        role: "business_owner",
+        business_type: values.businessType
       });
       
       if (error) {
@@ -62,6 +73,9 @@ const SignUpForm = () => {
         form.setError("root", { 
           message: error.message
         });
+      } else {
+        // Redirect to onboarding
+        navigate('/onboarding');
       }
     } finally {
       setIsSubmitting(false);
@@ -76,7 +90,7 @@ const SignUpForm = () => {
         </div>
         <CardTitle className="text-2xl font-semibold text-center">Create an account</CardTitle>
         <CardDescription className="text-center">
-          Enter your information to create your account
+          Enter your information to create your business account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -125,6 +139,34 @@ const SignUpForm = () => {
                       className="bg-background"
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="businessType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Business Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your business type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="restaurant">Restaurant</SelectItem>
+                      <SelectItem value="fitness">Fitness Studio</SelectItem>
+                      <SelectItem value="auto">Auto Dealership</SelectItem>
+                      <SelectItem value="healthcare">Healthcare</SelectItem>
+                      <SelectItem value="homeservices">Home Services</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

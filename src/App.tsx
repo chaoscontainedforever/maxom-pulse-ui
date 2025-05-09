@@ -53,6 +53,14 @@ import SuperAdminSettings from "./pages/SuperAdmin/Settings";
 import SuperAdminPermissions from "./pages/SuperAdmin/Permissions";
 import SuperAdminReports from "./pages/SuperAdmin/Reports";
 
+// Business Admin pages
+import BusinessAdmin from "./pages/BusinessAdmin";
+import VoiceSettings from "./pages/business-admin/VoiceSettings";
+import CallLogs from "./pages/business-admin/CallLogs";
+
+// Onboarding
+import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
+
 const queryClient = new QueryClient();
 
 // Layout component to handle conditional rendering of NavBar and Footer
@@ -61,14 +69,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
   const isSuperAdminRoute = location.pathname.startsWith('/super-admin');
+  const isBusinessAdminRoute = location.pathname.startsWith('/business-admin');
+  const isOnboardingRoute = location.pathname.startsWith('/onboarding');
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && <NavBar />}
-      <main className={`flex-grow ${!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute ? "" : "p-0"}`}>
+      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && !isBusinessAdminRoute && !isOnboardingRoute && <NavBar />}
+      <main className={`flex-grow ${!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && !isBusinessAdminRoute && !isOnboardingRoute ? "" : "p-0"}`}>
         {children}
       </main>
-      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && <Footer />}
+      {!isAdminRoute && !isDashboardRoute && !isSuperAdminRoute && !isBusinessAdminRoute && !isOnboardingRoute && <Footer />}
     </div>
   );
 };
@@ -77,11 +87,11 @@ const App = () => {
   return (
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+        <BrowserRouter>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
               <Layout>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -98,6 +108,7 @@ const App = () => {
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/cookies" element={<Cookies />} />
+                  <Route path="/onboarding" element={<OnboardingWizard />} />
                   
                   {/* Dashboard Routes - protected */}
                   <Route path="/dashboard" element={
@@ -205,13 +216,31 @@ const App = () => {
                     </ProtectedRoute>
                   } />
                   
+                  {/* Business Owner Routes - protected */}
+                  <Route path="/business-admin" element={
+                    <ProtectedRoute requiredRole="business_owner">
+                      <BusinessAdmin />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/business-admin/voice-settings" element={
+                    <ProtectedRoute requiredRole="business_owner">
+                      <VoiceSettings />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/business-admin/call-logs" element={
+                    <ProtectedRoute requiredRole="business_owner">
+                      <CallLogs />
+                    </ProtectedRoute>
+                  } />
+                  {/* Add other business admin routes as needed */}
+                  
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Layout>
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
+            </TooltipProvider>
+          </AuthProvider>
+        </BrowserRouter>
       </QueryClientProvider>
     </ThemeProvider>
   );
