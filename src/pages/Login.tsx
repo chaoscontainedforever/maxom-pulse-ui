@@ -24,7 +24,7 @@ const Login = () => {
       if (superAdmin) {
         // Update auth context directly with mock data
         // This will be handled in the AuthContext component
-        const result = await signIn('admin@maxom.ai', 'Admin123!', true);
+        const result = await signIn('admin@maxom.ai', 'Admin123!');
         
         if (!result.error) {
           toast({

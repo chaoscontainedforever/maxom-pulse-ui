@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Fetch user profile on sign in
             setTimeout(async () => {
               const { data, error } = await supabase
-                .from("profiles")
+                .from("users")
                 .select("*")
                 .eq("id", newSession.user.id)
                 .single();
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch user profile if there's an active session
       if (currentSession?.user) {
         const { data, error } = await supabase
-          .from("profiles")
+          .from("users")
           .select("*")
           .eq("id", currentSession.user.id)
           .single();
@@ -213,7 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
 
     const { error } = await supabase
-      .from('profiles')
+      .from('users')
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
