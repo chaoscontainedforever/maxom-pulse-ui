@@ -11,6 +11,8 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
 
+  console.log("ProtectedRoute check - user:", user?.id, "role:", profile?.role);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -20,6 +22,9 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   }
 
   if (!user) {
+    // Clear any mock admin data to ensure it doesn't interfere with auth state
+    localStorage.removeItem('mockSuperAdmin');
+    
     // Redirect to login page, but save the location they were trying to access
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

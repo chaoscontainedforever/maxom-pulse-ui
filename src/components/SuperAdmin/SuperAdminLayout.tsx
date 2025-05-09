@@ -1,7 +1,10 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminHeader from "./AdminHeader";
+import { useAuth } from "@/context/auth";
+import { toast } from "@/hooks/use-toast";
 
 interface SuperAdminLayoutProps {
   children: React.ReactNode;
@@ -15,11 +18,33 @@ const SuperAdminLayout = ({
   impersonatedUser = "" 
 }: SuperAdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   
   const endImpersonation = () => {
     // This would be implemented with actual auth logic
     console.log("Ending impersonation");
     // Redirect to admin area
+  };
+
+  const handleSignOut = async () => {
+    try {
+      // Clear any mock admin data first
+      localStorage.removeItem('mockSuperAdmin');
+      await signOut();
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out."
+      });
+      navigate("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        title: "Error",
+        description: "There was a problem signing out. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -37,6 +62,7 @@ const SuperAdminLayout = ({
           isImpersonating={isImpersonating}
           impersonatedUser={impersonatedUser}
           endImpersonation={endImpersonation}
+          onSignOut={handleSignOut}
         />
 
         <main className="flex-1 overflow-auto p-4 md:p-6">

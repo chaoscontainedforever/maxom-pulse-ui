@@ -3,21 +3,29 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Menu, Search, User } from "lucide-react";
+import { Bell, LogOut, Menu, Search, User } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdminHeaderProps {
   openSidebar: () => void;
   isImpersonating?: boolean;
   impersonatedUser?: string;
   endImpersonation?: () => void;
+  onSignOut?: () => void;
 }
 
 const AdminHeader = ({ 
   openSidebar, 
   isImpersonating = false,
   impersonatedUser = "",
-  endImpersonation
+  endImpersonation,
+  onSignOut
 }: AdminHeaderProps) => {
   return (
     <header className="bg-background border-b border-border sticky top-0 z-10">
@@ -60,9 +68,20 @@ const AdminHeader = ({
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
-          <div className="w-8 h-8 rounded-full bg-gradient-card1 flex items-center justify-center text-white">
-            <User className="h-4 w-4" />
-          </div>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="w-8 h-8 rounded-full bg-gradient-card1 flex items-center justify-center text-white cursor-pointer">
+                <User className="h-4 w-4" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={onSignOut} className="cursor-pointer text-red-600 flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
