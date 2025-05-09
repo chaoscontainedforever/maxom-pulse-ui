@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -108,9 +109,8 @@ const Login = () => {
             description: "Welcome to the Super Admin dashboard."
           });
           
-          // Navigate first, then reload to trigger auth provider to pick up the mock admin
-          navigate('/super-admin');
-          window.location.reload();
+          // Instead of reloading, directly navigate and force the auth provider to update
+          window.location.href = '/super-admin';
           return;
         }
       }

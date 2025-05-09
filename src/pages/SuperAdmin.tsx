@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SuperAdminLayout from "@/components/SuperAdmin/SuperAdminLayout";
@@ -14,15 +15,22 @@ const SuperAdmin = () => {
     // Only run check when loading is complete
     if (loading) return;
     
+    console.log("SuperAdmin page - checking auth:", { user, profile });
+
     // Check if user has super_admin role
     if (!user) {
-      toast({
-        title: "Access Denied",
-        description: "You must be logged in to access the Super Admin panel.",
-        variant: "destructive"
-      });
-      navigate("/login");
-      return;
+      // Check for mock super admin in localStorage
+      const mockSuperAdmin = localStorage.getItem('mockSuperAdmin');
+      if (!mockSuperAdmin) {
+        toast({
+          title: "Access Denied",
+          description: "You must be logged in to access the Super Admin panel.",
+          variant: "destructive"
+        });
+        navigate("/login");
+        return;
+      }
+      // If mockSuperAdmin exists, let the auth provider handle it
     }
     
     if (profile && profile.role !== 'super_admin') {

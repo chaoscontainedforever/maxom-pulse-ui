@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminHeader from "./AdminHeader";
@@ -19,21 +18,46 @@ const SuperAdminLayout = ({
   impersonatedUser = "" 
 }: SuperAdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const { hasRole } = usePermissions();
   const navigate = useNavigate();
+  const [authorized, setAuthorized] = useState(false);
   
-  // Check permission for this layout
-  if (!hasRole('super_admin')) {
-    // Redirect to unauthorized page
-    navigate('/unauthorized');
-    toast({
-      title: "Access Denied",
-      description: "You must be a Super Admin to access this area.",
-      variant: "destructive"
-    });
-    return null;
-  }
+  useEffect(() => {
+    // Check permission for this layout
+    const checkPermission = () => {
+      // First check if there's a mock super admin in localStorage
+      const mockSuperAdmin = localStorage.getItem('mockSuperAdmin');
+      
+      if (mockSuperAdmin) {
+        try {
+          const mockData = JSON.parse(mockSuperAdmin);
+          if (mockData.role === 'super_admin') {
+            setAuthorized(true);
+            return;
+          }
+        } catch (e) {
+          console.error("Error parsing mock super admin data:", e);
+        }
+      }
+      
+      // Otherwise check using the normal permission system
+      if (hasRole('super_admin')) {
+        setAuthorized(true);
+        return;
+      }
+      
+      // Not authorized
+      navigate('/unauthorized');
+      toast({
+        title: "Access Denied",
+        description: "You must be a Super Admin to access this area.",
+        variant: "destructive"
+      });
+    };
+    
+    checkPermission();
+  }, [hasRole, navigate, profile]);
   
   const endImpersonation = () => {
     // This would be implemented with actual auth logic
@@ -45,6 +69,10 @@ const SuperAdminLayout = ({
     await signOut();
     // Navigation is now handled inside the signOut function
   };
+
+  if (!authorized) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background flex">

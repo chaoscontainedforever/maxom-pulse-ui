@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,7 +53,8 @@ export function useAuthProvider() {
             first_name: 'Super',
             last_name: 'Admin',
             email: mockData.email,
-            role: 'super_admin'
+            role: 'super_admin',
+            business_id: 'mock-business-id'
           });
           
           setLoading(false);
