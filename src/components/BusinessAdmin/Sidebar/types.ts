@@ -7,6 +7,7 @@ export type NavItem = {
   icon: React.ElementType;
   businessTypes?: string[];
   children?: NavItem[];
+  external?: boolean;
 };
 
 export type NavSection = {
