@@ -1,0 +1,46 @@
+
+import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { Outlet } from "react-router-dom";
+import DashboardSidebar from "./DashboardSidebar";
+import DashboardHeader from "./DashboardHeader";
+
+const DashboardLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-card1"></div>
+          <div className="h-2 w-48 bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      {/* Sidebar */}
+      <DashboardSidebar 
+        isOpen={sidebarOpen} 
+        closeSidebar={() => setSidebarOpen(false)} 
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        <DashboardHeader 
+          openSidebar={() => setSidebarOpen(true)}
+          user={user}
+        />
+
+        <main className="flex-1 overflow-auto p-4 md:p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardLayout;
