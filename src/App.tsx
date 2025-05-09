@@ -5,8 +5,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/context/AuthContext";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Pages
 import Index from "./pages/Index";
 import Solutions from "./pages/Solutions";
 import Product from "./pages/Product";
@@ -15,6 +19,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Unauthorized from "./pages/Unauthorized";
 import Admin from "./pages/Admin";
 import Blog from "./pages/Blog";
 import Careers from "./pages/Careers";
@@ -52,40 +58,72 @@ const App = () => {
   return (
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/solutions" element={<Solutions />} />
-                <Route path="/product" element={<Product />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/careers" element={<Careers />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/cookies" element={<Cookies />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/call-analytics" element={<CallAnalytics />} />
-                <Route path="/admin/reports" element={<Reports />} />
-                <Route path="/admin/settings" element={<Settings />} />
-                <Route path="/admin/restaurant-orders" element={<RestaurantOrders />} />
-                <Route path="/admin/reservations" element={<Reservations />} />
-                <Route path="/admin/help" element={<Help />} />
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          </BrowserRouter>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/solutions" element={<Solutions />} />
+                  <Route path="/product" element={<Product />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/unauthorized" element={<Unauthorized />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/careers" element={<Careers />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/cookies" element={<Cookies />} />
+                  
+                  {/* Admin Routes - protected */}
+                  <Route path="/admin" element={
+                    <ProtectedRoute>
+                      <Admin />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/call-analytics" element={
+                    <ProtectedRoute>
+                      <CallAnalytics />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/reports" element={
+                    <ProtectedRoute>
+                      <Reports />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/settings" element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/restaurant-orders" element={
+                    <ProtectedRoute requiredRole="business_owner">
+                      <RestaurantOrders />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/reservations" element={
+                    <ProtectedRoute requiredRole="business_owner">
+                      <Reservations />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/help" element={
+                    <ProtectedRoute>
+                      <Help />
+                    </ProtectedRoute>
+                  } />
+                  
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Layout>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
