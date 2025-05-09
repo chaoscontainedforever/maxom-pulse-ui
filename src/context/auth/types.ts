@@ -10,6 +10,7 @@ export interface UserProfile {
   last_name?: string;
   email?: string;
   role?: Role;
+  business_id?: string; // Added missing business_id property
   business_type?: string;
   avatar_url?: string;
 }
