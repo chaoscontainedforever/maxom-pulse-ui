@@ -1,4 +1,3 @@
-
 import {
   LayoutDashboard,
   Phone,
@@ -27,7 +26,7 @@ import { NavItem, NavSection } from "./types";
 export const getMainNavSections = (): NavSection[] => {
   return [
     {
-      title: "Main feature",
+      title: "Business Tools",
       items: [
         {
           title: "Dashboard",
@@ -91,7 +90,7 @@ export const getMainNavSections = (): NavSection[] => {
       ]
     },
     {
-      title: "Settings",
+      title: "Account Settings",
       items: [
         {
           title: "RUTH® Connect",
