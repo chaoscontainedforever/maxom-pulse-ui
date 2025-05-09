@@ -4,12 +4,25 @@ import {
   Utensils,
   CarFront,
   Users,
-  List
+  List,
+  LayoutDashboard
 } from "lucide-react";
 import { NavItem } from "../types";
 
 // Restaurant-specific navigation items
 export const restaurantNavItems: NavItem[] = [
+  {
+    title: "Dashboard",
+    href: "/business-admin",
+    icon: LayoutDashboard,
+    businessTypes: ["restaurant"],
+  },
+  {
+    title: "Logs",
+    href: "/business-admin/logs",
+    icon: FileText,
+    businessTypes: ["restaurant"],
+  },
   {
     title: "Orders",
     href: "/business-admin/orders",

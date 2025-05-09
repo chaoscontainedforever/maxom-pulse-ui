@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -69,10 +68,8 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
         // Make a copy of the original section
         const updatedBusinessTools = {
           ...updatedSections[businessToolsIndex],
-          items: [
-            ...updatedSections[businessToolsIndex].items,
-            ...restaurantNavItems
-          ]
+          // Override with just the restaurant items - this replaces the items instead of adding to them
+          items: [...restaurantNavItems.filter(item => item.title !== "Dashboard" && item.title !== "Logs")]
         };
         
         // Replace the section with our updated one
@@ -82,7 +79,7 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
         console.log("Adding new Business Tools section with restaurant items");
         updatedSections.push({
           title: "Business Tools",
-          items: [...restaurantNavItems]
+          items: [...restaurantNavItems.filter(item => item.title !== "Dashboard" && item.title !== "Logs")]
         });
       }
       

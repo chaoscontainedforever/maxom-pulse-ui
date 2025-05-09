@@ -1,25 +1,21 @@
 
 import {
   LayoutDashboard,
-  Headphones,
-  Phone,
   FileText,
-  Bell,
-  Network,
-  CreditCard as BillingIcon,
-  User,
-  Key,
-  BookOpen,
-  Layers,
-  FileText as Template
+  Settings,
+  CreditCard,
+  UserRound,
+  KeyRound,
+  BotMessageSquare,
+  ArrowUpRightFromCircle
 } from "lucide-react";
 import { NavSection } from "../types";
 
-// Main navigation sections
+// Function to get the main navigation sections
 export const getMainNavSections = (): NavSection[] => {
   return [
     {
-      title: "Business Tools",
+      title: "Overview",
       items: [
         {
           title: "Dashboard",
@@ -27,83 +23,52 @@ export const getMainNavSections = (): NavSection[] => {
           icon: LayoutDashboard,
         },
         {
-          title: "AI Assistants",
-          href: "/business-admin/voice-settings",
-          icon: Headphones,
-        },
-        {
-          title: "Knowledge Base",
-          href: "/business-admin/analytics",
-          icon: BookOpen,
-        },
-        {
-          title: "Phone Numbers",
-          href: "/business-admin/call-logs",
-          icon: Phone,
-        },
-        {
           title: "Logs",
           href: "/business-admin/logs",
-          icon: Layers,
-          children: [
-            {
-              title: "Call Logs",
-              href: "/business-admin/call-logs",
-              icon: Phone,
-            },
-            {
-              title: "Activity Logs",
-              href: "/business-admin/activity-logs",
-              icon: FileText,
-            }
-          ]
-        },
-        {
-          title: "Campaign",
-          href: "/business-admin/campaign",
-          icon: Bell,
-          children: [
-            {
-              title: "Email Campaigns",
-              href: "/business-admin/email-campaigns",
-              icon: Bell,
-            },
-            {
-              title: "SMS Campaigns",
-              href: "/business-admin/sms-campaigns",
-              icon: Bell,
-            }
-          ]
-        },
-        {
-          title: "Templates",
-          href: "/business-admin/templates",
-          icon: Template
-        },
+          icon: FileText,
+        }
+      ]
+    },
+    // Business Tools section will have dynamic items added based on business type
+    {
+      title: "Business Tools",
+      items: [
+        // Empty initially - business specific items will be added dynamically
       ]
     },
     {
       title: "Account Settings",
       items: [
         {
-          title: "RUTH® Connect",
-          href: "/business-admin/ruth-connect",
-          icon: Network
+          title: "AI Assistants",
+          href: "/business-admin/ai-assistants",
+          icon: BotMessageSquare,
         },
         {
           title: "Billing",
           href: "/business-admin/billing",
-          icon: BillingIcon,
+          icon: CreditCard,
         },
         {
           title: "Profile",
           href: "/business-admin/profile",
-          icon: User,
+          icon: UserRound,
         },
         {
           title: "API Keys",
           href: "/business-admin/api-keys",
-          icon: Key,
+          icon: KeyRound,
+        }
+      ]
+    },
+    {
+      title: "Support",
+      items: [
+        {
+          title: "Help & Resources",
+          href: "/business-admin/help",
+          icon: ArrowUpRightFromCircle,
+          external: true
         }
       ]
     }
