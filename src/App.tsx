@@ -27,7 +27,11 @@ import Careers from "./pages/Careers";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Cookies from "./pages/Cookies";
-import Dashboard from "./pages/Dashboard";  // Import the Dashboard component
+import Dashboard from "./pages/Dashboard";
+
+// Dashboard pages
+import Calls from "./pages/dashboard/Calls";
+import Analytics from "./pages/dashboard/Analytics";
 
 // Admin pages
 import CallAnalytics from "./pages/admin/CallAnalytics";
@@ -43,7 +47,7 @@ const queryClient = new QueryClient();
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const isDashboardRoute = location.pathname.startsWith('/dashboard');  // Add check for dashboard routes
+  const isDashboardRoute = location.pathname.startsWith('/dashboard');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -82,10 +86,20 @@ const App = () => {
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/cookies" element={<Cookies />} />
                   
-                  {/* Add Dashboard Route - protected */}
+                  {/* Dashboard Routes - protected */}
                   <Route path="/dashboard" element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/dashboard/calls" element={
+                    <ProtectedRoute>
+                      <Calls />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/dashboard/analytics" element={
+                    <ProtectedRoute>
+                      <Analytics />
                     </ProtectedRoute>
                   } />
                   
