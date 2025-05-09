@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -94,6 +93,7 @@ const App = () => {
               <Sonner />
               <Layout>
                 <Routes>
+                  {/* Public routes */}
                   <Route path="/" element={<Index />} />
                   <Route path="/solutions" element={<Solutions />} />
                   <Route path="/product" element={<Product />} />
@@ -122,29 +122,29 @@ const App = () => {
                     </ProtectedRoute>
                   } />
                   <Route path="/dashboard/analytics" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute featureKey="analytics">
                       <Analytics />
                     </ProtectedRoute>
                   } />
                   
                   {/* Admin Routes - protected */}
                   <Route path="/admin" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole="business_owner">
                       <Admin />
                     </ProtectedRoute>
                   } />
                   <Route path="/admin/call-analytics" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole="business_owner" featureKey="analytics">
                       <CallAnalytics />
                     </ProtectedRoute>
                   } />
                   <Route path="/admin/reports" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole="business_owner">
                       <Reports />
                     </ProtectedRoute>
                   } />
                   <Route path="/admin/settings" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole="business_owner">
                       <Settings />
                     </ProtectedRoute>
                   } />

@@ -1,14 +1,19 @@
 
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/auth';
+import { usePermissions } from '@/hooks/usePermissions';
+import { Role } from '@/context/auth/types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'super_admin' | 'business_owner' | 'employee';
+  requiredRole?: Role;
+  businessId?: string;
+  featureKey?: string;
 }
 
-const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, requiredRole, businessId, featureKey }: ProtectedRouteProps) => {
   const { user, profile, loading } = useAuth();
+  const { checkPermission } = usePermissions();
   const location = useLocation();
 
   console.log("ProtectedRoute check - user:", user?.id, "role:", profile?.role);
@@ -29,13 +34,19 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If a specific role is required, check if the user has that role
-  if (requiredRole && profile?.role !== requiredRole && profile?.role !== 'super_admin') {
-    // Super admins can access any route, otherwise check specific role
+  // Check permissions
+  const hasPermission = checkPermission({
+    requiredRole,
+    businessId,
+    featureKey
+  });
+
+  // If user doesn't have required permissions, redirect to unauthorized page
+  if (!hasPermission) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // User is authenticated and has the required role (if any)
+  // User is authenticated and has the required permissions
   return <>{children}</>;
 };
 

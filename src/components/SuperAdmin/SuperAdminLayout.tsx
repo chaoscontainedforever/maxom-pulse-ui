@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminHeader from "./AdminHeader";
 import { useAuth } from "@/context/auth";
+import { usePermissions } from "@/hooks/usePermissions";
 import { toast } from "@/hooks/use-toast";
 
 interface SuperAdminLayoutProps {
@@ -19,7 +20,20 @@ const SuperAdminLayout = ({
 }: SuperAdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { signOut } = useAuth();
+  const { hasRole } = usePermissions();
   const navigate = useNavigate();
+  
+  // Check permission for this layout
+  if (!hasRole('super_admin')) {
+    // Redirect to unauthorized page
+    navigate('/unauthorized');
+    toast({
+      title: "Access Denied",
+      description: "You must be a Super Admin to access this area.",
+      variant: "destructive"
+    });
+    return null;
+  }
   
   const endImpersonation = () => {
     // This would be implemented with actual auth logic
