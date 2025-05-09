@@ -3,7 +3,8 @@ import {
   FileText,
   Utensils,
   CarFront,
-  Users
+  Users,
+  List
 } from "lucide-react";
 import { NavItem } from "../types";
 
@@ -12,7 +13,7 @@ export const restaurantNavItems: NavItem[] = [
   {
     title: "Orders",
     href: "/business-admin/orders",
-    icon: FileText,
+    icon: List,
     businessTypes: ["restaurant"],
   },
   {
