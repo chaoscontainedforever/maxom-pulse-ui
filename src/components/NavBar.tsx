@@ -1,116 +1,183 @@
-
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth";
+import { ThemeToggle } from "./ThemeToggle";
+import { useMobileScreen } from "@/hooks/use-mobile-screen";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 
 const NavBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  
-  const isActive = (path: string) => {
-    return location.pathname === path;
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const isMobile = useMobileScreen();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
-  
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Solutions', path: '/solutions' },
-    { name: 'Product', path: '/product' },
-    { name: 'Pricing', path: '/pricing' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-  ];
+
+  // Handle login button click - clear any stored mock admin data first
+  const handleLoginClick = () => {
+    // Clear any stored mock admin to ensure proper login flow
+    localStorage.removeItem('mockSuperAdmin');
+    navigate("/login");
+  };
+
+  const toggleMobileMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <header className="fixed w-full top-0 left-0 z-50 bg-background bg-opacity-95 backdrop-blur-sm shadow-sm">
-      <div className="maxom-container py-4">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-6 md:gap-8 lg:gap-10">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="font-bold text-2xl">
-              <span className="gradient-text">Maxom.ai</span>
-            </div>
+            <h2 className="text-2xl font-bold gradient-text">Maxom.ai</h2>
           </Link>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-base font-medium transition-colors duration-200 ${
-                  isActive(link.path)
-                    ? 'text-maxom-orange'
-                    : 'text-foreground hover:text-maxom-orange'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+
+          <nav className="hidden md:block">
+            <ul className="flex items-center gap-6">
+              <li>
+                <Link to="/solutions" className="text-sm font-medium transition-colors hover:text-foreground/80">
+                  Solutions
+                </Link>
+              </li>
+              <li>
+                <Link to="/product" className="text-sm font-medium transition-colors hover:text-foreground/80">
+                  Product
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing" className="text-sm font-medium transition-colors hover:text-foreground/80">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-sm font-medium transition-colors hover:text-foreground/80">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm font-medium transition-colors hover:text-foreground/80">
+                  Contact
+                </Link>
+              </li>
+            </ul>
           </nav>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
           
-          <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
-            <Link to="/login" className="text-base font-medium text-foreground hover:text-maxom-orange transition-colors duration-200">
-              Login
-            </Link>
-            <Link to="/contact" className="btn-primary">
-              Request Access
-            </Link>
-          </div>
+          {user ? (
+            <div className="hidden md:flex items-center gap-4">
+              <Button onClick={() => navigate("/dashboard")} variant="ghost">Dashboard</Button>
+              <Button onClick={handleSignOut} variant="outline">Sign Out</Button>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-4">
+              <Button onClick={handleLoginClick} variant="ghost">Login</Button>
+              <Button onClick={() => navigate("/register")}>Sign Up</Button>
+            </div>
+          )}
           
           {/* Mobile menu button */}
-          <button
-            type="button"
-            className="md:hidden rounded-md p-2 text-foreground"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <span className="sr-only">Open main menu</span>
-            {isMenuOpen ? (
-              <X className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Menu className="h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:w-2/3 md:w-1/2">
+              <SheetHeader className="space-y-2">
+                <SheetTitle>Menu</SheetTitle>
+                <SheetDescription>
+                  Explore our services and options.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <Link to="/solutions" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Solutions
+                </Link>
+                <Link to="/product" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Product
+                </Link>
+                <Link to="/pricing" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Pricing
+                </Link>
+                <Link to="/about" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  About
+                </Link>
+                <Link to="/contact" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Contact
+                </Link>
+                {user ? (
+                  <>
+                    <Button onClick={() => navigate("/dashboard")} className="w-full" variant="ghost">Dashboard</Button>
+                    <Button onClick={handleSignOut} className="w-full" variant="outline">Sign Out</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={handleLoginClick} className="w-full" variant="ghost">Login</Button>
+                    <Button onClick={() => navigate("/register")} className="w-full">Sign Up</Button>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+          
         </div>
       </div>
+
       
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-t border-gray-200">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive(link.path)
-                    ? 'text-maxom-orange'
-                    : 'text-foreground hover:text-maxom-orange'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <div className="pt-4 flex flex-col space-y-3">
-              <div className="px-3 py-2">
-                <ThemeToggle />
-              </div>
-              <Link 
-                to="/login" 
-                className="px-3 py-2 text-base font-medium text-foreground hover:text-maxom-orange"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link 
-                to="/contact" 
-                className="btn-primary mx-3"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Request Access
-              </Link>
-            </div>
+      {isOpen && (
+        <div className="container pb-4 md:hidden">
+          
+          <nav>
+            <ul className="flex flex-col gap-2">
+              <li>
+                <Link to="/solutions" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Solutions
+                </Link>
+              </li>
+              <li>
+                <Link to="/product" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Product
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm font-medium transition-colors hover:text-foreground/80 block">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </nav>
+          
+          <div className="mt-4 flex flex-col gap-2">
+            {user ? (
+              <>
+                <Button onClick={() => navigate("/dashboard")} className="w-full" variant="ghost">Dashboard</Button>
+                <Button onClick={handleSignOut} className="w-full" variant="outline">Sign Out</Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={handleLoginClick} className="w-full" variant="ghost">Login</Button>
+                <Button onClick={() => navigate("/register")} className="w-full">Sign Up</Button>
+              </>
+            )}
           </div>
         </div>
       )}
