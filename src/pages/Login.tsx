@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,8 +14,25 @@ import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    // Check if user is already authenticated
+    if (user) {
+      console.log("User already authenticated, redirecting...", user);
+      
+      // Determine where to redirect based on user role
+      if (user.user_metadata?.role === 'super_admin') {
+        navigate('/super-admin');
+      } else if (user.user_metadata?.role === 'business_owner') {
+        navigate('/business-admin');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
 
   // For super admin login form
   const [adminEmail, setAdminEmail] = useState('admin@maxom.ai');
@@ -51,7 +67,7 @@ const Login = () => {
             description: "Welcome to the Super Admin dashboard."
           });
           
-          // Refresh the page to trigger the auth provider to pick up the mock admin
+          // Navigate first, then reload to trigger auth provider to pick up the mock admin
           navigate('/super-admin');
           window.location.reload();
           return;

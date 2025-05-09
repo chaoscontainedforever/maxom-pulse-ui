@@ -11,6 +11,7 @@ type NavSectionProps = {
 export const NavSection = ({ section, isActive }: NavSectionProps) => {
   // Add debug logging
   console.log(`Rendering NavSection: ${section.title} with ${section.items.length} items`);
+  console.log("Section items:", section.items);
   
   return (
     <div key={section.title} className="space-y-1">

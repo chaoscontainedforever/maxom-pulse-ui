@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
@@ -48,8 +47,12 @@ const SignInForm = () => {
           message: "Invalid email or password" 
         });
       } else {
-        // Redirect to dashboard on successful login
-        navigate("/dashboard");
+        console.log("SignIn successful, redirecting to dashboard");
+        // If the redirection doesn't happen from AuthProvider, do it here
+        setTimeout(() => {
+          // Give time for the auth state to update
+          navigate("/dashboard");
+        }, 100);
       }
     } finally {
       setIsSubmitting(false);
