@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import BusinessAdminLayout from "@/components/BusinessAdmin/BusinessAdminLayout";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth"; // Update the import path to use the correct auth context
 import { BarChart, Phone, Check, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -28,8 +28,10 @@ const BusinessAdmin = () => {
   });
 
   useEffect(() => {
+    // This ensures that the business type is updated when the profile loads
     if (profile?.business_type) {
       setBusinessType(profile.business_type);
+      console.log("Business Admin profile loaded:", profile);
     }
   }, [profile]);
 

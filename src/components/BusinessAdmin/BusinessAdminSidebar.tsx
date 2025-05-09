@@ -37,7 +37,7 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
   const location = useLocation();
   const { profile } = useAuth();
   
-  console.log("Current business profile:", profile); // Add this to debug
+  console.log("BusinessAdminSidebar profile:", profile); // Enhanced logging
   
   // Common navigation items for all business types
   const commonNavItems: NavItem[] = [
@@ -155,7 +155,12 @@ const BusinessAdminSidebar = ({ isOpen, closeSidebar }: BusinessAdminSidebarProp
 
   // Filter business-specific items based on current business type
   const filteredBusinessItems = businessSpecificNavItems.filter(
-    item => item.businessTypes?.includes(profile?.business_type || '')
+    item => {
+      const businessType = profile?.business_type || '';
+      console.log(`Filtering items for business type: ${businessType}`);
+      console.log(`Item business types:`, item.businessTypes);
+      return item.businessTypes?.includes(businessType);
+    }
   );
   
   const allNavItems = [...commonNavItems, ...filteredBusinessItems];
