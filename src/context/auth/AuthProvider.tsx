@@ -1,19 +1,27 @@
 
-import { useState, useEffect, ReactNode } from "react";
+import { useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Session, User } from "@supabase/supabase-js";
 import { AuthContext } from "./AuthContext";
-import { UserProfile, SignUpOptions } from "./types";
-import { mockUserProfiles } from "@/lib/mock-data";
+import { useAuthState } from "./useAuthState";
+import { signIn, signUp, signOut, updateProfile, fetchUserProfile } from "./authActions";
+import { 
+  isSuperAdminEmail, 
+  getMockSuperAdminProfile, 
+  createProfileFromDbData, 
+  createProfileFromMetadata,
+  createMockUser 
+} from "./authUtils";
 
 // Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
+  const {
+    user, setUser,
+    profile, setProfile,
+    loading, setLoading,
+    session, setSession
+  } = useAuthState();
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,28 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const mockData = JSON.parse(mockSuperAdminStr);
           console.log("Found mock super admin in localStorage:", mockData);
           
-          // Create a mock user with all required User properties
-          const mockUser = {
-            id: 'mock-super-admin-id',
-            email: mockData.email,
-            app_metadata: {},
-            user_metadata: {
-              role: 'super_admin'
-            },
-            aud: 'authenticated',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            factors: null,
-            identities: null,
-            last_sign_in_at: new Date().toISOString(),
-            phone: '',
-            role: '',
-            confirmed_at: new Date().toISOString(),
-            email_confirmed_at: new Date().toISOString(),
-            banned_until: null,
-            reauthentication_token: null,
-            recovery_token: null
-          } as User;
+          // Create a mock user
+          const mockUser = createMockUser(mockData);
           
           setUser(mockUser);
           setProfile(mockData.profile || {
@@ -83,10 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }, 0);
           } else if (event === 'SIGNED_IN' && newSession?.user) {
             // Check if it's the admin user by email - for demo purposes
-            if (newSession.user.email === 'admin@maxom.ai') {
+            if (isSuperAdminEmail(newSession.user.email)) {
               console.log("Super admin logged in, setting mock profile");
               // Use the mock super admin profile
-              const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+              const adminProfile = getMockSuperAdminProfile();
               if (adminProfile) {
                 setProfile(adminProfile);
                 
@@ -102,63 +90,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // For other users, fetch from the database
             setTimeout(async () => {
               try {
-                const { data, error } = await supabase
-                  .from("users")
-                  .select("*")
-                  .eq("id", newSession.user.id)
-                  .single();
-
-                if (error) {
-                  console.error("Error fetching profile:", error);
-                } else if (data) {
-                  console.log("Fetched user profile:", data);
-                  
-                  // Create a UserProfile object with role from user_metadata
-                  const userRole = newSession.user.user_metadata?.role || 'business_owner';
-                  const userProfile: UserProfile = {
-                    id: data.id,
-                    first_name: data.name?.split(' ')[0] || '',
-                    last_name: data.name?.split(' ').slice(1).join(' ') || '',
-                    email: data.email || '',
-                    role: userRole,
-                    avatar_url: data.avatar_url || ''
-                  };
-                  
+                const userData = await fetchUserProfile(newSession.user.id, setProfile);
+                
+                if (userData) {
+                  // Create user profile from database data
+                  const userProfile = createProfileFromDbData(userData, newSession.user);
                   setProfile(userProfile);
                   
                   // Redirect based on role
-                  if (userRole === 'business_owner') {
-                    navigate('/business-admin');
-                  } else if (userRole === 'super_admin') {
-                    navigate('/super-admin');
-                  } else {
-                    navigate('/dashboard');
-                  }
+                  redirectBasedOnRole(userProfile.role);
                 } else {
                   console.log("No profile found, checking user metadata");
                   // If no profile is found in the database, try to use the user metadata
-                  const userMetadata = newSession.user.user_metadata;
-                  if (userMetadata) {
-                    const metadataProfile: UserProfile = {
-                      id: newSession.user.id,
-                      first_name: userMetadata.first_name || '',
-                      last_name: userMetadata.last_name || '',
-                      email: newSession.user.email || '',
-                      role: userMetadata.role || 'business_owner',
-                      business_type: userMetadata.business_type || '',
-                    };
-                    console.log("Created profile from metadata:", metadataProfile);
-                    setProfile(metadataProfile);
-                    
-                    // Redirect based on role from metadata
-                    if (metadataProfile.role === 'business_owner') {
-                      navigate('/business-admin');
-                    } else if (metadataProfile.role === 'super_admin') {
-                      navigate('/super-admin');
-                    } else {
-                      navigate('/dashboard');
-                    }
-                  }
+                  const metadataProfile = createProfileFromMetadata(newSession.user);
+                  console.log("Created profile from metadata:", metadataProfile);
+                  setProfile(metadataProfile);
+                  
+                  // Redirect based on role from metadata
+                  redirectBasedOnRole(metadataProfile.role);
                 }
               } catch (err) {
                 console.error("Exception fetching profile:", err);
@@ -178,55 +127,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Fetch user profile if there's an active session
         if (currentSession?.user) {
           // Check if it's the admin user by email - for demo purposes
-          if (currentSession.user.email === 'admin@maxom.ai') {
+          if (isSuperAdminEmail(currentSession.user.email)) {
             console.log("Found existing super admin session");
             // Use the mock super admin profile
-            const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+            const adminProfile = getMockSuperAdminProfile();
             if (adminProfile) {
               setProfile(adminProfile);
             }
           } else {
             // For other users, fetch from the database
             try {
-              const { data, error } = await supabase
-                .from("users")
-                .select("*")
-                .eq("id", currentSession.user.id)
-                .single();
-
-              if (error) {
-                console.error("Error fetching profile:", error);
-              } else if (data) {
-                console.log("Fetched existing user profile:", data);
-                
-                // Create a UserProfile object with role from user_metadata
-                const userRole = currentSession.user.user_metadata?.role || 'business_owner';
-                const userProfile: UserProfile = {
-                  id: data.id,
-                  first_name: data.name?.split(' ')[0] || '',
-                  last_name: data.name?.split(' ').slice(1).join(' ') || '',
-                  email: data.email || '',
-                  role: userRole,
-                  avatar_url: data.avatar_url || ''
-                };
-                
+              const userData = await fetchUserProfile(currentSession.user.id, setProfile);
+              
+              if (userData) {
+                // Create user profile from database data
+                const userProfile = createProfileFromDbData(userData, currentSession.user);
                 setProfile(userProfile);
               } else {
                 console.log("No existing profile found, checking user metadata");
                 // If no profile is found in the database, try to use the user metadata
-                const userMetadata = currentSession.user.user_metadata;
-                if (userMetadata) {
-                  const metadataProfile: UserProfile = {
-                    id: currentSession.user.id,
-                    first_name: userMetadata.first_name || '',
-                    last_name: userMetadata.last_name || '',
-                    email: currentSession.user.email || '',
-                    role: userMetadata.role || 'business_owner',
-                    business_type: userMetadata.business_type || '',
-                  };
-                  console.log("Created profile from metadata:", metadataProfile);
-                  setProfile(metadataProfile);
-                }
+                const metadataProfile = createProfileFromMetadata(currentSession.user);
+                console.log("Created profile from metadata:", metadataProfile);
+                setProfile(metadataProfile);
               }
             } catch (err) {
               console.error("Exception fetching existing profile:", err);
@@ -248,191 +170,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clean up the subscription when the component unmounts
       subscription.then(sub => sub.unsubscribe());
     };
-  }, [navigate]);
+  }, [navigate, setLoading, setProfile, setSession, setUser]);
 
-  // Sign in with email and password
-  async function signIn(email: string, password: string) {
-    try {
-      console.log("Signing in with email:", email);
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
-      if (error) {
-        console.error("Sign in error:", error.message);
-        toast({
-          title: "Sign In Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return { error };
-      }
-      
-      toast({
-        title: "Welcome back!",
-        description: "You have been successfully signed in.",
-      });
-      
-      // If this is a business owner, redirect to business admin
-      if (data.user?.user_metadata?.role === 'business_owner') {
-        setTimeout(() => {
-          navigate('/business-admin');
-        }, 100);
-      } else if (data.user?.user_metadata?.role === 'super_admin') {
-        setTimeout(() => {
-          navigate('/super-admin');
-        }, 100);
-      } else {
-        // For regular users
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 100);
-      }
-      
-      return { error: null };
-    } catch (err) {
-      const error = err as Error;
-      console.error("Sign in exception:", error.message);
-      toast({
-        title: "Sign In Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-      return { error };
-    }
-  }
-
-  // Sign up with email and password
-  async function signUp(
-    email: string, 
-    password: string, 
-    options: SignUpOptions = {}
-  ) {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            first_name: options.first_name || "",
-            last_name: options.last_name || "",
-            role: options.role || "business_owner",
-            business_type: options.business_type || "",
-          },
-        },
-      });
-
-      if (error) {
-        toast({
-          title: "Registration Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return { error };
-      }
-
-      // If successful sign up
-      if (data.user) {
-        toast({
-          title: "Registration Successful",
-          description: "Please check your email to confirm your registration.",
-        });
-        navigate("/onboarding");
-      }
-
-      return { error: null };
-    } catch (err) {
-      const error = err as Error;
-      toast({
-        title: "Registration Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-      return { error };
-    }
-  }
-
-  // Sign out - Fixed to handle all edge cases
-  async function signOut() {
-    try {
-      // First clear any mock admin data (if exists)
-      localStorage.removeItem('mockSuperAdmin');
-      
-      // Then sign out through Supabase
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error("Error signing out:", error);
-        toast({
-          title: "Sign Out Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Reset local state
-      setUser(null);
-      setProfile(null);
-      setSession(null);
-      
-      toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
-      });
-      
-      // Ensure navigation happens after state updates
-      setTimeout(() => {
-        navigate("/login");
-      }, 0);
-    } catch (err) {
-      console.error("Exception during sign out:", err);
-      const error = err as Error;
-      toast({
-        title: "Sign Out Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  }
-
-  // Update user profile
-  async function updateProfile(updates: Partial<UserProfile>) {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', user.id);
-
-    if (error) {
-      toast({
-        title: "Profile Update Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+  // Helper function to redirect based on user role
+  const redirectBasedOnRole = (role: string) => {
+    if (role === 'business_owner') {
+      navigate('/business-admin');
+    } else if (role === 'super_admin') {
+      navigate('/super-admin');
     } else {
-      // Update local profile state
-      setProfile(prev => {
-        return prev ? { ...prev, ...updates } : null;
-      });
-
-      toast({
-        title: "Profile Updated",
-        description: "Your profile has been successfully updated.",
-      });
+      navigate('/dashboard');
     }
-  }
+  };
+
+  // Handle sign in with email and password
+  const handleSignIn = async (email: string, password: string) => {
+    return signIn(email, password, navigate);
+  };
+
+  // Handle sign up with email and password
+  const handleSignUp = async (email: string, password: string, options: any = {}) => {
+    return signUp(email, password, navigate, options);
+  };
+
+  // Handle sign out
+  const handleSignOut = async () => {
+    await signOut(navigate);
+  };
+
+  // Handle update profile
+  const handleUpdateProfile = async (updates: any) => {
+    await updateProfile(updates, profile);
+    // Update local profile state
+    setProfile(prev => {
+      return prev ? { ...prev, ...updates } : null;
+    });
+  };
 
   const value = {
     user,
     profile,
     loading,
-    signIn,
-    signUp,
-    signOut,
-    updateProfile,
+    signIn: handleSignIn,
+    signUp: handleSignUp,
+    signOut: handleSignOut,
+    updateProfile: handleUpdateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
