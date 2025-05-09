@@ -65,8 +65,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       // Use a type assertion to work around type limitations
-      const { data, error } = await supabase
-        .from('user_profiles') as any
+      const { data, error } = await (supabase
+        .from('user_profiles') as any)
         .select('*')
         .eq('id', userId)
         .single();
@@ -164,8 +164,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     try {
       // Use a type assertion to work around type limitations
-      const { error } = await supabase
-        .from('user_profiles') as any
+      const { error } = await (supabase
+        .from('user_profiles') as any)
         .update(data)
         .eq('id', user.id);
         
