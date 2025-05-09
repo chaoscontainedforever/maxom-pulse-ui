@@ -45,6 +45,13 @@ import Help from "./pages/admin/Help";
 import SuperAdmin from "./pages/SuperAdmin";
 import CustomerView from "./pages/SuperAdmin/CustomerView";
 import NewCustomer from "./pages/SuperAdmin/NewCustomer";
+import SuperAdminUsers from "./pages/SuperAdmin/Users";
+import SuperAdminVoice from "./pages/SuperAdmin/Voice";
+import SuperAdminCallAnalytics from "./pages/SuperAdmin/CallAnalytics";
+import SuperAdminNotifications from "./pages/SuperAdmin/Notifications";
+import SuperAdminSettings from "./pages/SuperAdmin/Settings";
+import SuperAdminPermissions from "./pages/SuperAdmin/Permissions";
+import SuperAdminReports from "./pages/SuperAdmin/Reports";
 
 const queryClient = new QueryClient();
 
@@ -150,6 +157,41 @@ const App = () => {
                   <Route path="/super-admin" element={
                     <ProtectedRoute requiredRole="super_admin">
                       <SuperAdmin />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/users" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminUsers />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/voice" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminVoice />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/call-analytics" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminCallAnalytics />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/notifications" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminNotifications />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/settings" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminSettings />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/permissions" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminPermissions />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/super-admin/reports" element={
+                    <ProtectedRoute requiredRole="super_admin">
+                      <SuperAdminReports />
                     </ProtectedRoute>
                   } />
                   <Route path="/super-admin/customer/:customerId" element={

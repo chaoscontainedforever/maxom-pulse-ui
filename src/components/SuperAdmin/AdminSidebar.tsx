@@ -34,47 +34,47 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
   const adminNavItems: NavItem[] = [
     {
       title: "Dashboard",
-      href: "/admin/dashboard",
+      href: "/super-admin",
       icon: LayoutDashboard,
     },
     {
       title: "Customers",
-      href: "/admin/customers",
+      href: "/super-admin",
       icon: Building,
     },
     {
       title: "User Management",
-      href: "/admin/users",
+      href: "/super-admin/users",
       icon: Users,
     },
     {
       title: "Voice Settings",
-      href: "/admin/voice",
+      href: "/super-admin/voice",
       icon: Headphones,
     },
     {
       title: "Call Analytics",
-      href: "/admin/calls",
+      href: "/super-admin/call-analytics",
       icon: Phone,
     },
     {
       title: "Notifications",
-      href: "/admin/notifications",
+      href: "/super-admin/notifications",
       icon: Bell,
     },
     {
       title: "System Settings",
-      href: "/admin/settings",
+      href: "/super-admin/settings",
       icon: Settings,
     },
     {
       title: "Permissions",
-      href: "/admin/permissions",
+      href: "/super-admin/permissions",
       icon: Lock,
     },
     {
       title: "Reports",
-      href: "/admin/reports",
+      href: "/super-admin/reports",
       icon: BarChart3,
     },
   ];
@@ -99,7 +99,7 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
         <div className="flex h-full flex-col">
           {/* Sidebar header */}
           <div className="border-b border-border h-16 flex items-center px-6 justify-between">
-            <Link to="/admin" className="flex items-center">
+            <Link to="/super-admin" className="flex items-center">
               <h1 className="font-bold text-2xl gradient-text">Maxom.ai</h1>
               <span className="ml-2 text-xs bg-primary/20 text-primary rounded px-1.5 py-0.5">
                 Admin
