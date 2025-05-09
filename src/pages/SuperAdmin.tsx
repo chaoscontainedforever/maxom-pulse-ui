@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SuperAdminLayout from "@/components/SuperAdmin/SuperAdminLayout";
@@ -8,10 +7,13 @@ import { useAuth } from "@/context/auth";
 import { toast } from "@/hooks/use-toast";
 
 const SuperAdmin = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Only run check when loading is complete
+    if (loading) return;
+    
     // Check if user has super_admin role
     if (!user) {
       toast({
@@ -31,7 +33,16 @@ const SuperAdmin = () => {
       });
       navigate("/dashboard");
     }
-  }, [profile, navigate, user]);
+  }, [profile, navigate, user, loading]);
+
+  // Show loading state while auth is being checked
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <SuperAdminLayout>

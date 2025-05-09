@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
 import { AuthContext } from "./AuthContext";
 import { UserProfile, SignUpOptions } from "./types";
+import { mockUserProfiles } from "@/lib/mock-data";
 
 // Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -28,7 +29,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (event === 'SIGNED_OUT') {
             setProfile(null);
           } else if (event === 'SIGNED_IN' && newSession?.user) {
-            // Fetch user profile on sign in
+            // Check if it's the admin user by email - for demo purposes
+            if (newSession.user.email === 'admin@maxom.ai') {
+              // Use the mock super admin profile
+              const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+              if (adminProfile) {
+                setProfile(adminProfile);
+                return;
+              }
+            }
+
+            // For other users, fetch from the database
             setTimeout(async () => {
               const { data, error } = await supabase
                 .from("users")
@@ -53,16 +64,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Fetch user profile if there's an active session
       if (currentSession?.user) {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", currentSession.user.id)
-          .single();
+        // Check if it's the admin user by email - for demo purposes
+        if (currentSession.user.email === 'admin@maxom.ai') {
+          // Use the mock super admin profile
+          const adminProfile = mockUserProfiles.find(profile => profile.role === 'super_admin');
+          if (adminProfile) {
+            setProfile(adminProfile);
+          }
+        } else {
+          // For other users, fetch from the database
+          const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", currentSession.user.id)
+            .single();
 
-        if (error) {
-          console.error("Error fetching profile:", error);
-        } else if (data) {
-          setProfile(data);
+          if (error) {
+            console.error("Error fetching profile:", error);
+          } else if (data) {
+            setProfile(data);
+          }
         }
       }
 

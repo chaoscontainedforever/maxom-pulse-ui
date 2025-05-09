@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/auth';
 import { toast } from '@/hooks/use-toast';
 import { mockUserProfiles } from '@/lib/mock-data';
+import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,28 +18,35 @@ const Login = () => {
   const handleSuperAdminLogin = async () => {
     setIsLoading(true);
     try {
-      // For demo purposes, we'll bypass the actual Supabase auth for super admin
-      // and simulate a successful login with mock data
-      const superAdmin = mockUserProfiles.find(user => user.role === 'super_admin');
+      // Set the email and password for admin
+      const email = 'admin@maxom.ai';
+      const password = 'Admin123!';
       
-      if (superAdmin) {
-        // Update auth context directly with mock data
-        // This will be handled in the AuthContext component
-        const result = await signIn('admin@maxom.ai', 'Admin123!');
+      // For demo purposes, directly sign in with hardcoded admin credentials
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email,
+        password
+      });
+      
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message || "Could not log in as super admin. Please check credentials.",
+          variant: "destructive"
+        });
+        console.error("Super admin login error:", error);
+        return;
+      }
+      
+      if (data.user) {
+        // Successfully logged in
+        toast({
+          title: "Super Admin Login Successful",
+          description: "Welcome to the Super Admin dashboard."
+        });
         
-        if (!result.error) {
-          toast({
-            title: "Super Admin Login Successful",
-            description: "Welcome to the Super Admin dashboard."
-          });
-          navigate('/super-admin');
-        } else {
-          toast({
-            title: "Login Failed",
-            description: "Could not log in as super admin. Please check credentials.",
-            variant: "destructive"
-          });
-        }
+        // Redirect to super admin page
+        navigate('/super-admin');
       }
     } catch (err) {
       const error = err as Error;
@@ -47,6 +55,7 @@ const Login = () => {
         description: error.message,
         variant: "destructive"
       });
+      console.error("Super admin login exception:", error);
     } finally {
       setIsLoading(false);
     }
