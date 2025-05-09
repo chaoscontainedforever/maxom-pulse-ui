@@ -27,6 +27,7 @@ import Careers from "./pages/Careers";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Cookies from "./pages/Cookies";
+import Dashboard from "./pages/Dashboard";  // Import the Dashboard component
 
 // Admin pages
 import CallAnalytics from "./pages/admin/CallAnalytics";
@@ -42,14 +43,15 @@ const queryClient = new QueryClient();
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isDashboardRoute = location.pathname.startsWith('/dashboard');  // Add check for dashboard routes
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isAdminRoute && <NavBar />}
-      <main className={`flex-grow ${!isAdminRoute ? "" : "p-0"}`}>
+      {!isAdminRoute && !isDashboardRoute && <NavBar />}
+      <main className={`flex-grow ${!isAdminRoute && !isDashboardRoute ? "" : "p-0"}`}>
         {children}
       </main>
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isDashboardRoute && <Footer />}
     </div>
   );
 };
@@ -79,6 +81,13 @@ const App = () => {
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/cookies" element={<Cookies />} />
+                  
+                  {/* Add Dashboard Route - protected */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
                   
                   {/* Admin Routes - protected */}
                   <Route path="/admin" element={
