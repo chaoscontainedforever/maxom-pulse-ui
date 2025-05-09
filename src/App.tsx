@@ -56,6 +56,10 @@ import SuperAdminReports from "./pages/SuperAdmin/Reports";
 import BusinessAdmin from "./pages/BusinessAdmin";
 import VoiceSettings from "./pages/business-admin/VoiceSettings";
 import CallLogs from "./pages/business-admin/CallLogs";
+import Orders from "./pages/business-admin/Orders";
+import Customers from "./pages/business-admin/Customers";
+import MenuEditor from "./pages/business-admin/MenuEditor";
+import DriveThruMetrics from "./pages/business-admin/DriveThruMetrics";
 
 // Onboarding
 import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
@@ -82,7 +86,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const App = () => {
+function App() {
   return (
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
@@ -222,17 +226,10 @@ const App = () => {
                       <BusinessAdmin />
                     </ProtectedRoute>
                   } />
-                  <Route path="/business-admin/voice-settings" element={
-                    <ProtectedRoute requiredRole="business_owner">
-                      <VoiceSettings />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/business-admin/call-logs" element={
-                    <ProtectedRoute requiredRole="business_owner">
-                      <CallLogs />
-                    </ProtectedRoute>
-                  } />
-                  {/* Add other business admin routes as needed */}
+                  <Route path="/business-admin/orders" element={<Orders />} />
+                  <Route path="/business-admin/customers" element={<Customers />} />
+                  <Route path="/business-admin/menu" element={<MenuEditor />} />
+                  <Route path="/business-admin/drive-thru" element={<DriveThruMetrics />} />
                   
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
@@ -244,6 +241,6 @@ const App = () => {
       </QueryClientProvider>
     </ThemeProvider>
   );
-};
+}
 
 export default App;
