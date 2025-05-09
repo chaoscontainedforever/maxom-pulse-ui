@@ -1,128 +1,164 @@
 
+import { useEffect, useState } from "react";
+import {
+  BarChart3,
+  Calendar,
+  Clock,
+  DollarSign,
+  PhoneIncoming,
+  PhoneMissed,
+  Star,
+  Users,
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, ArrowUpRight, ArrowDownRight, Users, Calendar, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CallsOverviewChart from "@/components/CallsOverviewChart";
+import RecentCallsTable from "@/components/Dashboard/RecentCallsTable";
+import BusinessSpecificDashboard from "@/components/Dashboard/BusinessSpecificDashboard";
 
 const DashboardHome = () => {
+  const [businessType, setBusinessType] = useState("restaurant");
+  const [loading, setLoading] = useState(false);
+
+  // Simulated data (would come from API)
+  const stats = {
+    totalCalls: 128,
+    missedCalls: 3,
+    ordersPlaced: 89,
+    revenue: 2347.65,
+    customerSatisfaction: 4.8,
+    averageCallTime: "1m 24s",
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
-          Welcome back! Here's an overview of your AI voice assistant activity.
+          Welcome back! Here's an overview of your business performance.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* Total Calls Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">Total Calls</CardTitle>
-            <Phone className="h-4 w-4 text-muted-foreground" />
+            <PhoneIncoming className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,248</div>
+            <div className="text-2xl font-bold">{stats.totalCalls}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-emerald-500 font-medium inline-flex items-center">
-                +8.2% <ArrowUpRight className="h-3 w-3 ml-1" />
-              </span>{" "}
-              from last month
+              +15% from last month
             </p>
           </CardContent>
         </Card>
-        
-        {/* Avg. Call Duration Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Call Duration</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">Missed Calls</CardTitle>
+            <PhoneMissed className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2m 40s</div>
+            <div className="text-2xl font-bold">{stats.missedCalls}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-emerald-500 font-medium inline-flex items-center">
-                -12s <ArrowDownRight className="h-3 w-3 ml-1" />
-              </span>{" "}
-              shorter than average
+              -24% from last month
             </p>
           </CardContent>
         </Card>
-        
-        {/* Success Rate Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">94.2%</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-emerald-500 font-medium inline-flex items-center">
-                +1.1% <ArrowUpRight className="h-3 w-3 ml-1" />
-              </span>{" "}
-              from previous week
-            </p>
-          </CardContent>
-        </Card>
-        
-        {/* Appointments Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Appointments</CardTitle>
+
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">Orders Placed</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">342</div>
+            <div className="text-2xl font-bold">{stats.ordersPlaced}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-emerald-500 font-medium inline-flex items-center">
-                +12.5% <ArrowUpRight className="h-3 w-3 ml-1" />
-              </span>{" "}
-              scheduled this month
+              +8% from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${stats.revenue.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              +12% from last month
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {/* Calls Overview Chart */}
-        <Card className="md:col-span-2 lg:col-span-5">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="col-span-2 hover:shadow-md transition-shadow">
           <CardHeader>
             <CardTitle>Calls Overview</CardTitle>
-            <CardDescription>Call volume and success rate over time</CardDescription>
+            <CardDescription>
+              Your call volume and outcomes over time
+            </CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <CallsOverviewChart />
           </CardContent>
         </Card>
-        
-        {/* Team Activity Card */}
-        <Card className="md:col-span-2">
+
+        <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
-            <CardTitle>Team Activity</CardTitle>
-            <CardDescription>Top performing team members</CardDescription>
+            <CardTitle>Performance Metrics</CardTitle>
+            <CardDescription>Key metrics for your business</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: "Sarah Johnson", role: "Account Manager", calls: 145, image: "" },
-                { name: "Michael Chen", role: "Sales Rep", calls: 132, image: "" },
-                { name: "Aisha Patel", role: "Customer Support", calls: 118, image: "" },
-              ].map((member, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gradient-card1 flex items-center justify-center text-white">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{member.name}</p>
-                    <p className="text-xs text-muted-foreground">{member.role}</p>
-                  </div>
-                  <div className="text-sm font-medium">{member.calls} calls</div>
-                </div>
-              ))}
+          <CardContent className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Customer Satisfaction</span>
+              <div className="flex items-center gap-1">
+                <span className="font-bold">{stats.customerSatisfaction}</span>
+                <Star className="h-4 w-4 fill-primary text-primary" />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Average Call Time</span>
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="font-bold">{stats.averageCallTime}</span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">New Customers</span>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="font-bold">24</span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Conversion Rate</span>
+              <div className="flex items-center gap-1">
+                <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                <span className="font-bold">69.5%</span>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <Tabs defaultValue="recentCalls" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="recentCalls">Recent Calls</TabsTrigger>
+          <TabsTrigger value="businessSpecific">Business Specific</TabsTrigger>
+        </TabsList>
+        <TabsContent value="recentCalls" className="space-y-4">
+          <RecentCallsTable />
+        </TabsContent>
+        <TabsContent value="businessSpecific" className="space-y-4">
+          <BusinessSpecificDashboard businessType={businessType} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

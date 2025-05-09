@@ -49,7 +49,7 @@ const SignInForm = () => {
         });
       } else {
         // Redirect to dashboard on successful login
-        navigate("/admin");
+        navigate("/dashboard");
       }
     } finally {
       setIsSubmitting(false);
