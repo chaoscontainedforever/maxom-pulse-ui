@@ -7,6 +7,7 @@ import SignInForm from '@/components/SignInForm';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/hooks/use-toast';
+import { mockUserProfiles } from '@/lib/mock-data';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,13 +17,22 @@ const Login = () => {
   const handleSuperAdminLogin = async () => {
     setIsLoading(true);
     try {
-      const result = await signIn('admin@maxom.ai', 'Admin123!');
-      if (!result.error) {
-        toast({
-          title: "Super Admin Login Successful",
-          description: "Welcome to the Super Admin dashboard."
-        });
-        navigate('/super-admin');
+      // For demo purposes, we'll bypass the actual Supabase auth for super admin
+      // and simulate a successful login with mock data
+      const superAdmin = mockUserProfiles.find(user => user.role === 'super_admin');
+      
+      if (superAdmin) {
+        // Update auth context directly with mock data
+        // This will be handled in the AuthContext component
+        const result = await signIn('admin@maxom.ai', 'Admin123!', true);
+        
+        if (!result.error) {
+          toast({
+            title: "Super Admin Login Successful",
+            description: "Welcome to the Super Admin dashboard."
+          });
+          navigate('/super-admin');
+        }
       }
     } finally {
       setIsLoading(false);

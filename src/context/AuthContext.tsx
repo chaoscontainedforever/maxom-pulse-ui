@@ -4,13 +4,14 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/schema';
 import { toast } from '@/hooks/use-toast';
+import { mockUserProfiles } from '@/lib/mock-data';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: any | null }>;
+  signIn: (email: string, password: string, isMockAdmin?: boolean) => Promise<{ error: any | null }>;
   signUp: (email: string, password: string, userData: Partial<UserProfile>) => Promise<{ error: any | null }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<{ error: any | null }>;
@@ -81,8 +82,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, isMockAdmin: boolean = false) => {
     try {
+      // Handle mock admin login for demo purposes
+      if (isMockAdmin && email === 'admin@maxom.ai' && password === 'Admin123!') {
+        const adminProfile = mockUserProfiles.find(p => p.role === 'super_admin');
+        
+        if (adminProfile) {
+          // Create a mock user and session
+          const mockUser = {
+            id: adminProfile.id,
+            email: adminProfile.email,
+            user_metadata: {
+              first_name: adminProfile.first_name,
+              last_name: adminProfile.last_name,
+              role: adminProfile.role
+            }
+          } as unknown as User;
+          
+          const mockSession = {
+            user: mockUser,
+            access_token: 'mock-token',
+            refresh_token: 'mock-refresh-token',
+            expires_at: Date.now() + 3600000 // 1 hour from now
+          } as unknown as Session;
+          
+          // Set the user, session, and profile in the context
+          setUser(mockUser);
+          setSession(mockSession);
+          setProfile(adminProfile);
+          
+          return { error: null };
+        }
+      }
+      
+      // Regular Supabase auth login for non-admin users
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
