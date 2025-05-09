@@ -13,12 +13,20 @@ import {
   Bell,
   Lock,
   Headphones,
+  Monitor,
+  Database,
+  Shield,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type AdminSidebarProps = {
   isOpen: boolean;
   closeSidebar: () => void;
+};
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
 };
 
 type NavItem = {
@@ -30,55 +38,6 @@ type NavItem = {
 const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
   const location = useLocation();
   
-  // Admin navigation
-  const adminNavItems: NavItem[] = [
-    {
-      title: "Dashboard",
-      href: "/super-admin",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Customers",
-      href: "/super-admin/customers",
-      icon: Building,
-    },
-    {
-      title: "User Management",
-      href: "/super-admin/users",
-      icon: Users,
-    },
-    {
-      title: "Voice Settings",
-      href: "/super-admin/voice",
-      icon: Headphones,
-    },
-    {
-      title: "Call Analytics",
-      href: "/super-admin/call-analytics",
-      icon: Phone,
-    },
-    {
-      title: "Notifications",
-      href: "/super-admin/notifications",
-      icon: Bell,
-    },
-    {
-      title: "System Settings",
-      href: "/super-admin/settings",
-      icon: Settings,
-    },
-    {
-      title: "Permissions",
-      href: "/super-admin/permissions",
-      icon: Lock,
-    },
-    {
-      title: "Reports",
-      href: "/super-admin/reports",
-      icon: BarChart3,
-    },
-  ];
-  
   // Check if the current path is active or a sub-path is active
   const isActive = (href: string) => {
     if (href === "/super-admin") {
@@ -86,6 +45,90 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
     }
     return location.pathname.startsWith(href);
   };
+  
+  // Admin navigation grouped into sections
+  const adminNavSections: NavSection[] = [
+    {
+      title: "Application",
+      items: [
+        {
+          title: "Dashboard",
+          href: "/super-admin",
+          icon: LayoutDashboard,
+        },
+        {
+          title: "Customers",
+          href: "/super-admin/customers",
+          icon: Building,
+        },
+        {
+          title: "User Management",
+          href: "/super-admin/users",
+          icon: Users,
+        },
+        {
+          title: "Voice Settings",
+          href: "/super-admin/voice",
+          icon: Headphones,
+        },
+        {
+          title: "Call Analytics",
+          href: "/super-admin/call-analytics",
+          icon: Phone,
+        },
+      ]
+    },
+    {
+      title: "Platform",
+      items: [
+        {
+          title: "Notifications",
+          href: "/super-admin/notifications",
+          icon: Bell,
+        },
+        {
+          title: "System Settings",
+          href: "/super-admin/settings",
+          icon: Settings,
+        },
+        {
+          title: "Reports",
+          href: "/super-admin/reports",
+          icon: BarChart3,
+        },
+      ]
+    },
+    {
+      title: "Security",
+      items: [
+        {
+          title: "Permissions",
+          href: "/super-admin/permissions",
+          icon: Lock,
+        },
+      ]
+    },
+    {
+      title: "SRE",
+      items: [
+        {
+          title: "Monitoring",
+          href: "/super-admin/monitoring",
+          icon: Monitor,
+        },
+        {
+          title: "Logs",
+          href: "/super-admin/logs",
+          icon: Database,
+        },
+        {
+          title: "Deployments",
+          href: "/super-admin/deployments",
+          icon: Shield,
+        },
+      ]
+    }
+  ];
   
   return (
     <>
@@ -125,21 +168,28 @@ const AdminSidebar = ({ isOpen, closeSidebar }: AdminSidebarProps) => {
           
           {/* Navigation */}
           <ScrollArea className="flex-1 py-4">
-            <nav className="px-2 space-y-1">
-              {adminNavItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive(item.href)
-                      ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Link>
+            <nav className="px-2 space-y-6">
+              {adminNavSections.map((section) => (
+                <div key={section.title} className="space-y-1">
+                  <h3 className="px-3 text-xs font-medium uppercase text-muted-foreground mb-2">
+                    {section.title}
+                  </h3>
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        isActive(item.href)
+                          ? "bg-gradient-to-r from-maxom-violet to-maxom-orange text-white"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+                      )}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </Link>
+                  ))}
+                </div>
               ))}
             </nav>
           </ScrollArea>
