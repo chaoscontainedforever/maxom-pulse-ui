@@ -38,7 +38,7 @@ const Orders = () => {
       toast({
         title: "Missing business ID",
         description: "Your user profile isn't linked to a business. Demo data is being shown.",
-        variant: "warning"
+        variant: "default" // Changed from "warning" to "default" to match allowed variants
       });
     }
   }, [orders, isLoading, error, profile, loading]);
