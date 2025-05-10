@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import BusinessAdminLayout from "@/components/BusinessAdmin/BusinessAdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -16,7 +17,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Search } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2, Search } from "lucide-react";
 import { 
   Popover, 
   PopoverContent, 
@@ -25,65 +26,86 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-
-// Mock data for orders
-const mockOrders = [
-  {
-    id: "ORD-1234",
-    customerName: "John Smith",
-    items: ["Cheeseburger", "Fries", "Coke"],
-    total: 19.99,
-    status: "completed",
-    timestamp: new Date("2025-05-08T14:30:00"),
-  },
-  {
-    id: "ORD-1235",
-    customerName: "Sarah Johnson",
-    items: ["Chicken Wings", "Ranch Dip", "Sprite"],
-    total: 24.50,
-    status: "preparing",
-    timestamp: new Date("2025-05-09T10:15:00"),
-  },
-  {
-    id: "ORD-1236",
-    customerName: "Michael Brown",
-    items: ["Veggie Burger", "Onion Rings", "Milkshake"],
-    total: 22.75,
-    status: "pending",
-    timestamp: new Date("2025-05-09T11:45:00"),
-  },
-  {
-    id: "ORD-1237",
-    customerName: "Emily Davis",
-    items: ["Steak Sandwich", "Sweet Potato Fries", "Iced Tea"],
-    total: 28.99,
-    status: "completed",
-    timestamp: new Date("2025-05-09T09:20:00"),
-  },
-  {
-    id: "ORD-1238",
-    customerName: "Robert Wilson",
-    items: ["Caesar Salad", "Garlic Bread", "Water"],
-    total: 16.50,
-    status: "cancelled",
-    timestamp: new Date("2025-05-08T16:05:00"),
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { RestaurantOrder } from "@/types/schema";
+import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/auth";
 
 const Orders = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState("");
+  const { profile } = useAuth();
+
+  // Fetch orders from Supabase
+  const { data: orders = [], isLoading, error } = useQuery({
+    queryKey: ['orders', profile?.business_id],
+    queryFn: async () => {
+      if (!profile?.business_id) {
+        return [];
+      }
+      
+      try {
+        const { data, error } = await (supabase as any)
+          .from('orders')
+          .select(`
+            id, 
+            customer_id,
+            items_json,
+            special_instructions,
+            total_amount,
+            created_at,
+            customers (
+              name,
+              phone
+            )
+          `)
+          .eq('restaurant_id', profile.business_id)
+          .order('created_at', { ascending: false });
+          
+        if (error) {
+          console.error('Error fetching orders:', error);
+          toast({
+            title: 'Error fetching orders',
+            description: error.message,
+            variant: 'destructive'
+          });
+          return [];
+        }
+        
+        // Transform the data to match our component needs
+        return data.map((order: any) => ({
+          id: order.id,
+          customerName: order.customers?.name || 'Unknown',
+          items: order.items_json?.map((item: any) => item.name || item.item_name) || [],
+          total: order.total_amount,
+          status: order.items_json?.status || 'pending',
+          timestamp: new Date(order.created_at),
+          special_instructions: order.special_instructions,
+          phone: order.customers?.phone
+        }));
+      } catch (err) {
+        console.error('Exception fetching orders:', err);
+        toast({
+          title: 'Error fetching orders',
+          description: 'An unexpected error occurred',
+          variant: 'destructive'
+        });
+        return [];
+      }
+    },
+    enabled: !!profile?.business_id,
+  });
 
   // Filter orders based on selected filters
-  const filteredOrders = mockOrders.filter(order => {
+  const filteredOrders = orders.filter((order: any) => {
     // Filter by status
     if (statusFilter !== "all" && order.status !== statusFilter) {
       return false;
     }
     
     // Filter by date
-    if (date && (
+    if (date && order.timestamp && (
       order.timestamp.getDate() !== date.getDate() ||
       order.timestamp.getMonth() !== date.getMonth() ||
       order.timestamp.getFullYear() !== date.getFullYear()
@@ -121,7 +143,7 @@ const Orders = () => {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
           <p className="text-muted-foreground">
-            Manage phone and text orders for your restaurant
+            Manage food orders for your restaurant
           </p>
         </div>
 
@@ -203,17 +225,32 @@ const Orders = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredOrders.length > 0 ? (
-                    filteredOrders.map((order) => (
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-6">
+                        <div className="flex justify-center items-center">
+                          <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                          Loading orders...
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-6 text-red-500">
+                        Error loading orders. Please try again.
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredOrders.length > 0 ? (
+                    filteredOrders.map((order: any) => (
                       <TableRow key={order.id}>
-                        <TableCell className="font-medium">{order.id}</TableCell>
+                        <TableCell className="font-medium">{order.id.substring(0, 8)}</TableCell>
                         <TableCell>{order.customerName}</TableCell>
                         <TableCell className="max-w-[200px] truncate">
                           {order.items.join(", ")}
                         </TableCell>
-                        <TableCell>${order.total.toFixed(2)}</TableCell>
+                        <TableCell>${Number(order.total).toFixed(2)}</TableCell>
                         <TableCell>{getStatusBadge(order.status)}</TableCell>
-                        <TableCell>{format(order.timestamp, "PPp")}</TableCell>
+                        <TableCell>{format(new Date(order.timestamp), "PPp")}</TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" variant="outline">View</Button>
                         </TableCell>
