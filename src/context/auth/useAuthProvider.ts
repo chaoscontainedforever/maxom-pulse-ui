@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -152,10 +151,27 @@ export function useAuthProvider() {
           }
         } else {
           console.log("No profile found, checking user metadata");
+          
           // If no profile is found in the database, try to use the user metadata
           const metadataProfile = createProfileFromMetadata(user);
           console.log("Created profile from metadata:", metadataProfile);
           setProfile(metadataProfile);
+          
+          // Create a new profile in the database using the metadata
+          try {
+            // Use PostgreSQL query without typechecking to avoid TypeScript errors
+            // This is a workaround until the types are updated
+            await (supabase as any).from('users').insert({
+              id: user.id,
+              first_name: metadataProfile.first_name || '',
+              last_name: metadataProfile.last_name || '',
+              email: user.email,
+              role: metadataProfile.role || 'business_owner',
+              business_id: metadataProfile.business_id,
+            });
+          } catch (insertErr) {
+            console.error("Error creating new user profile:", insertErr);
+          }
           
           // Redirect based on role from metadata if needed
           if (shouldRedirect) {

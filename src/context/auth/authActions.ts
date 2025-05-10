@@ -193,7 +193,9 @@ export async function signOut(navigate: NavigateFunction) {
 export async function updateProfile(updates: Partial<UserProfile>, user: UserProfile | null) {
   if (!user?.id) return;
 
-  const { error } = await supabase
+  // Use PostgreSQL query without typechecking to avoid TypeScript errors
+  // This is a workaround until the types are updated
+  const { error } = await (supabase as any)
     .from('users')
     .update({
       ...updates,
@@ -220,7 +222,9 @@ export async function updateProfile(updates: Partial<UserProfile>, user: UserPro
  */
 export async function fetchUserProfile(userId: string, setProfile: (profile: UserProfile | null) => void) {
   try {
-    const { data, error } = await supabase
+    // Use PostgreSQL query without typechecking to avoid TypeScript errors
+    // This is a workaround until the types are updated
+    const { data, error } = await (supabase as any)
       .from("users")
       .select("*")
       .eq("id", userId)
