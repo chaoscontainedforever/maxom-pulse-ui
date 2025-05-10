@@ -1,6 +1,6 @@
 
 import { format } from "date-fns";
-import { Loader2, Phone } from "lucide-react";
+import { Loader2, Phone, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -18,11 +18,18 @@ interface OrdersTableProps {
   orders: OrderItem[];
   isLoading: boolean;
   error: unknown;
+  isDemoData?: boolean;
 }
 
-export const OrdersTable = ({ orders, isLoading, error }: OrdersTableProps) => {
+export const OrdersTable = ({ orders, isLoading, error, isDemoData = false }: OrdersTableProps) => {
   return (
     <div className="rounded-md border">
+      {isDemoData && (
+        <div className="bg-blue-50 p-3 border-b border-blue-200 flex items-center">
+          <AlertCircle className="text-blue-500 h-4 w-4 mr-2" />
+          <span className="text-sm text-blue-700">Sample data is being displayed for demonstration purposes.</span>
+        </div>
+      )}
       <Table>
         <TableHeader>
           <TableRow>

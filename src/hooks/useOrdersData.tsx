@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/auth";
 import { toast } from "@/hooks/use-toast";
 import { OrderItem } from "@/types/orders";
+import { v4 as uuidv4 } from 'uuid';
 
 export const useOrdersData = (businessId?: string) => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -16,19 +17,29 @@ export const useOrdersData = (businessId?: string) => {
   // This allows explicit override when needed but defaults to current user's business
   const targetBusinessId = businessId || profile?.business_id;
   
+  // If no business ID is available, generate a mock one for demonstration purposes
+  // In a production app, we'd require a valid business ID or show an error
+  const businessIdForQuery = targetBusinessId || (profile ? `temp-${profile.id.substring(0, 8)}` : null);
+  
   console.log("Fetching orders with business ID:", targetBusinessId);
 
   // Fetch orders from Supabase
   const { data: ordersData = [], isLoading, error } = useQuery({
-    queryKey: ['orders', targetBusinessId, statusFilter, date?.toISOString(), searchQuery],
+    queryKey: ['orders', businessIdForQuery, statusFilter, date?.toISOString(), searchQuery],
     queryFn: async () => {
-      if (!targetBusinessId) {
+      if (!businessIdForQuery) {
         console.log("No target business ID found");
         return [];
       }
       
       try {
-        console.log(`Fetching orders for restaurant ID: ${targetBusinessId}`);
+        console.log(`Fetching orders for restaurant ID: ${businessIdForQuery}`);
+        
+        // If using a temporary business ID (user without business_id association)
+        // Return mock data for demonstration purposes
+        if (businessIdForQuery.startsWith('temp-')) {
+          return generateMockOrders();
+        }
         
         // Fetch orders with related customer data
         const { data, error } = await supabase
@@ -46,7 +57,7 @@ export const useOrdersData = (businessId?: string) => {
               phone
             )
           `)
-          .eq('restaurant_id', targetBusinessId)
+          .eq('restaurant_id', businessIdForQuery)
           .order('created_at', { ascending: false });
           
         if (error) {
@@ -116,8 +127,37 @@ export const useOrdersData = (businessId?: string) => {
         return [];
       }
     },
-    enabled: !!targetBusinessId,
+    enabled: !!businessIdForQuery,
   });
+
+  // Helper function to generate mock orders for demonstration
+  const generateMockOrders = (): OrderItem[] => {
+    // Generate 5 mock orders
+    return Array(5).fill(null).map((_, index) => ({
+      id: uuidv4(),
+      customerName: `Demo Customer ${index + 1}`,
+      customerPhone: `555-${100 + index}-${1000 + index}`,
+      items: [
+        {
+          name: 'Sample Item',
+          quantity: Math.floor(Math.random() * 3) + 1,
+          price: 9.99,
+          modifiers: []
+        },
+        {
+          name: 'Side Dish',
+          quantity: 1,
+          price: 4.99,
+          modifiers: []
+        }
+      ],
+      total: 14.98 * (Math.floor(Math.random() * 3) + 1),
+      status: ['pending', 'completed', 'processing'][Math.floor(Math.random() * 3)],
+      timestamp: new Date(Date.now() - Math.random() * 86400000 * 7), // Random date in the past week
+      special_instructions: index % 2 === 0 ? 'Extra sauce please' : undefined,
+      restaurant_id: businessIdForQuery
+    }));
+  };
 
   // Filter orders based on selected filters
   const filteredOrders = ordersData.filter((order: OrderItem) => {
@@ -156,6 +196,7 @@ export const useOrdersData = (businessId?: string) => {
     date,
     setDate,
     searchQuery,
-    setSearchQuery
+    setSearchQuery,
+    hasBusiness: !!targetBusinessId
   };
 };
