@@ -4,8 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/auth";
 import { toast } from "@/hooks/use-toast";
-import { v4 as uuidv4 } from "uuid";
 import { OrderItem } from "@/types/orders";
+
+// Simple function to generate unique IDs (as a fallback if uuid isn't working)
+const generateId = () => {
+  return 'order_' + Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15);
+};
 
 export const useOrdersData = (businessId?: string) => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -65,7 +70,7 @@ export const useOrdersData = (businessId?: string) => {
           toast({
             title: 'Error fetching orders',
             description: error.message,
-            variant: 'destructive'
+            variant: 'default' // Using 'default' instead of 'destructive' which may not be a valid variant
           });
           return [];
         }
@@ -122,7 +127,7 @@ export const useOrdersData = (businessId?: string) => {
         toast({
           title: 'Error fetching orders',
           description: 'An unexpected error occurred',
-          variant: 'destructive'
+          variant: 'default'
         });
         return [];
       }
@@ -134,7 +139,7 @@ export const useOrdersData = (businessId?: string) => {
   const generateMockOrders = (): OrderItem[] => {
     // Generate 5 mock orders
     return Array(5).fill(null).map((_, index) => ({
-      id: uuidv4(),
+      id: generateId(),
       customerName: `Demo Customer ${index + 1}`,
       customerPhone: `555-${100 + index}-${1000 + index}`,
       items: [
