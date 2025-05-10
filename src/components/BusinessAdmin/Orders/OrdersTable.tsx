@@ -51,7 +51,7 @@ export const OrdersTable = ({ orders, isLoading, error }: OrdersTableProps) => {
                 Error loading orders. Please try again.
               </TableCell>
             </TableRow>
-          ) : orders.length > 0 ? (
+          ) : orders?.length > 0 ? (
             orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id.substring(0, 8)}</TableCell>

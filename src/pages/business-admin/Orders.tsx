@@ -6,8 +6,10 @@ import { OrdersTable } from "@/components/BusinessAdmin/Orders/OrdersTable";
 import { useOrdersData } from "@/hooks/useOrdersData";
 import PermissionGuard from "@/components/PermissionGuard";
 import { useEffect } from "react";
+import { useAuth } from "@/context/auth";
 
 const Orders = () => {
+  const { profile } = useAuth();
   const {
     orders,
     isLoading,
@@ -23,8 +25,10 @@ const Orders = () => {
   // Debug logging
   useEffect(() => {
     console.log("Orders page mounted");
+    console.log("Profile:", profile);
+    console.log("Business ID:", profile?.business_id);
     console.log("Orders data:", { count: orders?.length, isLoading, error });
-  }, [orders, isLoading, error]);
+  }, [orders, isLoading, error, profile]);
 
   return (
     <BusinessAdminLayout>
