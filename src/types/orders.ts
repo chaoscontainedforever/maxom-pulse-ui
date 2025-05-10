@@ -8,6 +8,7 @@ export interface OrderItem {
     quantity: number;
     price: number;
     modifiers?: any[];
+    status?: string;
   }>;
   total: number;
   status: string;

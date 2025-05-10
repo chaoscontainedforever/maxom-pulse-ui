@@ -15,14 +15,18 @@ export const useOrdersData = (businessId?: string) => {
   const targetBusinessId = businessId || profile?.business_id;
 
   // Fetch orders from Supabase
-  const { data: orders = [], isLoading, error } = useQuery({
-    queryKey: ['orders', targetBusinessId],
+  const { data: ordersData = [], isLoading, error } = useQuery({
+    queryKey: ['orders', targetBusinessId, statusFilter, date?.toISOString(), searchQuery],
     queryFn: async () => {
       if (!targetBusinessId) {
+        console.log("No target business ID found");
         return [];
       }
       
       try {
+        console.log(`Fetching orders for restaurant ID: ${targetBusinessId}`);
+        
+        // Use more specific query to get order status from items_json
         const { data, error } = await supabase
           .from('orders')
           .select(`
@@ -51,25 +55,35 @@ export const useOrdersData = (businessId?: string) => {
           return [];
         }
         
+        console.log(`Retrieved ${data?.length || 0} orders`);
+        
         // Transform the data to match our component needs
         return data.map((order: any): OrderItem => {
           // Parse items from JSON
           let parsedItems = [];
+          let status = 'pending'; // Default status
+          
           try {
             if (order.items_json) {
-              parsedItems = Array.isArray(order.items_json) 
-                ? order.items_json 
-                : [order.items_json];
+              if (typeof order.items_json === 'string') {
+                parsedItems = JSON.parse(order.items_json);
+              } else {
+                parsedItems = Array.isArray(order.items_json) 
+                  ? order.items_json 
+                  : [order.items_json];
+              }
+              
+              // Extract status from first item or from the order itself
+              if (parsedItems[0]?.status) {
+                status = parsedItems[0].status;
+              } else if (order.items_json.status) {
+                status = order.items_json.status;
+              }
             }
           } catch (e) {
-            console.error('Error parsing items JSON:', e);
+            console.error('Error parsing items JSON:', e, order.items_json);
             parsedItems = [];
           }
-
-          // Extract status from items if available
-          const status = parsedItems.length > 0 && parsedItems[0].status 
-            ? parsedItems[0].status 
-            : 'pending';
 
           return {
             id: order.id,
@@ -102,7 +116,7 @@ export const useOrdersData = (businessId?: string) => {
   });
 
   // Filter orders based on selected filters
-  const filteredOrders = orders.filter((order: OrderItem) => {
+  const filteredOrders = ordersData.filter((order: OrderItem) => {
     // Filter by status
     if (statusFilter !== "all" && order.status !== statusFilter) {
       return false;
@@ -126,6 +140,8 @@ export const useOrdersData = (businessId?: string) => {
     
     return true;
   });
+
+  console.log("Filtered orders:", filteredOrders.length);
 
   return {
     orders: filteredOrders,

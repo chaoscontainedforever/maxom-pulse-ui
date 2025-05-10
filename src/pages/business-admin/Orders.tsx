@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrdersFilters } from "@/components/BusinessAdmin/Orders/OrdersFilters";
 import { OrdersTable } from "@/components/BusinessAdmin/Orders/OrdersTable";
 import { useOrdersData } from "@/hooks/useOrdersData";
+import PermissionGuard from "@/components/PermissionGuard";
+import { useEffect } from "react";
 
 const Orders = () => {
   const {
-    orders: filteredOrders,
+    orders,
     isLoading,
     error,
     statusFilter,
@@ -18,38 +20,46 @@ const Orders = () => {
     setSearchQuery
   } = useOrdersData();
 
+  // Debug logging
+  useEffect(() => {
+    console.log("Orders page mounted");
+    console.log("Orders data:", { count: orders?.length, isLoading, error });
+  }, [orders, isLoading, error]);
+
   return (
     <BusinessAdminLayout>
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
-          <p className="text-muted-foreground">
-            Manage food orders for your restaurant
-          </p>
-        </div>
+      <PermissionGuard requiredRole="business_owner">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
+            <p className="text-muted-foreground">
+              Manage food orders for your restaurant
+            </p>
+          </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle>Order Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OrdersFilters
-              onSearchChange={setSearchQuery}
-              onStatusChange={setStatusFilter}
-              onDateChange={setDate}
-              searchQuery={searchQuery}
-              statusFilter={statusFilter}
-              date={date}
-            />
-            
-            <OrdersTable
-              orders={filteredOrders}
-              isLoading={isLoading}
-              error={error}
-            />
-          </CardContent>
-        </Card>
-      </div>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Order Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OrdersFilters
+                onSearchChange={setSearchQuery}
+                onStatusChange={setStatusFilter}
+                onDateChange={setDate}
+                searchQuery={searchQuery}
+                statusFilter={statusFilter}
+                date={date}
+              />
+              
+              <OrdersTable
+                orders={orders}
+                isLoading={isLoading}
+                error={error}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </PermissionGuard>
     </BusinessAdminLayout>
   );
 };

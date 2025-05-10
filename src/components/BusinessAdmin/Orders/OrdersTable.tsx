@@ -75,7 +75,9 @@ export const OrdersTable = ({ orders, isLoading, error }: OrdersTableProps) => {
                   </div>
                 </TableCell>
                 <TableCell className="max-w-[200px] truncate">
-                  {order.items.map(item => `${item.quantity}x ${item.name}`).join(", ")}
+                  {order.items && order.items.length > 0 
+                    ? order.items.map(item => `${item.quantity}x ${item.name}`).join(", ")
+                    : "No items"}
                 </TableCell>
                 <TableCell>${Number(order.total).toFixed(2)}</TableCell>
                 <TableCell><OrderStatusBadge status={order.status} /></TableCell>
