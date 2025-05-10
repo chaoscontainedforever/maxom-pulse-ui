@@ -1,7 +1,8 @@
 
 import { format } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -11,17 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderStatusBadge } from "./OrderStatusBadge";
-
-interface OrderItem {
-  id: string;
-  customerName: string;
-  items: string[];
-  total: number;
-  status: string;
-  timestamp: Date;
-  special_instructions?: string;
-  phone?: string;
-}
+import { OrderItem } from "@/types/orders";
 
 interface OrdersTableProps {
   orders: OrderItem[];
@@ -36,7 +27,7 @@ export const OrdersTable = ({ orders, isLoading, error }: OrdersTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Order ID</TableHead>
-            <TableHead>Customer Name</TableHead>
+            <TableHead>Customer</TableHead>
             <TableHead>Items</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Status</TableHead>
@@ -64,9 +55,27 @@ export const OrdersTable = ({ orders, isLoading, error }: OrdersTableProps) => {
             orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id.substring(0, 8)}</TableCell>
-                <TableCell>{order.customerName}</TableCell>
+                <TableCell>
+                  <div>
+                    {order.customerName}
+                    {order.customerPhone && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 ml-1">
+                              <Phone className="h-3 w-3" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{order.customerPhone}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell className="max-w-[200px] truncate">
-                  {order.items.join(", ")}
+                  {order.items.map(item => `${item.quantity}x ${item.name}`).join(", ")}
                 </TableCell>
                 <TableCell>${Number(order.total).toFixed(2)}</TableCell>
                 <TableCell><OrderStatusBadge status={order.status} /></TableCell>

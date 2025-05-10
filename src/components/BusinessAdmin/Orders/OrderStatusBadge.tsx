@@ -6,7 +6,9 @@ interface OrderStatusBadgeProps {
 }
 
 export const OrderStatusBadge = ({ status }: OrderStatusBadgeProps) => {
-  switch (status) {
+  const statusLower = status.toLowerCase();
+
+  switch (statusLower) {
     case "completed":
       return <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>;
     case "preparing":
@@ -15,6 +17,10 @@ export const OrderStatusBadge = ({ status }: OrderStatusBadgeProps) => {
       return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Pending</Badge>;
     case "cancelled":
       return <Badge className="bg-red-100 text-red-700 border-red-200">Cancelled</Badge>;
+    case "ready":
+      return <Badge className="bg-purple-100 text-purple-700 border-purple-200">Ready</Badge>;
+    case "delivered":
+      return <Badge className="bg-teal-100 text-teal-700 border-teal-200">Delivered</Badge>;
     default:
       return <Badge variant="outline">{status}</Badge>;
   }

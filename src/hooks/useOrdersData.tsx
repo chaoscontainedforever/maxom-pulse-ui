@@ -4,17 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/auth";
 import { toast } from "@/hooks/use-toast";
-
-export interface OrderItem {
-  id: string;
-  customerName: string;
-  items: string[];
-  total: number;
-  status: string;
-  timestamp: Date;
-  special_instructions?: string;
-  phone?: string;
-}
+import { OrderItem } from "@/types/orders";
 
 export const useOrdersData = (businessId?: string) => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -33,11 +23,12 @@ export const useOrdersData = (businessId?: string) => {
       }
       
       try {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await supabase
           .from('orders')
           .select(`
             id, 
             customer_id,
+            restaurant_id,
             items_json,
             special_instructions,
             total_amount,
@@ -61,16 +52,42 @@ export const useOrdersData = (businessId?: string) => {
         }
         
         // Transform the data to match our component needs
-        return data.map((order: any) => ({
-          id: order.id,
-          customerName: order.customers?.name || 'Unknown',
-          items: order.items_json?.map((item: any) => item.name || item.item_name) || [],
-          total: order.total_amount,
-          status: order.items_json?.status || 'pending',
-          timestamp: new Date(order.created_at),
-          special_instructions: order.special_instructions,
-          phone: order.customers?.phone
-        }));
+        return data.map((order: any): OrderItem => {
+          // Parse items from JSON
+          let parsedItems = [];
+          try {
+            if (order.items_json) {
+              parsedItems = Array.isArray(order.items_json) 
+                ? order.items_json 
+                : [order.items_json];
+            }
+          } catch (e) {
+            console.error('Error parsing items JSON:', e);
+            parsedItems = [];
+          }
+
+          // Extract status from items if available
+          const status = parsedItems.length > 0 && parsedItems[0].status 
+            ? parsedItems[0].status 
+            : 'pending';
+
+          return {
+            id: order.id,
+            customerName: order.customers?.name || 'Unknown',
+            customerPhone: order.customers?.phone,
+            items: parsedItems.map((item: any) => ({
+              name: item.name || item.item_name || 'Unknown Item',
+              quantity: item.quantity || 1,
+              price: item.price || 0,
+              modifiers: item.modifiers || []
+            })),
+            total: order.total_amount,
+            status: status,
+            timestamp: new Date(order.created_at),
+            special_instructions: order.special_instructions,
+            restaurant_id: order.restaurant_id
+          };
+        });
       } catch (err) {
         console.error('Exception fetching orders:', err);
         toast({
@@ -102,7 +119,8 @@ export const useOrdersData = (businessId?: string) => {
     
     // Filter by search query
     if (searchQuery && !order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !order.id.toLowerCase().includes(searchQuery.toLowerCase())) {
+        !order.id.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (!order.customerPhone || !order.customerPhone.includes(searchQuery))) {
       return false;
     }
     
