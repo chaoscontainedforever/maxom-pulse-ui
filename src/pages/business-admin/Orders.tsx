@@ -7,9 +7,10 @@ import { useOrdersData } from "@/hooks/useOrdersData";
 import PermissionGuard from "@/components/PermissionGuard";
 import { useEffect } from "react";
 import { useAuth } from "@/context/auth";
+import { toast } from "@/hooks/use-toast";
 
 const Orders = () => {
-  const { profile } = useAuth();
+  const { profile, loading } = useAuth();
   const {
     orders,
     isLoading,
@@ -20,15 +21,24 @@ const Orders = () => {
     setDate,
     searchQuery,
     setSearchQuery
-  } = useOrdersData();
+  } = useOrdersData(profile?.business_id);
 
   // Debug logging
   useEffect(() => {
     console.log("Orders page mounted");
+    console.log("Auth loading:", loading);
     console.log("Profile:", profile);
     console.log("Business ID:", profile?.business_id);
     console.log("Orders data:", { count: orders?.length, isLoading, error });
-  }, [orders, isLoading, error, profile]);
+    
+    if (!profile?.business_id && !loading) {
+      toast({
+        title: "Missing business ID",
+        description: "Your user profile isn't linked to a business. Please contact support.",
+        variant: "destructive"
+      });
+    }
+  }, [orders, isLoading, error, profile, loading]);
 
   return (
     <BusinessAdminLayout>
@@ -57,7 +67,7 @@ const Orders = () => {
               
               <OrdersTable
                 orders={orders}
-                isLoading={isLoading}
+                isLoading={isLoading || loading}
                 error={error}
               />
             </CardContent>

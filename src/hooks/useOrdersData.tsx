@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/auth";
@@ -12,6 +12,8 @@ export const useOrdersData = (businessId?: string) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { profile } = useAuth();
   
+  // Use the provided businessId, or fall back to profile.business_id
+  // This allows explicit override when needed but defaults to current user's business
   const targetBusinessId = businessId || profile?.business_id;
   
   console.log("Fetching orders with business ID:", targetBusinessId);
@@ -27,17 +29,6 @@ export const useOrdersData = (businessId?: string) => {
       
       try {
         console.log(`Fetching orders for restaurant ID: ${targetBusinessId}`);
-        
-        // Create a basic set of test orders if missing for demonstration purposes
-        const { count } = await supabase
-          .from('orders')
-          .select('id', { count: 'exact', head: true })
-          .eq('restaurant_id', targetBusinessId);
-        
-        if (count === 0) {
-          console.log("No orders found, creating sample orders");
-          await createSampleOrders(targetBusinessId);
-        }
         
         // Fetch orders with related customer data
         const { data, error } = await supabase
@@ -127,119 +118,6 @@ export const useOrdersData = (businessId?: string) => {
     },
     enabled: !!targetBusinessId,
   });
-
-  // Helper function to create sample orders for testing
-  const createSampleOrders = async (restaurantId: string) => {
-    try {
-      // First, ensure we have a customer
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('id')
-        .eq('restaurant_id', restaurantId)
-        .limit(1);
-        
-      let customerId;
-      
-      if (customerError || !customerData || customerData.length === 0) {
-        // Create a new customer
-        const { data: newCustomer, error: newCustomerError } = await supabase
-          .from('customers')
-          .insert({
-            name: 'John Doe',
-            phone: '555-123-4567',
-            restaurant_id: restaurantId
-          })
-          .select();
-          
-        if (newCustomerError) {
-          console.error('Error creating sample customer:', newCustomerError);
-          return;
-        }
-        
-        customerId = newCustomer[0].id;
-      } else {
-        customerId = customerData[0].id;
-      }
-      
-      // Create sample orders
-      const sampleOrders = [
-        {
-          customer_id: customerId,
-          restaurant_id: restaurantId,
-          call_id: '00000000-0000-0000-0000-000000000000',
-          items_json: [
-            { 
-              name: 'Cheeseburger', 
-              quantity: 2, 
-              price: 8.99,
-              status: 'completed'
-            },
-            { 
-              name: 'French Fries', 
-              quantity: 1, 
-              price: 3.99,
-              status: 'completed'
-            }
-          ],
-          total_amount: 21.97,
-          special_instructions: 'Extra ketchup please'
-        },
-        {
-          customer_id: customerId,
-          restaurant_id: restaurantId,
-          call_id: '00000000-0000-0000-0000-000000000000',
-          items_json: [
-            { 
-              name: 'Margherita Pizza', 
-              quantity: 1, 
-              price: 12.99,
-              status: 'preparing'
-            },
-            { 
-              name: 'Garlic Bread', 
-              quantity: 1, 
-              price: 4.99,
-              status: 'preparing'
-            }
-          ],
-          total_amount: 17.98,
-          special_instructions: 'Well done crust'
-        },
-        {
-          customer_id: customerId,
-          restaurant_id: restaurantId,
-          call_id: '00000000-0000-0000-0000-000000000000',
-          items_json: [
-            { 
-              name: 'Caesar Salad', 
-              quantity: 1, 
-              price: 9.99,
-              status: 'pending'
-            },
-            { 
-              name: 'Iced Tea', 
-              quantity: 2, 
-              price: 2.99,
-              status: 'pending'
-            }
-          ],
-          total_amount: 15.97
-        }
-      ];
-      
-      const { error: ordersError } = await supabase
-        .from('orders')
-        .insert(sampleOrders);
-        
-      if (ordersError) {
-        console.error('Error creating sample orders:', ordersError);
-      } else {
-        console.log('Sample orders created successfully');
-      }
-    } catch (err) {
-      console.error('Error in createSampleOrders:', err);
-    }
-  };
 
   // Filter orders based on selected filters
   const filteredOrders = ordersData.filter((order: OrderItem) => {
