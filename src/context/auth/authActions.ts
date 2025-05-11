@@ -1,4 +1,3 @@
-
 import { NavigateFunction } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -108,23 +107,12 @@ export async function signUp(
         description: "Your account has been created successfully.",
       });
       
-      // For development environments, we may want to automatically sign in
-      // the user since email confirmation might be disabled
-      if (data.session) {
-        console.log("Auto sign-in successful with session");
-        setTimeout(() => {
-          navigate('/onboarding');
-        }, 100);
-      } else {
-        // If no session is returned, the user may need to confirm their email
-        toast({
-          title: "Email Verification",
-          description: "Please check your email to verify your account.",
-        });
-        setTimeout(() => {
-          navigate('/login');
-        }, 100);
-      }
+      // Always navigate to onboarding page after successful signup
+      // This ensures the user goes through the onboarding process
+      console.log("Navigating to onboarding page...");
+      setTimeout(() => {
+        navigate('/onboarding');
+      }, 100);
     }
 
     return { error: null };
