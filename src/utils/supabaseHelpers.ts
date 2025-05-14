@@ -14,11 +14,16 @@ export async function queryUserProfile(userId: string) {
       .from('users')
       .select('*')
       .eq('id', userId)
-      .single();
+      .maybeSingle(); // Use maybeSingle() instead of single() to avoid errors when no row is found
     
     if (error) {
       console.error('Error fetching user profile:', error);
       return null;
+    }
+    
+    // If no data is found, return null
+    if (!data) {
+      console.info(`No user profile found for ID: ${userId}`);
     }
     
     return data;
