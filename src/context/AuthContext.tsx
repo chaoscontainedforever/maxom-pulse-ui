@@ -1,5 +1,5 @@
 
 // This file serves as the main export point for our auth system
-import { AuthContext, AuthProvider, useAuth } from './auth/index';
+import { AuthProvider, AuthContext, useAuth } from './auth/index';
 
 export { AuthContext, AuthProvider, useAuth };

@@ -9,11 +9,13 @@ export async function queryUserProfile(userId: string) {
   if (!userId) return null;
   
   try {
+    // Use a longer timeout for this query since it might be affected by RLS
     const { data, error } = await supabase
       .from('users')
       .select('*')
       .eq('id', userId)
-      .single();
+      .single()
+      .timeout(10000); // 10 second timeout, more than enough for RLS evaluation
     
     if (error) {
       console.error('Error fetching user profile:', error);
