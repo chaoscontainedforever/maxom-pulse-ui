@@ -1,6 +1,8 @@
 
-import { useToast as useToastShadcn } from "@radix-ui/react-toast";
-import { toast as sonnerToast } from "sonner";
+// Re-export toast from sonner
+import { toast } from "sonner";
 
-export const useToast = useToastShadcn;
-export const toast = sonnerToast;
+// Export the useToast hook from our custom hook implementation
+import { useToast } from "@/hooks/use-toast";
+
+export { useToast, toast };

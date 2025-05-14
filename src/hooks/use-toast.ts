@@ -1,10 +1,34 @@
 
 import { toast as sonnerToast } from "sonner";
+import * as React from "react";
 
-import { useToast as useToastShadcn } from "@/components/ui/use-toast";
+// Define the toast types based on the expected props
+type ToastProps = {
+  title?: string;
+  description?: string;
+  variant?: "default" | "destructive";
+  action?: React.ReactNode;
+};
 
-// Re-export the hook from shadcn/ui
-export const useToast = useToastShadcn;
+// Create a custom hook that provides a toast function compatible with both sonner and our custom UI
+export function useToast() {
+  const toasts = React.useState<ToastProps[]>([]);
 
-// Re-export the toast function from sonner for direct use
-export const toast = sonnerToast;
+  function toast(props: ToastProps) {
+    // Use sonner toast for actual display
+    sonnerToast(props.title, {
+      description: props.description,
+      // Map our variant to sonner's type
+      type: props.variant === "destructive" ? "error" : "default",
+      action: props.action,
+    });
+  }
+
+  return {
+    toast,
+    toasts: toasts[0],
+  };
+}
+
+// Re-export sonner's toast for direct use
+export { sonnerToast as toast };

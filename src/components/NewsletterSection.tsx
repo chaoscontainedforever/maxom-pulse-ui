@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
@@ -12,9 +12,8 @@ const NewsletterSection = () => {
     
     // Simulating API call
     setTimeout(() => {
-      toast({
-        title: "Success!",
-        description: "Thank you for subscribing to our newsletter.",
+      toast("Success!", {
+        description: "Thank you for subscribing to our newsletter."
       });
       setEmail('');
       setIsSubmitting(false);
