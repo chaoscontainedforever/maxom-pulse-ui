@@ -1,27 +1,21 @@
+
 import { NavigateFunction } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SignUpOptions, UserProfile } from "./types";
-import { 
-  createProfileFromDbData, 
-  createProfileFromMetadata, 
-  getMockSuperAdminProfile 
-} from "./authUtils";
+import { queryUserProfile } from "@/utils/supabaseHelpers";
 
 /**
  * Sign in with email and password
  */
 export async function signIn(
   email: string, 
-  password: string, 
-  navigate: NavigateFunction
+  password: string
 ) {
   try {
-    console.log("Signing in with email:", email);
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
-      console.error("Sign in error:", error.message);
       toast({
         title: "Sign In Failed",
         description: error.message,
@@ -35,26 +29,9 @@ export async function signIn(
       description: "You have been successfully signed in.",
     });
     
-    // If this is a business owner, redirect to business admin
-    if (data.user?.user_metadata?.role === 'business_owner') {
-      setTimeout(() => {
-        navigate('/business-admin');
-      }, 100);
-    } else if (data.user?.user_metadata?.role === 'super_admin') {
-      setTimeout(() => {
-        navigate('/super-admin');
-      }, 100);
-    } else {
-      // For regular users
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
-    }
-    
     return { error: null };
   } catch (err) {
     const error = err as Error;
-    console.error("Sign in exception:", error.message);
     toast({
       title: "Sign In Failed",
       description: error.message,
@@ -70,12 +47,9 @@ export async function signIn(
 export async function signUp(
   email: string, 
   password: string,
-  navigate: NavigateFunction,
   options: SignUpOptions = {}
 ) {
   try {
-    console.log("Signing up with email:", email, "and options:", options);
-    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -90,7 +64,6 @@ export async function signUp(
     });
 
     if (error) {
-      console.error("Sign up error:", error.message);
       toast({
         title: "Registration Failed",
         description: error.message,
@@ -99,26 +72,14 @@ export async function signUp(
       return { error };
     }
 
-    // If successful sign up
-    if (data.user) {
-      console.log("Sign up successful for:", data.user.email);
-      toast({
-        title: "Registration Successful",
-        description: "Your account has been created successfully.",
-      });
-      
-      // Always navigate to onboarding page after successful signup
-      // This ensures the user goes through the onboarding process
-      console.log("Navigating to onboarding page...");
-      setTimeout(() => {
-        navigate('/onboarding');
-      }, 100);
-    }
+    toast({
+      title: "Registration Successful",
+      description: "Your account has been created successfully.",
+    });
 
     return { error: null };
   } catch (err) {
     const error = err as Error;
-    console.error("Sign up exception:", error.message);
     toast({
       title: "Registration Failed",
       description: error.message,
@@ -131,10 +92,8 @@ export async function signUp(
 /**
  * Sign out user
  */
-export async function signOut(navigate: NavigateFunction) {
+export async function signOut() {
   try {
-    console.log("Auth Actions: Starting sign out process");
-    
     // First clear any mock admin data (if exists)
     localStorage.removeItem('mockSuperAdmin');
     
@@ -142,7 +101,6 @@ export async function signOut(navigate: NavigateFunction) {
     const { error } = await supabase.auth.signOut();
     
     if (error) {
-      console.error("Error signing out:", error);
       toast({
         title: "Sign Out Failed",
         description: error.message,
@@ -155,12 +113,6 @@ export async function signOut(navigate: NavigateFunction) {
       title: "Signed Out",
       description: "You have been successfully signed out.",
     });
-    
-    // Ensure navigation happens after state updates
-    setTimeout(() => {
-      console.log("Navigating to /login after sign out");
-      navigate("/login");
-    }, 100);
     
     return { error: null };
   } catch (err) {
@@ -178,59 +130,39 @@ export async function signOut(navigate: NavigateFunction) {
 /**
  * Update user profile
  */
-export async function updateProfile(updates: Partial<UserProfile>, user: UserProfile | null) {
-  if (!user?.id) return;
+export async function updateProfile(updates: Partial<UserProfile>, userId: string | undefined) {
+  if (!userId) return { error: new Error('No user ID provided') };
 
-  // Use PostgreSQL query without typechecking to avoid TypeScript errors
-  // This is a workaround until the types are updated
-  const { error } = await (supabase as any)
-    .from('users')
-    .update({
-      ...updates,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', user.id);
-
-  if (error) {
-    toast({
-      title: "Profile Update Failed",
-      description: error.message,
-      variant: "destructive",
-    });
-  } else {
-    toast({
-      title: "Profile Updated",
-      description: "Your profile has been successfully updated.",
-    });
-  }
-}
-
-/**
- * Fetch user profile from Supabase
- */
-export async function fetchUserProfile(userId: string, setProfile: (profile: UserProfile | null) => void) {
   try {
-    // Use PostgreSQL query without typechecking to avoid TypeScript errors
-    // This is a workaround until the types are updated
-    const { data, error } = await (supabase as any)
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const { error } = await supabase
+      .from('users')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', userId);
 
     if (error) {
-      console.error("Error fetching profile:", error);
-      return null;
-    } 
-    
-    if (data) {
-      console.log("Fetched user profile:", data);
-      return data;
+      toast({
+        title: "Profile Update Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return { error };
+    } else {
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+      });
+      return { error: null };
     }
-    
-    return null;
-  } catch (err) {
-    console.error("Exception fetching profile:", err);
-    return null;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    toast({
+      title: "Profile Update Failed",
+      description: "An unexpected error occurred",
+      variant: "destructive",
+    });
+    return { error: error as Error };
   }
 }

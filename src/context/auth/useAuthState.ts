@@ -9,7 +9,7 @@ import { UserProfile } from "./types";
 export function useAuthState() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
   return {
@@ -17,9 +17,10 @@ export function useAuthState() {
     setUser,
     profile,
     setProfile,
-    loading,
-    setLoading,
+    isLoading,
+    setIsLoading,
     session,
-    setSession
+    setSession,
+    loading: isLoading // For compatibility with older components
   };
 }

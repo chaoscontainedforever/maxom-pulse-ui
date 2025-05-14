@@ -26,10 +26,11 @@ export function createProfileFromDbData(data: any, user: User): UserProfile {
   
   return {
     id: data.id,
-    first_name: data.name?.split(' ')[0] || '',
-    last_name: data.name?.split(' ').slice(1).join(' ') || '',
+    first_name: data.first_name || '',
+    last_name: data.last_name || '',
     email: data.email || '',
     role: userRole,
+    business_type: data.business_type || '',
     avatar_url: data.avatar_url || ''
   };
 }

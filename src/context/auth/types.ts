@@ -1,7 +1,6 @@
 
 import { Session, User } from "@supabase/supabase-js";
 
-// Define types for the authentication context
 export type Role = "super_admin" | "business_owner" | "employee" | "cms_admin";
 
 export interface UserProfile {
@@ -25,8 +24,8 @@ export interface SignUpOptions {
 export interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
-  loading: boolean;
-  isLoading?: boolean;
+  isLoading: boolean;
+  loading?: boolean;
   session: Session | null;
   signIn: (email: string, password: string) => Promise<{
     error: Error | null;
