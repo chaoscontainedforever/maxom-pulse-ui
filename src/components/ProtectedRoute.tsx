@@ -1,52 +1,72 @@
 
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/auth';
-import { usePermissions } from '@/hooks/usePermissions';
-import { Role } from '@/context/auth/types';
+import { ReactNode, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/context/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requiredRole?: Role;
-  businessId?: string;
+  children: ReactNode;
+  requiredRole?: string;
   featureKey?: string;
 }
 
-const ProtectedRoute = ({ children, requiredRole, businessId, featureKey }: ProtectedRouteProps) => {
-  const { user, profile, loading } = useAuth();
-  const { checkPermission } = usePermissions();
-  const location = useLocation();
+const ProtectedRoute = ({ 
+  children, 
+  requiredRole, 
+  featureKey 
+}: ProtectedRouteProps) => {
+  const { user, isLoading } = useAuth();
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [isCheckingRole, setIsCheckingRole] = useState(!!requiredRole);
 
-  console.log("ProtectedRoute check - user:", user?.id, "role:", profile?.role);
+  useEffect(() => {
+    const checkUserRole = async () => {
+      if (!user || !requiredRole) {
+        setHasAccess(!requiredRole);
+        setIsCheckingRole(false);
+        return;
+      }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error checking user role:', error);
+          setHasAccess(false);
+        } else {
+          setHasAccess(data?.role === requiredRole);
+        }
+      } catch (error) {
+        console.error('Error checking user role:', error);
+        setHasAccess(false);
+      } finally {
+        setIsCheckingRole(false);
+      }
+    };
+
+    checkUserRole();
+  }, [user, requiredRole]);
+
+  // Show loading state
+  if (isLoading || isCheckingRole) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
+  // If not authenticated, redirect to login
   if (!user) {
-    // Clear any mock admin data to ensure it doesn't interfere with auth state
-    localStorage.removeItem('mockSuperAdmin');
-    
-    // Redirect to login page, but save the location they were trying to access
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" />;
   }
 
-  // Check permissions
-  const hasPermission = checkPermission({
-    requiredRole,
-    businessId,
-    featureKey
-  });
-
-  // If user doesn't have required permissions, redirect to unauthorized page
-  if (!hasPermission) {
-    return <Navigate to="/unauthorized" replace />;
+  // If role check failed, redirect to unauthorized
+  if (requiredRole && hasAccess === false) {
+    return <Navigate to="/unauthorized" />;
   }
 
-  // User is authenticated and has the required permissions
+  // All checks passed, render the protected component
   return <>{children}</>;
 };
 
