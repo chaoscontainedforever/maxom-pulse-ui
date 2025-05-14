@@ -1,27 +1,59 @@
 
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 import { 
   LayoutDashboard, 
   FileText, 
-  Users,
-  Bell,
-  BarChart3,
-  ShieldCheck,
-  MonitorSmartphone,
-  FileCode,
-  Archive,
-  LogOut,
+  Image,
+  Menu,
+  Megaphone,
   Settings,
+  LogOut 
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
   onSignOut: () => Promise<void>;
 }
 
+interface NavItemProps {
+  icon: React.ElementType;
+  label: string;
+  to: string;
+  active?: boolean;
+}
+
+const NavItem = ({ icon: Icon, label, to, active }: NavItemProps) => (
+  <Link 
+    to={to} 
+    className={cn(
+      "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+      active 
+        ? "bg-gradient-to-r from-[#800020] to-[#FF6200] text-white" 
+        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+    )}
+  >
+    <Icon size={18} />
+    <span>{label}</span>
+  </Link>
+);
+
+const NavSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="mb-6">
+    <h3 className="px-4 mb-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      {title}
+    </h3>
+    <div className="space-y-1">
+      {children}
+    </div>
+  </div>
+);
+
 export const CMSSidebar = ({ onSignOut }: SidebarProps) => {
   const { user } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
   
   return (
     <aside className="w-64 bg-gradient-to-b from-[#800020] to-[#FF6200] text-white fixed h-full">
@@ -33,72 +65,44 @@ export const CMSSidebar = ({ onSignOut }: SidebarProps) => {
       </div>
       
       <div className="px-3 py-2">
-        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mb-1">APPLICATION</p>
+        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mb-1">CONTENT</p>
         <nav className="space-y-1">
-          <Link to="/cms" className="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 text-white">
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <FileText size={18} />
-            <span>Pages</span>
-          </Link>
-          <Link to="/cms/customers" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Users size={18} />
-            <span>Customers</span>
-          </Link>
-          <Link to="/cms/user-management" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Users size={18} />
-            <span>User Management</span>
-          </Link>
-          <Link to="/cms/voice-settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Settings size={18} />
-            <span>Voice Settings</span>
-          </Link>
-          <Link to="/cms/call-analytics" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <BarChart3 size={18} />
-            <span>Call Analytics</span>
-          </Link>
-        </nav>
-        
-        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">PLATFORM</p>
-        <nav className="space-y-1">
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Bell size={18} />
-            <span>Notifications</span>
-          </a>
-          <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Settings size={18} />
-            <span>System Settings</span>
-          </Link>
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <BarChart3 size={18} />
-            <span>Reports</span>
-          </a>
-        </nav>
-        
-        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">SECURITY</p>
-        <nav className="space-y-1">
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <ShieldCheck size={18} />
-            <span>Permissions</span>
-          </a>
-        </nav>
-        
-        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">SRE</p>
-        <nav className="space-y-1">
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <MonitorSmartphone size={18} />
-            <span>Monitoring</span>
-          </a>
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <Archive size={18} />
-            <span>Logs</span>
-          </a>
-          <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-            <FileCode size={18} />
-            <span>Deployments</span>
-          </a>
+          <NavItem 
+            icon={LayoutDashboard} 
+            label="Dashboard" 
+            to="/cms" 
+            active={currentPath === "/cms"} 
+          />
+          <NavItem 
+            icon={FileText} 
+            label="Pages" 
+            to="/cms/pages" 
+            active={currentPath === "/cms/pages" || currentPath.includes("/cms/pages/")} 
+          />
+          <NavItem 
+            icon={Image} 
+            label="Media Library" 
+            to="/cms/media" 
+            active={currentPath === "/cms/media"} 
+          />
+          <NavItem 
+            icon={Menu} 
+            label="Navigation" 
+            to="/cms/navigation" 
+            active={currentPath === "/cms/navigation"} 
+          />
+          <NavItem 
+            icon={Megaphone} 
+            label="Announcement Ribbon" 
+            to="/cms/ribbon" 
+            active={currentPath === "/cms/ribbon"} 
+          />
+          <NavItem 
+            icon={Settings} 
+            label="Site Settings" 
+            to="/cms/settings" 
+            active={currentPath === "/cms/settings"} 
+          />
         </nav>
       </div>
       
@@ -109,7 +113,7 @@ export const CMSSidebar = ({ onSignOut }: SidebarProps) => {
           </div>
           <div className="text-sm overflow-hidden">
             <p className="font-medium truncate">{user?.email || 'Admin User'}</p>
-            <p className="text-white/60 text-xs">Super Admin Access</p>
+            <p className="text-white/60 text-xs">CMS Admin</p>
           </div>
         </div>
         <Button 
@@ -121,10 +125,7 @@ export const CMSSidebar = ({ onSignOut }: SidebarProps) => {
           <LogOut size={16} />
           <span>Sign Out</span>
         </Button>
-        <div className="text-xs text-white/50 mt-1 text-center">
-          You have full system administrator privileges.
-        </div>
       </div>
     </aside>
   );
-};
+}
