@@ -36,7 +36,9 @@ export default function AddUserPage() {
     e.preventDefault();
     
     if (!userId || !email) {
-      toast.error("Missing information", "User ID and email are required");
+      toast.error("Missing information", {
+        description: "User ID and email are required"
+      });
       return;
     }
     
@@ -46,12 +48,18 @@ export default function AddUserPage() {
       const result = await addUserToUsersTable(userId, email, role, firstName, lastName);
       
       if (result.success) {
-        toast.success("Success", result.message);
+        toast.success("Success", {
+          description: result.message
+        });
       } else {
-        toast.error("Error", result.message || 'Failed to add user');
+        toast.error("Error", {
+          description: result.message || 'Failed to add user'
+        });
       }
     } catch (error: any) {
-      toast.error("Error", error.message || 'An unexpected error occurred');
+      toast.error("Error", {
+        description: error.message || 'An unexpected error occurred'
+      });
     } finally {
       setIsLoading(false);
     }

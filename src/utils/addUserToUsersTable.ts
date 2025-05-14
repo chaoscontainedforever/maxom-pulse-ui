@@ -53,7 +53,9 @@ export async function addUserToUsersTable(userId: string, email: string, role: R
     
     if (error) {
       console.error('Error adding user to users table:', error);
-      toast(`Failed to add user: ${error.message}`);
+      toast.error("Failed to add user", {
+        description: error.message
+      });
       return { 
         success: false, 
         error, 
@@ -61,7 +63,9 @@ export async function addUserToUsersTable(userId: string, email: string, role: R
       };
     }
     
-    toast.success('User successfully added to users table');
+    toast.success('User successfully added', {
+      description: 'User has been added to users table'
+    });
     return { 
       success: true, 
       user: data, 
