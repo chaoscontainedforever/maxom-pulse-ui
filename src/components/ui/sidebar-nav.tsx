@@ -22,10 +22,10 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
             item.active
               ? "bg-gradient-to-r from-[#800020] to-[#FF6200] text-white"
-              : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              : "text-gray-700 hover:bg-gradient-to-r hover:from-[#800020] hover:to-[#FF6200] hover:text-white"
           )}
         >
-          {item.icon && <span className="h-4 w-4">{item.icon}</span>}
+          {item.icon && <span className="h-5 w-5">{item.icon}</span>}
           <span>{item.title}</span>
         </Link>
       ))}

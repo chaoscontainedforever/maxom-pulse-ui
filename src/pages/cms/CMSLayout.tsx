@@ -88,7 +88,7 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-gray-50">
       <CMSSidebar onSignOut={handleSignOut} />
       
       <div className="flex-1 ml-64 overflow-auto">
