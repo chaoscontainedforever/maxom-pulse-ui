@@ -16,23 +16,21 @@ export async function signIn(
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
-      toast("Sign In Failed", {
+      toast.error("Sign In Failed", {
         description: error.message,
-        type: "error"
       });
       return { error };
     }
     
-    toast("Welcome back!", {
+    toast.success("Welcome back!", {
       description: "You have been successfully signed in."
     });
     
     return { error: null };
   } catch (err) {
     const error = err as Error;
-    toast("Sign In Failed", {
+    toast.error("Sign In Failed", {
       description: error.message,
-      type: "error"
     });
     return { error };
   }
@@ -61,23 +59,21 @@ export async function signUp(
     });
 
     if (error) {
-      toast("Registration Failed", {
+      toast.error("Registration Failed", {
         description: error.message,
-        type: "error"
       });
       return { error };
     }
 
-    toast("Registration Successful", {
+    toast.success("Registration Successful", {
       description: "Your account has been created successfully."
     });
 
     return { error: null };
   } catch (err) {
     const error = err as Error;
-    toast("Registration Failed", {
+    toast.error("Registration Failed", {
       description: error.message,
-      type: "error"
     });
     return { error };
   }
@@ -95,14 +91,13 @@ export async function signOut() {
     const { error } = await supabase.auth.signOut();
     
     if (error) {
-      toast("Sign Out Failed", {
+      toast.error("Sign Out Failed", {
         description: error.message,
-        type: "error"
       });
       return { error };
     }
     
-    toast("Signed Out", {
+    toast.success("Signed Out", {
       description: "You have been successfully signed out."
     });
     
@@ -110,9 +105,8 @@ export async function signOut() {
   } catch (err) {
     console.error("Exception during sign out:", err);
     const error = err as Error;
-    toast("Sign Out Failed", {
+    toast.error("Sign Out Failed", {
       description: error.message,
-      type: "error"
     });
     return { error };
   }
@@ -134,22 +128,20 @@ export async function updateProfile(updates: Partial<UserProfile>, userId: strin
       .eq('id', userId);
 
     if (error) {
-      toast("Profile Update Failed", {
+      toast.error("Profile Update Failed", {
         description: error.message,
-        type: "error"
       });
       return { error };
     } else {
-      toast("Profile Updated", {
+      toast.success("Profile Updated", {
         description: "Your profile has been successfully updated."
       });
       return { error: null };
     }
   } catch (error) {
     console.error("Error updating profile:", error);
-    toast("Profile Update Failed", {
+    toast.error("Profile Update Failed", {
       description: "An unexpected error occurred",
-      type: "error"
     });
     return { error: error as Error };
   }

@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -24,8 +23,7 @@ const Contact = () => {
     
     // Simulating API call
     setTimeout(() => {
-      toast({
-        title: "Request Received!",
+      toast.success("Request Received!", {
         description: "Thank you for your interest. Our team will contact you shortly.",
       });
       setFormData({

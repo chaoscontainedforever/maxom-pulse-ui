@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -78,10 +78,8 @@ const SignUpForm = () => {
       }
     } catch (err) {
       console.error("Exception during sign up:", err);
-      toast({
-        title: "Registration Failed",
+      toast.error("Registration Failed", {
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);

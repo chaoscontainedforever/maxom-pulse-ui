@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/auth';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { mockUserProfiles } from '@/lib/mock-data';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -55,14 +54,11 @@ const Login = () => {
       
       if (error) {
         setStandardError(error.message);
-        toast({
-          title: "Login Failed",
-          description: error.message || "Invalid email or password",
-          variant: "destructive"
+        toast.error("Login Failed", {
+          description: error.message || "Invalid email or password"
         });
       } else {
-        toast({
-          title: "Login Successful",
+        toast.success("Login Successful", {
           description: "Welcome back!"
         });
         
@@ -71,10 +67,8 @@ const Login = () => {
     } catch (err) {
       const error = err as Error;
       setStandardError(error.message);
-      toast({
-        title: "Login Error",
-        description: error.message,
-        variant: "destructive"
+      toast.error("Login Error", {
+        description: error.message
       });
     } finally {
       setIsLoading(false);
@@ -104,8 +98,7 @@ const Login = () => {
             profile: adminProfile
           }));
           
-          toast({
-            title: "Super Admin Login Successful",
+          toast.success("Super Admin Login Successful", {
             description: "Welcome to the Super Admin dashboard."
           });
           
@@ -123,10 +116,8 @@ const Login = () => {
       
       if (error) {
         setAdminError(error.message);
-        toast({
-          title: "Login Failed",
-          description: error.message || "Could not log in as super admin. Please check credentials.",
-          variant: "destructive"
+        toast.error("Login Failed", {
+          description: error.message || "Could not log in as super admin. Please check credentials."
         });
         console.error("Super admin login error:", error);
         return;
@@ -134,8 +125,7 @@ const Login = () => {
       
       if (data.user) {
         console.log("Super admin login successful:", data.user);
-        toast({
-          title: "Super Admin Login Successful",
+        toast.success("Super Admin Login Successful", {
           description: "Welcome to the Super Admin dashboard."
         });
         
@@ -144,10 +134,8 @@ const Login = () => {
     } catch (err) {
       const error = err as Error;
       setAdminError(error.message);
-      toast({
-        title: "Login Error",
-        description: error.message,
-        variant: "destructive"
+      toast.error("Login Error", {
+        description: error.message
       });
       console.error("Super admin login exception:", error);
     } finally {
@@ -286,7 +274,7 @@ const Login = () => {
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
                       required
-                      placeholder="••••••••"
+                      placeholder="••••••���•"
                     />
                   </div>
                   

@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { queryUserProfile, updateUserProfile } from '@/utils/supabaseHelpers';
 
 // Define AuthContextType here to ensure it's consistent with imports
@@ -79,26 +79,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
-        toast({
-          title: "Sign In Failed",
+        toast.error("Sign In Failed", {
           description: error.message,
-          variant: "destructive",
         });
         return { error };
       }
       
-      toast({
-        title: "Welcome back!",
+      toast.success("Welcome back!", {
         description: "You have been successfully signed in.",
       });
       
       return { error: null };
     } catch (err) {
       const error = err as Error;
-      toast({
-        title: "Sign In Failed",
+      toast.error("Sign In Failed", {
         description: error.message,
-        variant: "destructive",
       });
       return { error };
     }
@@ -120,26 +115,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast({
-          title: "Registration Failed",
+        toast.error("Registration Failed", {
           description: error.message,
-          variant: "destructive",
         });
         return { error };
       }
 
-      toast({
-        title: "Registration Successful",
+      toast.success("Registration Successful", {
         description: "Your account has been created successfully.",
       });
 
       return { error: null };
     } catch (err) {
       const error = err as Error;
-      toast({
-        title: "Registration Failed",
+      toast.error("Registration Failed", {
         description: error.message,
-        variant: "destructive",
       });
       return { error };
     }
@@ -151,25 +141,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        toast({
-          title: "Sign Out Failed",
+        toast.error("Sign Out Failed", {
           description: error.message,
-          variant: "destructive",
         });
         return;
       }
       
-      toast({
-        title: "Signed Out",
+      toast.success("Signed Out", {
         description: "You have been successfully signed out.",
       });
     } catch (err) {
       console.error("Exception during sign out:", err);
       const error = err as Error;
-      toast({
-        title: "Sign Out Failed",
+      toast.error("Sign Out Failed", {
         description: error.message,
-        variant: "destructive",
       });
     }
   };
@@ -181,14 +166,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await updateUserProfile(user.id, updates);
 
       if (error) {
-        toast({
-          title: "Profile Update Failed",
+        toast.error("Profile Update Failed", {
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Profile Updated",
+        toast.success("Profile Updated", {
           description: "Your profile has been successfully updated.",
         });
         
@@ -200,10 +182,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast({
-        title: "Profile Update Failed",
+      toast.error("Profile Update Failed", {
         description: "An unexpected error occurred",
-        variant: "destructive",
       });
     }
   };
