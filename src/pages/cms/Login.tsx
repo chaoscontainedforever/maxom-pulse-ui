@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { checkUserRole } from '@/utils/supabaseHelpers';
+import { Loader2 } from 'lucide-react';
 
 export default function CMSLoginPage() {
   const [email, setEmail] = useState('');
@@ -18,6 +18,7 @@ export default function CMSLoginPage() {
     setLoading(true);
 
     try {
+      // Sign in with email and password
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -31,17 +32,36 @@ export default function CMSLoginPage() {
         throw new Error('User not found');
       }
 
-      // Check if user has admin role
-      const hasAdminRole = await checkUserRole(data.user.id, 'cms_admin');
+      // Check if user has admin role directly from the database
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      if (userError) {
+        console.error('Error fetching user role:', userError);
+        throw new Error('Could not verify admin privileges');
+      }
+
+      const hasAdminRole = userData?.role === 'cms_admin' || userData?.role === 'super_admin';
       
       if (!hasAdminRole) {
+        // If not admin, sign out and show error
         await supabase.auth.signOut();
         throw new Error('Unauthorized. You do not have admin privileges.');
       }
 
+      toast.success('Login successful', {
+        description: 'Welcome to the CMS dashboard'
+      });
+      
       navigate('/cms');
     } catch (error: any) {
-      toast.error('Error', error.message || 'Invalid login credentials');
+      toast.error('Error', {
+        description: error.message || 'Invalid login credentials'
+      });
+      console.error('CMS login error:', error);
     } finally {
       setLoading(false);
     }
@@ -73,7 +93,14 @@ export default function CMSLoginPage() {
         </div>
         
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            'Sign in'
+          )}
         </Button>
       </form>
     </div>

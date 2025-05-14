@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
-import { checkUserRole } from "@/utils/supabaseHelpers";
+import { supabase } from '@/integrations/supabase/client';
 
 interface CMSLayoutProps {
   children: ReactNode;
@@ -21,7 +21,20 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
       }
 
       try {
-        const hasAdminRole = await checkUserRole(user.id, 'cms_admin');
+        // Directly query the users table to check role
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error checking user role:', error);
+          setIsAuthorized(false);
+          return;
+        }
+
+        const hasAdminRole = data?.role === 'cms_admin' || data?.role === 'super_admin';
         setIsAuthorized(hasAdminRole);
       } catch (error) {
         console.error('Error checking user role:', error);

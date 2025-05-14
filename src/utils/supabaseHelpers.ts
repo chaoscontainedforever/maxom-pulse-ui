@@ -1,15 +1,11 @@
 
-import { User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 
 /**
- * Safely query the users table with proper type checking
+ * Query user profile data
  */
 export async function queryUserProfile(userId: string) {
-  if (!userId) return null;
-  
   try {
-    // RLS policies may affect this query, so handle errors appropriately
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -27,54 +23,55 @@ export async function queryUserProfile(userId: string) {
     }
     
     return data;
-  } catch (error) {
-    console.error('Exception fetching user profile:', error);
+  } catch (err) {
+    console.error('Exception fetching user profile:', err);
     return null;
   }
 }
 
 /**
- * Safely update a user profile with proper type checking
+ * Check if user has a specific role
  */
-export async function updateUserProfile(userId: string, updates: any) {
-  if (!userId) return { error: new Error('No user ID provided') };
-  
-  try {
-    const { error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId);
-    
-    return { error: error ? new Error(error.message) : null };
-  } catch (error) {
-    return { error: error as Error };
-  }
-}
-
-/**
- * Check if a user has a specific role
- */
-export async function checkUserRole(userId: string, requiredRole: string) {
-  if (!userId) return false;
-  
+export async function checkUserRole(userId: string, roleName: string) {
   try {
     const { data, error } = await supabase
       .from('users')
       .select('role')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
     
-    if (error || !data) {
+    if (error) {
       console.error('Error checking user role:', error);
       return false;
     }
     
-    return data.role === requiredRole;
-  } catch (error) {
-    console.error('Exception checking user role:', error);
+    if (!data) {
+      console.info(`No user found with ID: ${userId}`);
+      return false;
+    }
+    
+    // Check if the user has the specified role
+    // For super_admin, they have access to everything
+    return data.role === roleName || data.role === 'super_admin';
+  } catch (err) {
+    console.error('Exception checking user role:', err);
     return false;
+  }
+}
+
+/**
+ * Update user profile
+ */
+export async function updateUserProfile(userId: string, updates: any) {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', userId);
+    
+    return { data, error };
+  } catch (err) {
+    console.error('Error updating user profile:', err);
+    return { data: null, error: err };
   }
 }
