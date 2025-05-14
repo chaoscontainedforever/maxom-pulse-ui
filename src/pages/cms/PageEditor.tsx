@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Bell, BarChart3, ShieldCheck, MonitorSmartphone, FileCode, Archive, FileText, ImageIcon, Settings, Users, LayoutDashboard } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from "@/context/AuthContext";
+import { Card } from "@/components/ui/card";
 
 // Define component types for different page sections
 interface HeroSectionContent {
@@ -22,6 +25,7 @@ export default function PageEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [pageTitle, setPageTitle] = useState("");
+  const { user, signOut } = useAuth();
   
   // State for hero section content
   const [heroContent, setHeroContent] = useState<HeroSectionContent>({
@@ -30,14 +34,21 @@ export default function PageEditor() {
     subheading: "Automate calls, bookings, and customer support with voice AI that sounds natural and handles real conversations like a human."
   });
 
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   useEffect(() => {
     // In a real implementation, we would fetch the content from Supabase
     // For now, we'll simulate loading and set default values based on the slug
     setTimeout(() => {
       if (slug === 'home-hero') {
         setPageTitle("Home Page - Hero Section");
-        // We would normally fetch this from the database
-        // Here we're just using the default state we already set
+        // Try to load existing content from localStorage if available
+        const savedContent = localStorage.getItem('cms_hero_content');
+        if (savedContent) {
+          setHeroContent(JSON.parse(savedContent));
+        }
       }
       setIsLoading(false);
     }, 800);
@@ -70,42 +81,119 @@ export default function PageEditor() {
 
   return (
     <div className="flex h-full min-h-screen">
-      {/* Sidebar - using the same styles as other CMS pages */}
-      <aside className="w-64 bg-maxom-violet text-white p-6 flex flex-col">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gradient-to-b from-maxom-violet to-[#4B0082] text-white p-6 flex flex-col">
         <div className="mb-8">
-          <h2 className="text-xl font-bold">CMS Admin</h2>
-          <p className="text-sm text-gray-300 mt-1">Content Management System</p>
+          <h2 className="text-xl font-bold flex items-center">
+            <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">Maxom.ai</span>
+            <span className="ml-2 text-xs py-0.5 px-2 bg-maxom-orange/90 rounded text-white font-normal">Admin</span>
+          </h2>
         </div>
         
-        <nav className="space-y-1 flex-1">
-          <a href="/cms" className="flex items-center gap-2 px-3 py-2 rounded text-white/80 hover:text-white hover:bg-maxom-violet/70">
-            <span>Dashboard</span>
-          </a>
-          <a href="/cms/pages" className="flex items-center gap-2 px-3 py-2 bg-maxom-violet/70 rounded text-white">
-            <span>Pages</span>
-          </a>
-          <a href="/cms/media" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
-            <span>Media Library</span>
-          </a>
-          <a href="/cms/settings" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
-            <span>Settings</span>
-          </a>
-        </nav>
+        <div className="space-y-6">
+          <div>
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Application</p>
+            <nav className="space-y-1">
+              <Link to="/cms" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </Link>
+              <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 text-white">
+                <FileText size={18} />
+                <span>Pages</span>
+              </Link>
+              <Link to="/cms/media" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <ImageIcon size={18} />
+                <span>Media Library</span>
+              </Link>
+              <Link to="/cms/users" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <Users size={18} />
+                <span>Users</span>
+              </Link>
+            </nav>
+          </div>
+          
+          <div>
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Platform</p>
+            <nav className="space-y-1">
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <Bell size={18} />
+                <span>Notifications</span>
+              </a>
+              <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <Settings size={18} />
+                <span>System Settings</span>
+              </Link>
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <BarChart3 size={18} />
+                <span>Reports</span>
+              </a>
+            </nav>
+          </div>
+          
+          <div>
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Security</p>
+            <nav className="space-y-1">
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <ShieldCheck size={18} />
+                <span>Permissions</span>
+              </a>
+            </nav>
+          </div>
+          
+          <div>
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">SRE</p>
+            <nav className="space-y-1">
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <MonitorSmartphone size={18} />
+                <span>Monitoring</span>
+              </a>
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <Archive size={18} />
+                <span>Logs</span>
+              </a>
+              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+                <FileCode size={18} />
+                <span>Deployments</span>
+              </a>
+            </nav>
+          </div>
+        </div>
+        
+        <div className="mt-auto pt-4 border-t border-white/20">
+          <div className="mb-2 flex items-center">
+            <div className="w-8 h-8 rounded-full bg-purple-300 flex items-center justify-center text-maxom-violet font-semibold mr-2">
+              {user?.email?.charAt(0).toUpperCase() || 'A'}
+            </div>
+            <div className="text-sm overflow-hidden">
+              <p className="font-medium truncate">{user?.email}</p>
+              <p className="text-white/60 text-xs">Super Admin Access</p>
+            </div>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full bg-white/10 hover:bg-white/20 border-white/20 text-white"
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </Button>
+        </div>
       </aside>
       
       {/* Main content */}
       <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-4xl mx-auto">
           <Button
-            variant="ghost"
+            variant="outline"
             className="mb-4 text-maxom-violet"
             onClick={() => navigate('/cms/pages')}
           >
             <ArrowLeft size={16} className="mr-1" /> Back to Pages
           </Button>
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-2">{pageTitle}</h1>
+          <Card className="p-6 mb-8 border shadow-sm">
+            <h1 className="text-2xl font-bold mb-2">{pageTitle}</h1>
             <p className="text-muted-foreground mb-6">Edit the page content below</p>
             
             {isLoading ? (
@@ -168,7 +256,7 @@ export default function PageEditor() {
                 <p>Editor for this page type is not yet implemented.</p>
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </main>
     </div>
