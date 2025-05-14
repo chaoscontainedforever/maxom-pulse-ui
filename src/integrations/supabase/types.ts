@@ -9,6 +9,84 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      media: {
+        Row: {
+          created_at: string | null
+          file_name: string | null
+          id: string
+          mime_type: string | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_name?: string | null
+          id?: string
+          mime_type?: string | null
+          url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string | null
+          id?: string
+          mime_type?: string | null
+          url?: string | null
+        }
+        Relationships: []
+      }
+      page: {
+        Row: {
+          created_at: string | null
+          id: string
+          json_body: Json
+          published: boolean | null
+          seo_desc: string | null
+          seo_title: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          json_body: Json
+          published?: boolean | null
+          seo_desc?: string | null
+          seo_title?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          json_body?: Json
+          published?: boolean | null
+          seo_desc?: string | null
+          seo_title?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -18,6 +96,7 @@ export type Database = {
           id: string
           image: string | null
           name: string | null
+          role: string | null
           token_identifier: string
           updated_at: string | null
           user_id: string | null
@@ -30,6 +109,7 @@ export type Database = {
           id: string
           image?: string | null
           name?: string | null
+          role?: string | null
           token_identifier: string
           updated_at?: string | null
           user_id?: string | null
@@ -42,6 +122,7 @@ export type Database = {
           id?: string
           image?: string | null
           name?: string | null
+          role?: string | null
           token_identifier?: string
           updated_at?: string | null
           user_id?: string | null
