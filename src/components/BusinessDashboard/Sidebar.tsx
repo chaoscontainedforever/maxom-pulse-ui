@@ -34,7 +34,7 @@ const NavItem = ({ icon: Icon, label, to, active }: NavItemProps) => (
       "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors",
       active 
         ? "bg-gradient-to-r from-[#800020] to-[#FF6200] text-white" 
-        : "text-gray-600 hover:bg-gray-100"
+        : "text-gray-600 bg-white hover:bg-gradient-to-r hover:from-[#800020] hover:to-[#FF6200] hover:text-white"
     )}
   >
     <Icon size={18} />
@@ -57,7 +57,7 @@ export const BusinessSidebar = ({ onSignOut }: SidebarProps) => {
   const { user } = useAuth();
   
   return (
-    <aside className="w-60 bg-white border-r h-full flex flex-col">
+    <aside className="w-60 bg-white text-gray-700 border-r h-full flex flex-col">
       <div className="p-4 border-b">
         <h2 className="text-xl font-bold flex items-center">
           <span className="text-[#800020]">Maxom</span>
