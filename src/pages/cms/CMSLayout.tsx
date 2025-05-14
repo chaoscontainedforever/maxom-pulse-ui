@@ -67,9 +67,5 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  return (
-    <div className="min-h-screen flex">
-      {children}
-    </div>
-  );
+  return children;
 }

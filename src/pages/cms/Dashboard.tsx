@@ -12,63 +12,78 @@ import {
   ShieldCheck,
   MonitorSmartphone,
   FileCode,
-  Archive
+  Archive,
+  LogOut,
+  Search
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 const statsCards = [
   {
-    title: "Total Pages",
-    value: "24",
-    change: "+3 this month",
+    title: "Total Customers",
+    value: "247",
+    change: "+12 this month",
     positive: true
   },
   {
     title: "Active Users",
-    value: "18",
-    change: "+5 this month",
+    value: "1,382",
+    change: "+78 this month",
     positive: true
   },
   {
-    title: "Content Updates",
-    value: "147",
-    change: "+32 this month",
+    title: "Voice Minutes Used",
+    value: "32,847",
+    change: "+3,254 this month",
     positive: true
   }
 ];
 
-const recentPages = [
+const customerData = [
   {
-    title: "Home Page",
-    type: "Landing Page",
-    owner: "Admin Team",
+    business: "Quantum Foods",
+    email: "info@quantumfoods.com",
+    type: "Restaurant",
+    owner: "John Smith",
     users: 2,
-    updated: "4/15/2025"
+    created: "4/15/2025"
   },
   {
-    title: "About Us",
-    type: "Info Page",
-    owner: "Marketing",
-    users: 1,
-    updated: "4/18/2025"
-  },
-  {
-    title: "Solutions",
-    type: "Product Page",
-    owner: "Product Team",
+    business: "FlexFit Gym",
+    email: "contact@flexfitgym.com",
+    type: "Fitness",
+    owner: "Sarah Jones",
     users: 2,
-    updated: "4/20/2025"
+    created: "4/18/2025"
   },
   {
-    title: "Contact",
-    type: "Form Page",
-    owner: "Support Team",
-    users: 1,
-    updated: "4/21/2025"
+    business: "Elite Motors",
+    email: "sales@elitemotors.com",
+    type: "Auto Dealership",
+    owner: "Michael Rodriguez",
+    users: 2,
+    created: "4/20/2025"
+  },
+  {
+    business: "Wellness Medical Group",
+    email: "appointments@wellnessmedical.com",
+    type: "Healthcare",
+    owner: "Lisa Chen",
+    users: 2,
+    created: "5/8/2025"
+  },
+  {
+    business: "ReadyFix Home Services",
+    email: "service@readyfix.com",
+    type: "Home Services",
+    owner: "Robert Johnson",
+    users: 2,
+    created: "4/21/2025"
   }
 ];
 
@@ -82,87 +97,87 @@ export default function CMSDashboard() {
   return (
     <div className="flex h-full min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-maxom-violet to-[#4B0082] text-white p-6 flex flex-col">
-        <div className="mb-8">
+      <aside className="w-64 bg-gradient-to-b from-[#800020] to-[#FF6200] text-white">
+        <div className="p-4 flex items-center">
           <h2 className="text-xl font-bold flex items-center">
-            <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">Maxom.ai</span>
-            <span className="ml-2 text-xs py-0.5 px-2 bg-maxom-orange/90 rounded text-white font-normal">Admin</span>
+            <span className="text-white">Maxom.ai</span>
+            <span className="ml-2 text-xs py-0.5 px-2 bg-orange-300/90 rounded text-[#800020] font-normal">Admin</span>
           </h2>
         </div>
         
-        <div className="space-y-6">
-          <div>
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Application</p>
-            <nav className="space-y-1">
-              <Link to="/cms" className="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 text-white">
-                <LayoutDashboard size={18} />
-                <span>Dashboard</span>
-              </Link>
-              <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <FileText size={18} />
-                <span>Pages</span>
-              </Link>
-              <Link to="/cms/media" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <ImageIcon size={18} />
-                <span>Media Library</span>
-              </Link>
-              <Link to="/cms/users" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <Users size={18} />
-                <span>Users</span>
-              </Link>
-            </nav>
-          </div>
+        <div className="px-3 py-2">
+          <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mb-1">APPLICATION</p>
+          <nav className="space-y-1">
+            <Link to="/cms" className="flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 text-white">
+              <LayoutDashboard size={18} />
+              <span>Dashboard</span>
+            </Link>
+            <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <FileText size={18} />
+              <span>Pages</span>
+            </Link>
+            <Link to="/cms/customers" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <Users size={18} />
+              <span>Customers</span>
+            </Link>
+            <Link to="/cms/user-management" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <Users size={18} />
+              <span>User Management</span>
+            </Link>
+            <Link to="/cms/voice-settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <ImageIcon size={18} />
+              <span>Voice Settings</span>
+            </Link>
+            <Link to="/cms/call-analytics" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <ImageIcon size={18} />
+              <span>Call Analytics</span>
+            </Link>
+          </nav>
           
-          <div>
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Platform</p>
-            <nav className="space-y-1">
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <Bell size={18} />
-                <span>Notifications</span>
-              </a>
-              <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <Settings size={18} />
-                <span>System Settings</span>
-              </Link>
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <BarChart3 size={18} />
-                <span>Reports</span>
-              </a>
-            </nav>
-          </div>
+          <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">PLATFORM</p>
+          <nav className="space-y-1">
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <Bell size={18} />
+              <span>Notifications</span>
+            </a>
+            <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <Settings size={18} />
+              <span>System Settings</span>
+            </Link>
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <BarChart3 size={18} />
+              <span>Reports</span>
+            </a>
+          </nav>
           
-          <div>
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Security</p>
-            <nav className="space-y-1">
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <ShieldCheck size={18} />
-                <span>Permissions</span>
-              </a>
-            </nav>
-          </div>
+          <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">SECURITY</p>
+          <nav className="space-y-1">
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <ShieldCheck size={18} />
+              <span>Permissions</span>
+            </a>
+          </nav>
           
-          <div>
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">SRE</p>
-            <nav className="space-y-1">
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <MonitorSmartphone size={18} />
-                <span>Monitoring</span>
-              </a>
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <Archive size={18} />
-                <span>Logs</span>
-              </a>
-              <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-                <FileCode size={18} />
-                <span>Deployments</span>
-              </a>
-            </nav>
-          </div>
+          <p className="text-xs font-semibold text-white/70 uppercase tracking-wider pl-3 mt-6 mb-1">SRE</p>
+          <nav className="space-y-1">
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <MonitorSmartphone size={18} />
+              <span>Monitoring</span>
+            </a>
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <Archive size={18} />
+              <span>Logs</span>
+            </a>
+            <a href="#" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
+              <FileCode size={18} />
+              <span>Deployments</span>
+            </a>
+          </nav>
         </div>
         
-        <div className="mt-auto pt-4 border-t border-white/20">
-          <div className="mb-2 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-purple-300 flex items-center justify-center text-maxom-violet font-semibold mr-2">
+        <div className="absolute bottom-0 w-64 p-4 border-t border-white/20">
+          <div className="flex items-center mb-3">
+            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#800020] font-semibold mr-2">
               {user?.email?.charAt(0).toUpperCase() || 'A'}
             </div>
             <div className="text-sm overflow-hidden">
@@ -173,21 +188,32 @@ export default function CMSDashboard() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full bg-white/10 hover:bg-white/20 border-white/20 text-white"
+            className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border-white/20 text-white"
             onClick={handleSignOut}
           >
-            Sign Out
+            <LogOut size={16} />
+            <span>Sign Out</span>
           </Button>
+          <div className="text-xs text-white/50 mt-1 text-center">
+            You have full system administrator privileges.
+          </div>
         </div>
       </aside>
       
       {/* Main content */}
-      <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">
+      <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900 overflow-auto">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-8">
-            <h1 className="text-2xl font-bold">Super Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage all content and system settings</p>
-          </header>
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl font-bold">Super Admin Dashboard</h1>
+              <p className="text-muted-foreground">Manage all customers and system settings</p>
+            </div>
+            
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search..." className="pl-9 w-[300px]" />
+            </div>
+          </div>
           
           {/* Stats */}
           <div className="grid gap-6 md:grid-cols-3 mb-8">
@@ -207,76 +233,56 @@ export default function CMSDashboard() {
           
           {/* Content Management Section */}
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">All Pages</h2>
-              <Link to="/cms/pages">
-                <Button variant="outline" className="h-9">View All</Button>
-              </Link>
-            </div>
-            
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Owner</TableHead>
-                    <TableHead>Users</TableHead>
-                    <TableHead>Last Updated</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentPages.map((page, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="font-medium">{page.title}</TableCell>
-                      <TableCell>{page.type}</TableCell>
-                      <TableCell>{page.owner}</TableCell>
-                      <TableCell>{page.users}</TableCell>
-                      <TableCell>{page.updated}</TableCell>
-                      <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-8 w-8 p-0"
-                          asChild
-                        >
-                          <Link to={`/cms/pages/edit/${page.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                            <Eye className="h-4 w-4" />
-                            <span className="sr-only">View</span>
-                          </Link>
-                        </Button>
-                      </TableCell>
+            <Card className="p-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">All Customers</h2>
+                <p className="text-muted-foreground text-sm">View and manage all registered business customers</p>
+              </div>
+              
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Business</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Owner</TableHead>
+                      <TableHead>Users</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {customerData.map((customer, i) => (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">
+                          <div>
+                            {customer.business}
+                            <div className="text-xs text-muted-foreground">{customer.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{customer.type}</TableCell>
+                        <TableCell>{customer.owner}</TableCell>
+                        <TableCell>{customer.users}</TableCell>
+                        <TableCell>{customer.created}</TableCell>
+                        <TableCell className="text-right">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0"
+                            asChild
+                          >
+                            <Link to={`/cms/customers/${customer.business.toLowerCase().replace(/\s+/g, '-')}`}>
+                              <Eye className="h-4 w-4" />
+                              <span className="sr-only">View</span>
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </Card>
-          </div>
-          
-          {/* Quick Actions */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-            <div className="grid gap-4 md:grid-cols-3">
-              <Link to="/cms/pages" className="block">
-                <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-1 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
-                  <FileText size={20} className="text-maxom-violet" />
-                  <span>Manage Pages</span>
-                </Button>
-              </Link>
-              <Link to="/cms/media" className="block">
-                <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-1 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
-                  <ImageIcon size={20} className="text-maxom-orange" />
-                  <span>Upload Media</span>
-                </Button>
-              </Link>
-              <Link to="/cms/settings" className="block">
-                <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center gap-1 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
-                  <Settings size={20} className="text-maxom-orange" />
-                  <span>System Settings</span>
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </main>

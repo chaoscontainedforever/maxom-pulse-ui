@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 25.3 100% 50%;
+    --primary: 345 75% 25%; /* #800020 burgundy/maroon */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 5.9% 96.1%;
@@ -33,11 +33,11 @@
 
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 25.3 100% 50%;
+    --ring: 345 75% 25%; /* #800020 burgundy/maroon */
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 345 75% 25%; /* #800020 burgundy/maroon */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -57,7 +57,7 @@
     --popover: 240 10% 4%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 25.3 100% 50%;
+    --primary: 345 75% 25%; /* #800020 burgundy/maroon */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 240 3.7% 15.9%;
@@ -76,7 +76,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 25.3 100% 50%;
     
-    --sidebar-background: 240 10% 4%;
+    --sidebar-background: 345 75% 25%;
     --sidebar-foreground: 240 5% 64.9%;
     --sidebar-primary: 0 0% 98%;
     --sidebar-primary-foreground: 240 5.9% 10%;
@@ -96,7 +96,7 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-[#2B004C] to-[#FF6200] bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#800020] to-[#FF6200] bg-clip-text text-transparent;
   }
 
   .maxom-container {
@@ -104,11 +104,11 @@
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-[#2B004C] to-[#FF6200] hover:opacity-90 text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
+    @apply bg-gradient-to-r from-[#800020] to-[#FF6200] hover:opacity-90 text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
   }
 
   .btn-outline {
-    @apply border-2 border-maxom-orange text-maxom-orange hover:bg-maxom-orange hover:text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
+    @apply border-2 border-[#FF6200] text-[#FF6200] hover:bg-[#FF6200] hover:text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
   }
 
   .gradient-card {
@@ -116,6 +116,6 @@
   }
 
   .input-field {
-    @apply rounded-full border border-gray-300 bg-white px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-maxom-orange dark:bg-gray-800 dark:border-gray-700;
+    @apply rounded-full border border-gray-300 bg-white px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-[#FF6200] dark:bg-gray-800 dark:border-gray-700;
   }
 }

@@ -6,7 +6,7 @@ import { useAuth } from "@/context/auth";
 import { ThemeToggle } from "./ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 
 const NavBar = () => {
   const { user, signOut } = useAuth();
@@ -81,7 +81,10 @@ const NavBar = () => {
           {user ? (
             <div className="hidden md:flex items-center gap-4">
               <Button onClick={() => navigate("/dashboard")} variant="ghost">Dashboard</Button>
-              <Button onClick={handleSignOut} variant="outline">Sign Out</Button>
+              <Button onClick={handleSignOut} variant="outline" className="flex items-center gap-2">
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </Button>
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
@@ -123,7 +126,10 @@ const NavBar = () => {
                 {user ? (
                   <>
                     <Button onClick={() => navigate("/dashboard")} className="w-full" variant="ghost">Dashboard</Button>
-                    <Button onClick={handleSignOut} className="w-full" variant="outline">Sign Out</Button>
+                    <Button onClick={handleSignOut} className="w-full flex items-center justify-center gap-2" variant="outline">
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </Button>
                   </>
                 ) : (
                   <>
