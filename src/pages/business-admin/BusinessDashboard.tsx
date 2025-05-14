@@ -11,10 +11,10 @@ export default function BusinessAdminDashboard() {
   };
   
   return (
-    <div className="flex h-full min-h-screen">
+    <div className="flex h-full min-h-screen bg-gray-50">
       <BusinessSidebar onSignOut={handleSignOut} />
       
-      <main className="flex-1 overflow-auto bg-gray-50">
+      <main className="flex-1 overflow-auto">
         <BusinessDashboard />
       </main>
     </div>
