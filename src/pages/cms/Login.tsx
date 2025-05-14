@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '@/context/auth';
+import { useAuth } from '@/context/AuthContext';
 
 export default function CMSLoginPage() {
   const [email, setEmail] = useState('');

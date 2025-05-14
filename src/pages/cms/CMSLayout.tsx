@@ -1,6 +1,6 @@
 
 import { ReactNode, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,7 +12,6 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function checkUserCMSRole() {
