@@ -1,6 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { Role } from '@/context/auth/types';
+import { toast } from 'sonner';
 
 /**
  * Manually adds a user to the users table if they don't exist
@@ -52,6 +53,7 @@ export async function addUserToUsersTable(userId: string, email: string, role: R
     
     if (error) {
       console.error('Error adding user to users table:', error);
+      toast(`Failed to add user: ${error.message}`);
       return { 
         success: false, 
         error, 
@@ -59,6 +61,7 @@ export async function addUserToUsersTable(userId: string, email: string, role: R
       };
     }
     
+    toast.success('User successfully added to users table');
     return { 
       success: true, 
       user: data, 

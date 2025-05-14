@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { addUserToUsersTable } from '@/utils/addUserToUsersTable';
 import { Role } from '@/context/auth/types';
+import { useAuth } from '@/context/auth';
+import { Navigate } from 'react-router-dom';
 
 export default function AddUserPage() {
   const [userId, setUserId] = useState('');
@@ -16,17 +18,25 @@ export default function AddUserPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { user, profile } = useAuth();
+  
+  // Check if current user is an admin
+  const isAdmin = profile?.role === 'super_admin' || profile?.role === 'cms_admin';
+  
+  // If not authenticated or not an admin, redirect to unauthorized page
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+  
+  if (!isAdmin) {
+    return <Navigate to="/unauthorized" />;
+  }
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!userId || !email) {
-      toast({
-        title: 'Missing information',
-        description: 'User ID and email are required',
-        variant: 'destructive',
-      });
+      toast.error("Missing information", "User ID and email are required");
       return;
     }
     
@@ -36,23 +46,12 @@ export default function AddUserPage() {
       const result = await addUserToUsersTable(userId, email, role, firstName, lastName);
       
       if (result.success) {
-        toast({
-          title: 'Success',
-          description: result.message,
-        });
+        toast.success("Success", result.message);
       } else {
-        toast({
-          title: 'Error',
-          description: result.message || 'Failed to add user',
-          variant: 'destructive',
-        });
+        toast.error("Error", result.message || 'Failed to add user');
       }
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'An unexpected error occurred',
-        variant: 'destructive',
-      });
+      toast.error("Error", error.message || 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }

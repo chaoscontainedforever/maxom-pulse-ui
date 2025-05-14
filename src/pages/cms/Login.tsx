@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { checkUserRole } from '@/utils/supabaseHelpers';
 
 export default function CMSLoginPage() {
@@ -12,7 +12,6 @@ export default function CMSLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +41,7 @@ export default function CMSLoginPage() {
 
       navigate('/cms');
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Invalid login credentials',
-        variant: 'destructive',
-      });
+      toast.error('Error', error.message || 'Invalid login credentials');
     } finally {
       setLoading(false);
     }
