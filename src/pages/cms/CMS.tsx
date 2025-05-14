@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+
+import { Routes, Route, Navigate } from "react-router-dom";
 import CMSLayout from "./CMSLayout";
 import CMSDashboard from "./Dashboard";
 import CMSLoginPage from "./Login";
@@ -12,7 +13,8 @@ export default function CMS() {
         <CMSLayout>
           <Routes>
             <Route path="/" element={<CMSDashboard />} />
-            {/* Other CMS routes will be added here */}
+            {/* Catch-all route to redirect to dashboard */}
+            <Route path="*" element={<Navigate to="/cms" replace />} />
           </Routes>
         </CMSLayout>
       } />

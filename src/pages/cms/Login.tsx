@@ -56,7 +56,8 @@ export default function CMSLoginPage() {
         description: 'Welcome to the CMS dashboard'
       });
       
-      navigate('/cms');
+      // Force navigation to the CMS dashboard with replace to prevent back button issues
+      navigate('/cms', { replace: true });
     } catch (error: any) {
       toast.error('Error', {
         description: error.message || 'Invalid login credentials'

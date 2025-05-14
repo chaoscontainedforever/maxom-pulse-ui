@@ -1,6 +1,6 @@
 
 import { ReactNode, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,6 +12,7 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function checkUserCMSRole() {
@@ -35,6 +36,13 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
         }
 
         const hasAdminRole = data?.role === 'cms_admin' || data?.role === 'super_admin';
+        
+        if (!hasAdminRole) {
+          console.log('User does not have CMS access. Current role:', data?.role);
+        } else {
+          console.log('User authorized for CMS with role:', data?.role);
+        }
+        
         setIsAuthorized(hasAdminRole);
       } catch (error) {
         console.error('Error checking user role:', error);
