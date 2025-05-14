@@ -3,3 +3,4 @@
 import { AuthProvider, AuthContext, useAuth } from './auth/index';
 
 export { AuthContext, AuthProvider, useAuth };
+export default { AuthContext, AuthProvider, useAuth };

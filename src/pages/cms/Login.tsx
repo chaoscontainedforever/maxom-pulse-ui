@@ -1,24 +1,47 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/auth';
 
 export default function CMSLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Redirect if already logged in and has admin access
+  useEffect(() => {
+    async function checkAdminAccess() {
+      if (user) {
+        // Check if user has admin role
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (data && (data.role === 'cms_admin' || data.role === 'super_admin')) {
+          // User already has admin access, redirect to dashboard
+          navigate('/cms', { replace: true });
+        }
+      }
+    }
+    
+    checkAdminAccess();
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Sign in with email and password
+      // Step 1: Sign in with email and password
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -32,7 +55,7 @@ export default function CMSLoginPage() {
         throw new Error('User not found');
       }
 
-      // Check if user has admin role directly from the database
+      // Step 2: Check if user has admin role directly from the database
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('role')
@@ -52,12 +75,15 @@ export default function CMSLoginPage() {
         throw new Error('Unauthorized. You do not have admin privileges.');
       }
 
+      // Step 3: Show success message and redirect
       toast.success('Login successful', {
         description: 'Welcome to the CMS dashboard'
       });
       
-      // Force navigation to the CMS dashboard with replace to prevent back button issues
-      navigate('/cms', { replace: true });
+      // Force browser location change instead of React Router navigate
+      // This ensures a complete reload and proper state initialization
+      window.location.href = '/cms';
+      return;
     } catch (error: any) {
       toast.error('Error', {
         description: error.message || 'Invalid login credentials'

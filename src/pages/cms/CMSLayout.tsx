@@ -1,7 +1,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/auth";
+import { useAuth } from "@/context/AuthContext";
 import { supabase } from '@/integrations/supabase/client';
 
 interface CMSLayoutProps {
@@ -32,6 +32,7 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
         if (error) {
           console.error('Error checking user role:', error);
           setIsAuthorized(false);
+          setLoading(false);
           return;
         }
 
@@ -44,10 +45,10 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
         }
         
         setIsAuthorized(hasAdminRole);
+        setLoading(false);
       } catch (error) {
         console.error('Error checking user role:', error);
         setIsAuthorized(false);
-      } finally {
         setLoading(false);
       }
     }
