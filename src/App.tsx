@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -57,7 +58,6 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light">
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -83,13 +83,14 @@ function App() {
                 {/* CMS Admin Routes */}
                 <Route path="/cms/*" element={<CMS />} />
                 
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                {/* Admin Routes */}
                 <Route path="/admin/add-user" element={<AddUserPage />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
           </TooltipProvider>
-        </BrowserRouter>
       </QueryClientProvider>
     </ThemeProvider>
   );

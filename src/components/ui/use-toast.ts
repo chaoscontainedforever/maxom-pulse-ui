@@ -1,3 +1,6 @@
-import { useToast, toast } from "@/hooks/use-toast";
 
-export { useToast, toast };
+import { useToast as useToastShadcn } from "@radix-ui/react-toast";
+import { toast as sonnerToast } from "sonner";
+
+export const useToast = useToastShadcn;
+export const toast = sonnerToast;
