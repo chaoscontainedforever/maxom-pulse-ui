@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { checkUserRole } from "@/utils/supabaseHelpers";
 
 interface CMSLayoutProps {
   children: ReactNode;
@@ -14,25 +14,15 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    async function checkUserRole() {
+    async function checkUserCMSRole() {
       if (!user) {
         setLoading(false);
         return;
       }
 
       try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-
-        if (error) {
-          console.error('Error fetching user role:', error);
-          setIsAuthorized(false);
-        } else {
-          setIsAuthorized(data?.role === 'cms_admin');
-        }
+        const hasAdminRole = await checkUserRole(user.id, 'cms_admin');
+        setIsAuthorized(hasAdminRole);
       } catch (error) {
         console.error('Error checking user role:', error);
         setIsAuthorized(false);
@@ -41,7 +31,7 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
       }
     }
 
-    checkUserRole();
+    checkUserCMSRole();
   }, [user]);
 
   if (loading) {

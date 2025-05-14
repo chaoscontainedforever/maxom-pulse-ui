@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { queryUserProfile, updateUserProfile } from '@/utils/supabaseHelpers';
 
 // Define AuthContextType here to ensure it's consistent with imports
 interface AuthContextType {
@@ -43,12 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (session?.user) {
           // Use setTimeout to avoid potential deadlock issues
           setTimeout(async () => {
-            const { data } = await supabase
-              .from('users')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-            
+            const data = await queryUserProfile(session.user.id);
             setProfile(data);
           }, 0);
         } else {
@@ -63,12 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-          .then(({ data }) => {
+        queryUserProfile(session.user.id)
+          .then((data) => {
             setProfile(data);
             setIsLoading(false);
           });
@@ -186,13 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user?.id) return;
 
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+      const { error } = await updateUserProfile(user.id, updates);
 
       if (error) {
         toast({

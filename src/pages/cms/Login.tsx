@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { checkUserRole } from '@/utils/supabaseHelpers';
 
 export default function CMSLoginPage() {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function CMSLoginPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -27,18 +28,14 @@ export default function CMSLoginPage() {
         throw error;
       }
 
-      // Check if user has admin role
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('email', email)
-        .single();
-
-      if (userError) {
-        throw userError;
+      if (!data.user) {
+        throw new Error('User not found');
       }
 
-      if (userData?.role !== 'cms_admin') {
+      // Check if user has admin role
+      const hasAdminRole = await checkUserRole(data.user.id, 'cms_admin');
+      
+      if (!hasAdminRole) {
         await supabase.auth.signOut();
         throw new Error('Unauthorized. You do not have admin privileges.');
       }

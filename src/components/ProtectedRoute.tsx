@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { checkUserRole } from "@/utils/supabaseHelpers";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -20,7 +20,7 @@ const ProtectedRoute = ({
   const [isCheckingRole, setIsCheckingRole] = useState(!!requiredRole);
 
   useEffect(() => {
-    const checkUserRole = async () => {
+    const checkAccess = async () => {
       if (!user || !requiredRole) {
         setHasAccess(!requiredRole);
         setIsCheckingRole(false);
@@ -28,18 +28,8 @@ const ProtectedRoute = ({
       }
 
       try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-
-        if (error) {
-          console.error('Error checking user role:', error);
-          setHasAccess(false);
-        } else {
-          setHasAccess(data?.role === requiredRole);
-        }
+        const hasRole = await checkUserRole(user.id, requiredRole);
+        setHasAccess(hasRole);
       } catch (error) {
         console.error('Error checking user role:', error);
         setHasAccess(false);
@@ -48,7 +38,7 @@ const ProtectedRoute = ({
       }
     };
 
-    checkUserRole();
+    checkAccess();
   }, [user, requiredRole]);
 
   // Show loading state
