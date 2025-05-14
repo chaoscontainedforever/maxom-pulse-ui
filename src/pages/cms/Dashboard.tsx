@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LucideLayoutDashboard, LucidePage, LucideImage, LucideSettings, LucideUsers } from "lucide-react";
+import { LayoutDashboard, FileText, ImageIcon, Settings, Users } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CMSDashboard() {
@@ -22,23 +22,23 @@ export default function CMSDashboard() {
         
         <nav className="space-y-1 flex-1">
           <Link to="/cms" className="flex items-center gap-2 px-3 py-2 bg-slate-700 rounded text-white">
-            <LucideLayoutDashboard size={18} />
+            <LayoutDashboard size={18} />
             <span>Dashboard</span>
           </Link>
           <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
-            <LucidePage size={18} />
+            <FileText size={18} />
             <span>Pages</span>
           </Link>
           <Link to="/cms/media" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
-            <LucideImage size={18} />
+            <ImageIcon size={18} />
             <span>Media Library</span>
           </Link>
           <Link to="/cms/users" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
-            <LucideUsers size={18} />
+            <Users size={18} />
             <span>Users</span>
           </Link>
           <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
-            <LucideSettings size={18} />
+            <Settings size={18} />
             <span>Settings</span>
           </Link>
         </nav>
@@ -66,7 +66,7 @@ export default function CMSDashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Link to="/cms/pages">
             <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <LucidePage size={24} className="text-blue-500" />
+              <FileText size={24} className="text-blue-500" />
               <span className="text-lg font-medium">Pages</span>
               <span className="text-sm text-muted-foreground">Manage website pages and content</span>
             </Button>
@@ -74,7 +74,7 @@ export default function CMSDashboard() {
           
           <Link to="/cms/media">
             <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <LucideImage size={24} className="text-green-500" />
+              <ImageIcon size={24} className="text-green-500" />
               <span className="text-lg font-medium">Media</span>
               <span className="text-sm text-muted-foreground">Upload and manage media files</span>
             </Button>
@@ -82,7 +82,7 @@ export default function CMSDashboard() {
           
           <Link to="/cms/settings">
             <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <LucideSettings size={24} className="text-amber-500" />
+              <Settings size={24} className="text-amber-500" />
               <span className="text-lg font-medium">Settings</span>
               <span className="text-sm text-muted-foreground">Configure site-wide settings</span>
             </Button>
