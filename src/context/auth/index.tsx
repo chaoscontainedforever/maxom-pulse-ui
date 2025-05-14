@@ -60,7 +60,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Use setTimeout to avoid potential deadlock issues
           setTimeout(async () => {
             const data = await queryUserProfile(session.user.id);
-            setProfile(data);
+            if (data) {
+              // Convert string role to our Role type
+              setProfile({
+                ...data,
+                role: data.role as any // Using type assertion to bypass strict typing temporarily
+              });
+            }
           }, 0);
         } else {
           setProfile(null);
@@ -76,8 +82,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (session?.user) {
         queryUserProfile(session.user.id)
           .then((data) => {
-            setProfile(data);
-            setIsLoading(false);
+            if (data) {
+              // Convert string role to our Role type
+              setProfile({
+                ...data,
+                role: data.role as any // Using type assertion to bypass strict typing temporarily
+              });
+              setIsLoading(false);
+            } else {
+              setIsLoading(false);
+            }
           });
       } else {
         setIsLoading(false);

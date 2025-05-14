@@ -31,6 +31,9 @@ import CMS from "./pages/cms/CMS";
 // Onboarding
 import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
 
+// Admin Pages
+import AddUserPage from "./pages/admin/AddUser";
+
 const queryClient = new QueryClient();
 
 // Layout component to handle conditional rendering of NavBar and Footer
@@ -81,6 +84,7 @@ function App() {
                 <Route path="/cms/*" element={<CMS />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="/admin/add-user" element={<AddUserPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
