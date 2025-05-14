@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
   FileText, 
-  ImageIcon, 
-  Settings, 
   Users,
   Bell,
   BarChart3,
@@ -14,7 +12,8 @@ import {
   FileCode,
   Archive,
   LogOut,
-  Search
+  Search,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Card } from "@/components/ui/card";
@@ -97,7 +96,7 @@ export default function CMSDashboard() {
   return (
     <div className="flex h-full min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-[#800020] to-[#FF6200] text-white">
+      <aside className="w-64 bg-gradient-to-b from-[#800020] to-[#FF6200] text-white fixed h-full">
         <div className="p-4 flex items-center">
           <h2 className="text-xl font-bold flex items-center">
             <span className="text-white">Maxom.ai</span>
@@ -125,11 +124,11 @@ export default function CMSDashboard() {
               <span>User Management</span>
             </Link>
             <Link to="/cms/voice-settings" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-              <ImageIcon size={18} />
+              <Settings size={18} />
               <span>Voice Settings</span>
             </Link>
             <Link to="/cms/call-analytics" className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-white/10 text-white/80 hover:text-white">
-              <ImageIcon size={18} />
+              <BarChart3 size={18} />
               <span>Call Analytics</span>
             </Link>
           </nav>
@@ -181,7 +180,7 @@ export default function CMSDashboard() {
               {user?.email?.charAt(0).toUpperCase() || 'A'}
             </div>
             <div className="text-sm overflow-hidden">
-              <p className="font-medium truncate">{user?.email}</p>
+              <p className="font-medium truncate">{user?.email || 'Admin User'}</p>
               <p className="text-white/60 text-xs">Super Admin Access</p>
             </div>
           </div>
@@ -201,7 +200,7 @@ export default function CMSDashboard() {
       </aside>
       
       {/* Main content */}
-      <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900 overflow-auto">
+      <main className="flex-1 ml-64 p-8 bg-gray-50 dark:bg-gray-900 overflow-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -218,7 +217,7 @@ export default function CMSDashboard() {
           {/* Stats */}
           <div className="grid gap-6 md:grid-cols-3 mb-8">
             {statsCards.map((stat, i) => (
-              <Card key={i} className="p-6">
+              <Card key={i} className="p-6 shadow-sm">
                 <p className="text-sm text-muted-foreground font-medium">{stat.title}</p>
                 <p className="text-3xl font-bold mt-2 mb-1">{stat.value}</p>
                 <p className={cn(
@@ -233,13 +232,13 @@ export default function CMSDashboard() {
           
           {/* Content Management Section */}
           <div className="mb-6">
-            <Card className="p-6">
-              <div className="mb-4">
+            <Card className="shadow-sm">
+              <div className="p-6 pb-4">
                 <h2 className="text-xl font-semibold">All Customers</h2>
                 <p className="text-muted-foreground text-sm">View and manage all registered business customers</p>
               </div>
               
-              <div className="overflow-hidden rounded-md border">
+              <div className="overflow-hidden rounded-b-lg">
                 <Table>
                   <TableHeader>
                     <TableRow>
