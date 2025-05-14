@@ -1,9 +1,40 @@
-
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+interface HeroContent {
+  badgeText: string;
+  heading: string;
+  subheading: string;
+}
+
+const defaultContent: HeroContent = {
+  badgeText: "Introducing Voice AI",
+  heading: "The Voice AI That <span class=\"gradient-text\">Talks Like Your Team</span>",
+  subheading: "Automate calls, bookings, and customer support with voice AI that sounds natural and handles real conversations like a human."
+};
 
 const HeroSection = () => {
+  const [content, setContent] = useState<HeroContent>(defaultContent);
+
+  useEffect(() => {
+    // Check if there's any CMS content stored in localStorage
+    const savedContent = localStorage.getItem('cms_hero_content');
+    if (savedContent) {
+      try {
+        const parsedContent = JSON.parse(savedContent);
+        // Format the heading to include the gradient text span if not already present
+        if (!parsedContent.heading.includes("gradient-text")) {
+          parsedContent.heading = `The Voice AI That <span class="gradient-text">${parsedContent.heading.replace("The Voice AI That ", "")}</span>`;
+        }
+        setContent(parsedContent);
+      } catch (e) {
+        console.error("Error parsing saved hero content:", e);
+      }
+    }
+  }, []);
+
   return (
     <section className="pt-32 pb-20 relative overflow-hidden">
       <div className="maxom-container relative z-10">
@@ -14,13 +45,14 @@ const HeroSection = () => {
           className="text-center max-w-4xl mx-auto"
         >
           <div className="inline-block bg-maxom-violet bg-opacity-10 rounded-full px-4 py-1 mb-6">
-            <span className="text-maxom-violet font-medium">Introducing Voice AI</span>
+            <span className="text-maxom-violet font-medium">{content.badgeText}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            The Voice AI That <span className="gradient-text">Talks Like Your Team</span>
-          </h1>
+          <h1 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+            dangerouslySetInnerHTML={{ __html: content.heading }}
+          />
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-            Automate calls, bookings, and customer support with voice AI that sounds natural and handles real conversations like a human.
+            {content.subheading}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
             <Link to="/contact" className="btn-primary">

@@ -14,44 +14,44 @@ export default function CMSDashboard() {
   return (
     <div className="flex h-full min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-800 text-white p-6 flex flex-col">
+      <aside className="w-64 bg-maxom-violet text-white p-6 flex flex-col">
         <div className="mb-8">
           <h2 className="text-xl font-bold">CMS Admin</h2>
-          <p className="text-sm text-gray-400 mt-1">Content Management System</p>
+          <p className="text-sm text-gray-300 mt-1">Content Management System</p>
         </div>
         
         <nav className="space-y-1 flex-1">
-          <Link to="/cms" className="flex items-center gap-2 px-3 py-2 bg-slate-700 rounded text-white">
+          <Link to="/cms" className="flex items-center gap-2 px-3 py-2 bg-maxom-violet/70 rounded text-white">
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
           </Link>
-          <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
+          <Link to="/cms/pages" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
             <FileText size={18} />
             <span>Pages</span>
           </Link>
-          <Link to="/cms/media" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
+          <Link to="/cms/media" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
             <ImageIcon size={18} />
             <span>Media Library</span>
           </Link>
-          <Link to="/cms/users" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
+          <Link to="/cms/users" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
             <Users size={18} />
             <span>Users</span>
           </Link>
-          <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-700 rounded text-white/80 hover:text-white">
+          <Link to="/cms/settings" className="flex items-center gap-2 px-3 py-2 hover:bg-maxom-violet/70 rounded text-white/80 hover:text-white">
             <Settings size={18} />
             <span>Settings</span>
           </Link>
         </nav>
         
-        <div className="mt-auto pt-4 border-t border-slate-700">
+        <div className="mt-auto pt-4 border-t border-white/20">
           <div className="text-sm mb-2">
-            <p className="text-gray-400">Logged in as:</p>
+            <p className="text-gray-300">Logged in as:</p>
             <p className="font-medium">{user?.email}</p>
           </div>
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full bg-slate-700 hover:bg-slate-600 border-slate-600"
+            className="w-full bg-white/10 hover:bg-white/20 border-white/20 text-white"
             onClick={handleSignOut}
           >
             Sign Out
@@ -60,29 +60,29 @@ export default function CMSDashboard() {
       </aside>
       
       {/* Main content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">
         <h1 className="text-3xl font-bold mb-8">Content Management</h1>
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Link to="/cms/pages">
-            <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <FileText size={24} className="text-blue-500" />
+            <Button variant="outline" className="w-full h-32 flex flex-col gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
+              <FileText size={24} className="text-maxom-violet" />
               <span className="text-lg font-medium">Pages</span>
               <span className="text-sm text-muted-foreground">Manage website pages and content</span>
             </Button>
           </Link>
           
           <Link to="/cms/media">
-            <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <ImageIcon size={24} className="text-green-500" />
+            <Button variant="outline" className="w-full h-32 flex flex-col gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
+              <ImageIcon size={24} className="text-maxom-orange" />
               <span className="text-lg font-medium">Media</span>
               <span className="text-sm text-muted-foreground">Upload and manage media files</span>
             </Button>
           </Link>
           
           <Link to="/cms/settings">
-            <Button variant="outline" className="w-full h-32 flex flex-col gap-2">
-              <Settings size={24} className="text-amber-500" />
+            <Button variant="outline" className="w-full h-32 flex flex-col gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-maxom-violet hover:dark:border-maxom-violet">
+              <Settings size={24} className="text-maxom-orange" />
               <span className="text-lg font-medium">Settings</span>
               <span className="text-sm text-muted-foreground">Configure site-wide settings</span>
             </Button>
