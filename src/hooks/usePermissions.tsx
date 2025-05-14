@@ -30,7 +30,8 @@ export function usePermissions() {
     const roleHierarchy: Record<Role, number> = {
       'super_admin': 30,
       'business_owner': 20,
-      'employee': 10
+      'employee': 10,
+      'cms_admin': 25  // Added cms_admin role with priority between business_owner and super_admin
     };
 
     return roleHierarchy[profile.role] >= roleHierarchy[minimumRole];
