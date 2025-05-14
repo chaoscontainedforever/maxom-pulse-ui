@@ -104,4 +104,4 @@ export const BusinessSidebar = ({ onSignOut }: SidebarProps) => {
       </div>
     </aside>
   );
-};
+}
