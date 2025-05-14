@@ -1,7 +1,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner"; // Import directly from sonner
 
 export const OrdersNoBusinessWarning = () => {
   return (
@@ -14,8 +14,7 @@ export const OrdersNoBusinessWarning = () => {
           variant="outline" 
           size="sm" 
           className="mt-2 bg-white border-amber-300 text-amber-700 hover:bg-amber-100"
-          onClick={() => toast({
-            title: "Account setup required",
+          onClick={() => toast("Account setup required", {
             description: "Please contact an administrator to link your account to a business.",
           })}
         >

@@ -1,5 +1,5 @@
 
-import { toast as sonnerToast, type Toast, type ExternalToast } from "sonner";
+import { toast as sonnerToast, type ExternalToast } from "sonner";
 import * as React from "react";
 
 // Define the toast types based on the expected props
