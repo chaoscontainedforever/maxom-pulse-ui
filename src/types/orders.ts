@@ -1,18 +1,16 @@
 
+// If this file doesn't exist yet or needs updating
 export interface OrderItem {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Order {
   id: string;
-  customerName: string;
-  customerPhone?: string;
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-    modifiers?: any[];
-    status?: string;
-  }>;
-  total: number;
   status: string;
-  timestamp: Date;
-  special_instructions?: string;
-  restaurant_id?: string;
+  customerName: string;
+  orderDate: string;
+  total: number;
+  items: OrderItem[];
 }
