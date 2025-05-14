@@ -12,7 +12,7 @@ const fetchOrdersFromApi = async (params: any): Promise<OrderItem[]> => {
     {
       id: "1",
       status: "completed",
-      customer_name: "John Doe",
+      customerName: "John Doe", // Fixed property name
       date: new Date().toISOString(),
       total: 45.99,
       items: [{ name: "Product 1", quantity: 2, price: 19.99 }]
@@ -20,7 +20,7 @@ const fetchOrdersFromApi = async (params: any): Promise<OrderItem[]> => {
     {
       id: "2",
       status: "processing",
-      customer_name: "Jane Smith",
+      customerName: "Jane Smith", // Fixed property name
       date: new Date().toISOString(),
       total: 75.50,
       items: [{ name: "Product 2", quantity: 1, price: 75.50 }]
