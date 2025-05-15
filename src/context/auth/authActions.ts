@@ -3,7 +3,7 @@ import { NavigateFunction } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SignUpOptions, UserProfile } from "./types";
-import { queryUserProfile } from "@/utils/supabaseHelpers";
+import { queryUserProfile, updateUserProfile } from "@/utils/supabaseHelpers";
 
 /**
  * Sign in with email and password
@@ -119,13 +119,7 @@ export async function updateProfile(updates: Partial<UserProfile>, userId: strin
   if (!userId) return { error: new Error('No user ID provided') };
 
   try {
-    const { error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId);
+    const { error } = await updateUserProfile(userId, updates);
 
     if (error) {
       toast.error("Profile Update Failed", {

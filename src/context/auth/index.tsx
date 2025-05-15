@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { queryUserProfile } from '@/utils/supabaseHelpers';
+import { queryUserProfile, updateUserProfile } from '@/utils/supabaseHelpers';
 import { AuthContextType } from './types';
 import { useAuthState } from './useAuthState';
 import { signIn as authSignIn, signUp as authSignUp, signOut as authSignOut, updateProfile as authUpdateProfile } from './authActions';
@@ -61,13 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Use setTimeout to avoid potential deadlock issues
           setTimeout(async () => {
             const data = await queryUserProfile(session.user.id);
-            if (data) {
-              // Convert string role to our Role type
-              setProfile({
-                ...data,
-                role: data.role as any // Using type assertion to bypass strict typing temporarily
-              });
-            }
+            setProfile(data);
           }, 0);
         } else {
           setProfile(null);
@@ -84,16 +78,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (session?.user) {
         queryUserProfile(session.user.id)
           .then((data) => {
-            if (data) {
-              // Convert string role to our Role type
-              setProfile({
-                ...data,
-                role: data.role as any // Using type assertion to bypass strict typing temporarily
-              });
-              setIsLoading(false);
-            } else {
-              setIsLoading(false);
-            }
+            setProfile(data);
+            setIsLoading(false);
           });
       } else {
         setIsLoading(false);
