@@ -27,37 +27,37 @@ export const CMSSidebar = ({ onSignOut }: SidebarProps) => {
     {
       href: "/cms",
       title: "Dashboard",
-      icon: <LayoutDashboard size={20} className="text-gray-700" />,
+      icon: <LayoutDashboard size={20} className="text-inherit" />,
       active: currentPath === "/cms"
     },
     {
       href: "/cms/pages",
       title: "Pages",
-      icon: <FileText size={20} className="text-gray-700" />,
+      icon: <FileText size={20} className="text-inherit" />,
       active: currentPath === "/cms/pages" || currentPath.includes("/cms/pages/")
     },
     {
       href: "/cms/media",
       title: "Media Library",
-      icon: <Image size={20} className="text-gray-700" />,
+      icon: <Image size={20} className="text-inherit" />,
       active: currentPath === "/cms/media"
     },
     {
       href: "/cms/navigation",
       title: "Navigation",
-      icon: <Menu size={20} className="text-gray-700" />,
+      icon: <Menu size={20} className="text-inherit" />,
       active: currentPath === "/cms/navigation"
     },
     {
       href: "/cms/ribbon",
       title: "Announcement Ribbon",
-      icon: <Megaphone size={20} className="text-gray-700" />,
+      icon: <Megaphone size={20} className="text-inherit" />,
       active: currentPath === "/cms/ribbon"
     },
     {
       href: "/cms/settings",
       title: "Site Settings",
-      icon: <Settings size={20} className="text-gray-700" />,
+      icon: <Settings size={20} className="text-inherit" />,
       active: currentPath === "/cms/settings"
     }
   ];

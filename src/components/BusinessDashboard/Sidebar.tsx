@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { 
   LayoutDashboard, 
@@ -27,20 +27,22 @@ interface NavItemProps {
   active?: boolean;
 }
 
-const NavItem = ({ icon: Icon, label, to, active }: NavItemProps) => (
-  <Link 
-    to={to} 
-    className={cn(
-      "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-700",
-      active 
-        ? "bg-gray-100" 
-        : "hover:bg-gray-100"
-    )}
-  >
-    <Icon size={18} />
-    <span>{label}</span>
-  </Link>
-);
+const NavItem = ({ icon: Icon, label, to, active }: NavItemProps) => {
+  return (
+    <Link 
+      to={to} 
+      className={cn(
+        "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+        active 
+          ? "bg-gradient-to-r from-maxom-violet to-maxom-orange/80 text-white" 
+          : "text-gray-700 hover:bg-gray-100"
+      )}
+    >
+      <Icon size={18} className={active ? "text-white" : ""} />
+      <span>{label}</span>
+    </Link>
+  );
+};
 
 const NavSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="mb-6">
@@ -55,6 +57,8 @@ const NavSection = ({ title, children }: { title: string; children: React.ReactN
 
 export const BusinessSidebar = ({ onSignOut }: SidebarProps) => {
   const { user } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
   
   return (
     <aside className="w-60 bg-white border-r border-gray-200 h-full flex flex-col">
@@ -69,27 +73,27 @@ export const BusinessSidebar = ({ onSignOut }: SidebarProps) => {
       
       <div className="flex-1 py-4 overflow-y-auto">
         <NavSection title="APPLICATION">
-          <NavItem icon={LayoutDashboard} label="Dashboard" to="/" active />
-          <NavItem icon={Users} label="Customers" to="/customers" />
-          <NavItem icon={User} label="User Management" to="/users" />
-          <NavItem icon={FileText} label="Voice Settings" to="/voice-settings" />
-          <NavItem icon={BarChart3} label="Call Analytics" to="/call-analytics" />
+          <NavItem icon={LayoutDashboard} label="Dashboard" to="/" active={currentPath === "/"} />
+          <NavItem icon={Users} label="Customers" to="/customers" active={currentPath === "/customers"} />
+          <NavItem icon={User} label="User Management" to="/users" active={currentPath === "/users"} />
+          <NavItem icon={FileText} label="Voice Settings" to="/voice-settings" active={currentPath === "/voice-settings"} />
+          <NavItem icon={BarChart3} label="Call Analytics" to="/call-analytics" active={currentPath === "/call-analytics"} />
         </NavSection>
         
         <NavSection title="PLATFORM">
-          <NavItem icon={Bot} label="Notifications" to="/notifications" />
-          <NavItem icon={CreditCard} label="System Settings" to="/system-settings" />
-          <NavItem icon={BarChart3} label="Reports" to="/reports" />
+          <NavItem icon={Bot} label="Notifications" to="/notifications" active={currentPath === "/notifications"} />
+          <NavItem icon={CreditCard} label="System Settings" to="/system-settings" active={currentPath === "/system-settings"} />
+          <NavItem icon={BarChart3} label="Reports" to="/reports" active={currentPath === "/reports"} />
         </NavSection>
         
         <NavSection title="SECURITY">
-          <NavItem icon={Key} label="Permissions" to="/permissions" />
+          <NavItem icon={Key} label="Permissions" to="/permissions" active={currentPath === "/permissions"} />
         </NavSection>
         
         <NavSection title="SRE">
-          <NavItem icon={ChefHat} label="Monitoring" to="/monitoring" />
-          <NavItem icon={FileText} label="Logs" to="/logs" />
-          <NavItem icon={HelpCircle} label="Deployments" to="/deployments" />
+          <NavItem icon={ChefHat} label="Monitoring" to="/monitoring" active={currentPath === "/monitoring"} />
+          <NavItem icon={FileText} label="Logs" to="/logs" active={currentPath === "/logs"} />
+          <NavItem icon={HelpCircle} label="Deployments" to="/deployments" active={currentPath === "/deployments"} />
         </NavSection>
       </div>
       
