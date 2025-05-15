@@ -1,18 +1,18 @@
 
-// Update the existing CMS.tsx file to include our new routes
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import CMSLayout from "./CMSLayout";
 import CMSDashboard from "./Dashboard";
-import CMSLoginPage from "./Login";
 import CMSPages from "./Pages";
 import CMSMedia from "./Media";
 import PageEditor from "./PageEditor";
 
 export default function CMS() {
+  // In demo mode, we'll bypass the login screen entirely
   return (
     <Routes>
-      <Route path="login" element={<CMSLoginPage />} />
+      {/* Redirect login straight to dashboard in demo mode */}
+      <Route path="login" element={<Navigate to="/cms" replace />} />
+      
       <Route path="/" element={
         <CMSLayout>
           <CMSDashboard />
