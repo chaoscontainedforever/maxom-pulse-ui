@@ -19,13 +19,13 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           key={item.href}
           to={item.href}
           className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors text-gray-700",
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
             item.active
-              ? "bg-gray-100"
-              : "hover:bg-gray-100"
+              ? "bg-maxom-violet/10 text-maxom-violet border-l-2 border-maxom-violet"
+              : "text-gray-700 hover:bg-gray-100"
           )}
         >
-          {item.icon && <span className="h-5 w-5">{item.icon}</span>}
+          {item.icon && <span className={cn("h-5 w-5", item.active ? "text-maxom-violet" : "")}>{item.icon}</span>}
           <span>{item.title}</span>
         </Link>
       ))}
