@@ -13,22 +13,43 @@ export default function CMS() {
   return (
     <Routes>
       <Route path="login" element={<CMSLoginPage />} />
-      <Route path="/*" element={
+      <Route path="/" element={
         <CMSLayout>
-          <Routes>
-            <Route path="/" element={<CMSDashboard />} />
-            <Route path="/pages" element={<CMSPages />} />
-            <Route path="/pages/edit/:slug" element={<PageEditor />} />
-            <Route path="/media" element={<CMSMedia />} />
-            {/* Future routes will go here */}
-            <Route path="/navigation" element={<ComingSoon title="Navigation Editor" />} />
-            <Route path="/ribbon" element={<ComingSoon title="Announcement Ribbon" />} />
-            <Route path="/settings" element={<ComingSoon title="Site Settings" />} />
-            {/* Catch-all route to redirect to dashboard */}
-            <Route path="*" element={<Navigate to="/cms" replace />} />
-          </Routes>
+          <CMSDashboard />
         </CMSLayout>
       } />
+      <Route path="/pages" element={
+        <CMSLayout>
+          <CMSPages />
+        </CMSLayout>
+      } />
+      <Route path="/pages/edit/:slug" element={
+        <CMSLayout>
+          <PageEditor />
+        </CMSLayout>
+      } />
+      <Route path="/media" element={
+        <CMSLayout>
+          <CMSMedia />
+        </CMSLayout>
+      } />
+      <Route path="/navigation" element={
+        <CMSLayout>
+          <ComingSoon title="Navigation Editor" />
+        </CMSLayout>
+      } />
+      <Route path="/ribbon" element={
+        <CMSLayout>
+          <ComingSoon title="Announcement Ribbon" />
+        </CMSLayout>
+      } />
+      <Route path="/settings" element={
+        <CMSLayout>
+          <ComingSoon title="Site Settings" />
+        </CMSLayout>
+      } />
+      {/* Catch-all route to redirect to dashboard */}
+      <Route path="*" element={<Navigate to="/cms" replace />} />
     </Routes>
   );
 }

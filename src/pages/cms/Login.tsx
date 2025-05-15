@@ -80,10 +80,8 @@ export default function CMSLoginPage() {
         description: 'Welcome to the CMS dashboard'
       });
       
-      // Force browser location change instead of React Router navigate
-      // This ensures a complete reload and proper state initialization
-      window.location.href = '/cms';
-      return;
+      // Navigate to CMS dashboard after successful login
+      navigate('/cms', { replace: true });
     } catch (error: any) {
       toast.error('Error', {
         description: error.message || 'Invalid login credentials'
