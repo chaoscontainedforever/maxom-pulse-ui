@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
