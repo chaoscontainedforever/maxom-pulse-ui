@@ -1,7 +1,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth";
 import { supabase } from '@/integrations/supabase/client';
 import { CMSSidebar } from "@/components/cms/Sidebar";
 import { UnifiedHeader } from "@/components/cms/unified-header";
@@ -22,6 +22,7 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
 
   useEffect(() => {
     async function checkUserCMSRole() {
+      console.log("Checking CMS role for user:", user);
       if (!user) {
         setLoading(false);
         return;

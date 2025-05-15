@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,6 +71,7 @@ const Login = () => {
       toast.error("Login Error", {
         description: error.message
       });
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -274,7 +276,7 @@ const Login = () => {
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
                       required
-                      placeholder="••••••���•"
+                      placeholder="••••••••"
                     />
                   </div>
                   

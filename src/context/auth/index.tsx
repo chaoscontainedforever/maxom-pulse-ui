@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth state changed:", event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -76,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Existing session check:", session);
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -105,7 +107,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Wrap auth actions with necessary state updates
   const handleSignIn = async (email: string, password: string) => {
+    console.log("Handling sign in:", email);
     const result = await authSignIn(email, password);
+    console.log("Sign in result:", result);
     return result;
   };
 
@@ -115,6 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleSignOut = async () => {
+    console.log("Handling sign out");
     await authSignOut();
     
     // Ensure navigation happens after state updates
@@ -149,6 +154,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     updateProfile: handleUpdateProfile,
     loading: isLoading // For compatibility with older components
   };
+
+  console.log("Auth context value:", { 
+    hasUser: !!user, 
+    hasProfile: !!profile,
+    isLoading 
+  });
 
   return (
     <AuthContext.Provider value={value}>
