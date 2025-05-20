@@ -21,7 +21,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           className={cn(
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
             item.active
-              ? "bg-gradient-to-r from-maxom-blue to-maxom-orange/80 text-white border-l-2 border-maxom-blue"
+              ? "bg-gradient-to-r from-maxom-purple to-maxom-orange/80 text-white border-l-2 border-maxom-purple"
               : "text-gray-700 hover:bg-gray-100"
           )}
         >
