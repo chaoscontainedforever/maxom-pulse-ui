@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 345 75% 25%; /* #800020 burgundy/maroon */
+    --primary: 275 100% 15%; /* #2B004C deep purple */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 5.9% 96.1%;
@@ -33,11 +33,11 @@
 
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 345 75% 25%; /* #800020 burgundy/maroon */
+    --ring: 275 100% 15%; /* #2B004C deep purple */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 345 75% 25%; /* #800020 burgundy/maroon */
+    --sidebar-background: 275 100% 15%; /* #2B004C deep purple */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -57,7 +57,7 @@
     --popover: 240 10% 4%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 345 75% 25%; /* #800020 burgundy/maroon */
+    --primary: 275 100% 15%; /* #2B004C deep purple */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 240 3.7% 15.9%;
@@ -76,7 +76,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 25.3 100% 50%;
     
-    --sidebar-background: 345 75% 25%;
+    --sidebar-background: 275 100% 15%;
     --sidebar-foreground: 240 5% 64.9%;
     --sidebar-primary: 0 0% 98%;
     --sidebar-primary-foreground: 240 5.9% 10%;
@@ -96,11 +96,11 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-[#800020] to-[#FF6200] bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#2B004C] to-[#FF6200] bg-clip-text text-transparent;
   }
 
   .gradient-highlight {
-    @apply bg-gradient-to-r from-[#800020] to-[#FF6200];
+    @apply bg-gradient-to-r from-[#2B004C] to-[#FF6200];
   }
 
   .maxom-container {
@@ -108,7 +108,7 @@
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-[#800020] to-[#FF6200] hover:opacity-90 text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
+    @apply bg-gradient-to-r from-[#2B004C] to-[#FF6200] hover:opacity-90 text-white rounded-full py-3 px-6 font-semibold transition-all duration-200 inline-flex items-center justify-center;
   }
 
   .btn-outline {
