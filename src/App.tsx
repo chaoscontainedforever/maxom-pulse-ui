@@ -33,9 +33,6 @@ import CMS from "./pages/cms/CMS";
 // Onboarding
 import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
 
-// Admin Pages
-import AddUserPage from "./pages/admin/AddUser";
-
 const queryClient = new QueryClient();
 
 // Layout component to handle conditional rendering of NavBar and Footer
@@ -72,21 +69,18 @@ function App() {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
+                
+                {/* These routes are still available but will be unused in the main navigation */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/onboarding" element={<OnboardingWizard />} />
-                
-                {/* CMS Admin Routes */}
                 <Route path="/cms/*" element={<CMS />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin/add-user" element={<AddUserPage />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

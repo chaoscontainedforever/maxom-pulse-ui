@@ -1,3 +1,4 @@
+
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -56,7 +57,7 @@ const HeroSection = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
             <Link to="/contact" className="btn-primary">
-              Request Access <ArrowRight className="ml-2 h-5 w-5" />
+              Book Demo <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link to="/product" className="btn-outline">
               See How It Works

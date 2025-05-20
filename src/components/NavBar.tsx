@@ -24,11 +24,8 @@ const NavBar = () => {
     }
   };
 
-  // Handle login button click - clear any stored mock admin data first
-  const handleLoginClick = () => {
-    // Clear any stored mock admin to ensure proper login flow
-    localStorage.removeItem('mockSuperAdmin');
-    navigate("/login");
+  const handleBookDemo = () => {
+    navigate("/contact");
   };
 
   const toggleMobileMenu = () => {
@@ -80,7 +77,6 @@ const NavBar = () => {
           
           {user ? (
             <div className="hidden md:flex items-center gap-4">
-              <Button onClick={() => navigate("/dashboard")} variant="ghost">Dashboard</Button>
               <Button onClick={handleSignOut} variant="outline" className="flex items-center gap-2">
                 <LogOut size={16} />
                 <span>Sign Out</span>
@@ -88,8 +84,7 @@ const NavBar = () => {
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
-              <Button onClick={handleLoginClick} variant="ghost">Login</Button>
-              <Button onClick={() => navigate("/register")}>Sign Up</Button>
+              <Button onClick={handleBookDemo}>Book Demo</Button>
             </div>
           )}
           
@@ -124,18 +119,12 @@ const NavBar = () => {
                   Contact
                 </Link>
                 {user ? (
-                  <>
-                    <Button onClick={() => navigate("/dashboard")} className="w-full" variant="ghost">Dashboard</Button>
-                    <Button onClick={handleSignOut} className="w-full flex items-center justify-center gap-2" variant="outline">
-                      <LogOut size={16} />
-                      <span>Sign Out</span>
-                    </Button>
-                  </>
+                  <Button onClick={handleSignOut} className="w-full flex items-center justify-center gap-2" variant="outline">
+                    <LogOut size={16} />
+                    <span>Sign Out</span>
+                  </Button>
                 ) : (
-                  <>
-                    <Button onClick={handleLoginClick} className="w-full" variant="ghost">Login</Button>
-                    <Button onClick={() => navigate("/register")} className="w-full">Sign Up</Button>
-                  </>
+                  <Button onClick={handleBookDemo} className="w-full">Book Demo</Button>
                 )}
               </div>
             </SheetContent>
