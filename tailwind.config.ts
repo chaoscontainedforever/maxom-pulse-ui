@@ -26,7 +26,7 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				maxom: {
-					purple: '#9b87f5', // Metallic purple
+					violet: '#800020', // Changed to burgundy/maroon
 					orange: '#FF6200',
 					light: '#FAFAFA',
 					dark: '#111111',
@@ -126,10 +126,10 @@ export default {
 				'scale-in': 'scale-in 0.4s ease-out',
 			},
 			backgroundImage: {
-				'gradient-main': 'linear-gradient(135deg, #9b87f5 0%, #FF6200 100%)', // Updated to metallic purple and orange
-				'gradient-card1': 'linear-gradient(135deg, #7E69AB 0%, #FF7D3B 100%)', // Updated
-				'gradient-card2': 'linear-gradient(135deg, #9b87f5 0%, #FF8C3B 100%)', // Updated
-				'gradient-card3': 'linear-gradient(135deg, #6E59A5 0%, #FF9F5B 100%)', // Updated
+				'gradient-main': 'linear-gradient(135deg, #800020 0%, #FF6200 100%)', // Updated
+				'gradient-card1': 'linear-gradient(135deg, #8B0000 0%, #FF7D3B 100%)', // Updated
+				'gradient-card2': 'linear-gradient(135deg, #800020 0%, #FF8C3B 100%)', // Updated
+				'gradient-card3': 'linear-gradient(135deg, #990000 0%, #FF9F5B 100%)', // Updated
 			}
 		}
 	},
