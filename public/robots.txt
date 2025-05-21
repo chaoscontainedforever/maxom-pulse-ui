@@ -1,14 +1,20 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemaps
+Sitemap: https://maxom.ai/sitemap.xml
+
+# Important pages - ensure these are crawled
+Allow: /solutions
+Allow: /product
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /blog
+
+# Disallow admin areas
+Disallow: /cms/
+Disallow: /onboarding/
+Disallow: /login
+Disallow: /register
